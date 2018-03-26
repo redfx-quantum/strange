@@ -1,8 +1,14 @@
 plugins {
     id 'java'
-    id 'maven-publish'
     id 'application'
+    id 'signing'
+    id 'maven'
 }
+apply from: 'gradle/mavenPublish.gradle'
+
+group = 'com.gluonhq'
+version = '0.0.1'
+
 mainClassName = 'com.gluonhq.strange.demo.Demo'
 
 repositories {
@@ -13,28 +19,28 @@ dependencies {
     testCompile "junit:junit:4.2"
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = "com.gluonhq"
-            artifactId = "strange"
-            version '0.0.1-SNAPSHOT'
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-           def repositoryUrl = project.hasProperty('repositoryUrl') ? project.getProperty('repositoryUrl') : 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-           def repositoryUsername = project.hasProperty('repositoryUsername') ? project.getProperty('repositoryUsername') :  project.getProperty('sonatypeUsername')
-           def repositoryPassword = project.hasProperty('repositoryPassword') ? project.getProperty('repositoryPassword') :  project.getProperty('sonatypePassword')
-
-           url repositoryUrl
-           credentials {
-              username repositoryUsername
-              password repositoryPassword
-          }
-      }
-    }
-
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
 }
+
+javadoc {
+    failOnError = false
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+ext.publish = !project.version.endsWith('SNAPSHOT')
+
+configurations {
+    published
+}
+
+
+artifacts {
+    archives sourceJar, javadocJar
+}
+
