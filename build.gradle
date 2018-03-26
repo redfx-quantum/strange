@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'application'
+}
+mainClassName = 'com.gluonhq.strange.demo.Demo'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile "junit:junit:4.2"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = "com.gluonhq"
+            artifactId = "strange"
+            version '0.0.1-SNAPSHOT'
+            from components.java
+        }
+    }
+}
