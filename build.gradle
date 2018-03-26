@@ -22,4 +22,19 @@ publishing {
             from components.java
         }
     }
+
+    repositories {
+        maven {
+           def repositoryUrl = project.hasProperty('repositoryUrl') ? project.getProperty('repositoryUrl') : 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+           def repositoryUsername = project.hasProperty('repositoryUsername') ? project.getProperty('repositoryUsername') :  project.getProperty('sonatypeUsername')
+           def repositoryPassword = project.hasProperty('repositoryPassword') ? project.getProperty('repositoryPassword') :  project.getProperty('sonatypePassword')
+
+           url repositoryUrl
+           credentials {
+              username repositoryUsername
+              password repositoryPassword
+          }
+      }
+    }
+
 }
