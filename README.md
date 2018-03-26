@@ -1,4 +1,4 @@
-# strange
+# strange [![Build Status](https://travis-ci.org/gluonhq/strange.svg?branch=master)](https://travis-ci.org/gluonhq/strange)
 Quantum Computing API for Java
 
 This project defines a Java API that can be used to create Quantum Programs.
