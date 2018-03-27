@@ -31,6 +31,7 @@
  */
 package com.gluonhq.strange.demo;
 
+import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
@@ -54,6 +55,26 @@ public class Demo {
         Qubit[] qubits = res.getQubits();
         Arrays.asList(qubits).forEach(q -> System.out.println(q.measure()));
         Arrays.asList(res.getProbability()).forEach(c -> System.out.println("prob = "+c));
+        Complex[][] perm = sqee.createPermutationMatrix(1,2,3);
+        for (int i = 0; i < perm.length; i++) {
+            StringBuffer sb = new StringBuffer();
+            for (int j = 0; j < perm[i].length; j++) {
+                 sb.append(perm[i][j]).append("   ");
+            }
+            System.out.println("sb = "+sb);
+        }
+        PermutationGate pg = new PermutationGate(0,2,3);
+        Complex[][] m = pg.getMatrix();
+        printMatrix(m);
     }
 
+    private static void printMatrix(Complex[][] a) {
+        for (int i = 0; i < a.length; i++) {
+            StringBuffer sb = new StringBuffer();
+            for (int j = 0; j < a[i].length; j++) {
+                sb.append(a[i][j]).append("    ");
+            }
+            System.out.println("m["+i+"]: "+sb);
+        }
+    }
 }

@@ -41,6 +41,8 @@ public class Identity extends SingleQubitGate {
     
     Complex[][] matrix =  new Complex[][]{{Complex.ONE,Complex.ZERO}, {Complex.ZERO,Complex.ONE}};
     
+    public Identity() {}
+    
     public Identity (int idx) {
         super(idx);
     }

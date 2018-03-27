@@ -32,62 +32,33 @@
 package com.gluonhq.strange.gate;
 
 import com.gluonhq.strange.Complex;
-import com.gluonhq.strange.Gate;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
- * This class describe a Gate that operates on a single qubit only.
  * @author johan
  */
-public abstract class SingleQubitGate implements Gate {
+public class Swap extends TwoQubitGate {
     
-    private int idx;
+    Complex[][] matrix =  new Complex[][]{
+        {Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO},
+        {Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO},
+        {Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
+        {Complex.ZERO,Complex.ZERO,Complex.ZERO,Complex.ONE}
+    };
     
-    public SingleQubitGate() {}
+    public Swap() {    
+    }
     
-    public SingleQubitGate (int idx) {
-        this.idx = idx;
+    public Swap (int a, int b) {
+        super(a,b);
     }
 
     @Override
-    public void setMainQubit(int idx) {
-        this.idx = idx;
-    }
-    
-    @Override
-    public void setAdditionalQubit(int idx, int cnt) {
-        throw new RuntimeException("A SingleQubitGate can not have additional qubits");
+    public Complex[][] getMatrix() {
+        return matrix;
     }
 
-        
-    @Override
-    public List<Integer> getAffectedQubitIndex() {
-        List<Integer> answer = new ArrayList<>(1);
-        answer.add(idx);
-        return answer;
+    @Override public String getCaption() {
+        return "S";
     }
-    
-    @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-    
-    @Override
-    public String getCaption() {
-        return getName();    
-    }
-    
-    @Override
-    public String getGroup() {
-        return "SingleQubit";
-    }
-    
-    public abstract Complex[][] getMatrix();
-    
-    @Override public String toString() {
-        return "Gate with index "+idx+" and caption "+getCaption();
-    }
-    
 }

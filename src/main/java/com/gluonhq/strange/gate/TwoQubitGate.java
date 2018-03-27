@@ -38,34 +38,45 @@ import java.util.List;
 
 /**
  *
- * This class describe a Gate that operates on a single qubit only.
+ * This class describe a Gate that operates on two qubits. In a single
+ * <code>Step</code>, there should not be two Gates that act on the same qubit.
  * @author johan
  */
-public abstract class SingleQubitGate implements Gate {
+public abstract class TwoQubitGate implements Gate {
     
-    private int idx;
+    private int first;
+    private int second;
     
-    public SingleQubitGate() {}
+    public TwoQubitGate() {}
     
-    public SingleQubitGate (int idx) {
-        this.idx = idx;
+    public TwoQubitGate (int first, int second) {
+        this.first = first;
+        this.second = second;
     }
 
     @Override
     public void setMainQubit(int idx) {
-        this.idx = idx;
+        this.first = idx;
     }
     
     @Override
     public void setAdditionalQubit(int idx, int cnt) {
-        throw new RuntimeException("A SingleQubitGate can not have additional qubits");
+        this.second = idx;
     }
 
+    public int getMainQubit() {
+        return this.first;
+    }
+    
+    public int getSecondQubit() {
+        return this.second;
+    }
         
     @Override
     public List<Integer> getAffectedQubitIndex() {
         List<Integer> answer = new ArrayList<>(1);
-        answer.add(idx);
+        answer.add(first);
+        answer.add(second);
         return answer;
     }
     
@@ -81,13 +92,12 @@ public abstract class SingleQubitGate implements Gate {
     
     @Override
     public String getGroup() {
-        return "SingleQubit";
+        return "TwoQubit";
     }
     
-    public abstract Complex[][] getMatrix();
     
     @Override public String toString() {
-        return "Gate with index "+idx+" and caption "+getCaption();
+        return "Gate acting on qubits "+first+" and "+second+" and caption "+getCaption();
     }
     
 }

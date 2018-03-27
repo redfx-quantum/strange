@@ -38,7 +38,12 @@ import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.gate.PermutationGate;
 import com.gluonhq.strange.gate.SingleQubitGate;
+import com.gluonhq.strange.gate.Swap;
+import com.gluonhq.strange.gate.TwoQubitGate;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,7 +66,12 @@ public class SimpleQuantumExecutionEnvironment {
             probs[i] = Complex.ZERO;
         }
         List<Step> steps = p.getSteps();
+        List<Step> simpleSteps = new ArrayList<>();
         for (Step step: steps) {
+            simpleSteps.addAll(decomposeStep(step, nQubits));
+        }
+    //    System.out.println("stepsize "+steps.size()+" and simplestepsize = "+simpleSteps.size());
+        for (Step step: simpleSteps) {
             probs = applyStep(step, probs, qubit);
         }
         double[] qp = calculateQubitStatesFromVector(probs);
@@ -72,9 +82,83 @@ public class SimpleQuantumExecutionEnvironment {
         return result;
     }
     
+    /**
+     * decompose a Step into steps that can be processed without permutations
+     * @param s
+     * @return 
+     */
+    private List<Step> decomposeStep (Step s, int nqubit) {
+        ArrayList<Step> answer = new ArrayList<>();
+        answer.add(s);
+        List<Gate> gates = s.getGates();
+        if (gates.isEmpty()) return answer;
+        boolean notsimple = gates.stream().anyMatch(g -> (!(g instanceof SingleQubitGate)));
+        if (!notsimple) return answer;
+        // at least one non-singlequbitgate
+       // System.out.println("Complex gates!");
+        List<Gate> firstGates = new ArrayList<>();
+        for (Gate gate : gates) {
+            if (gate instanceof SingleQubitGate) {
+                firstGates.add(gate);
+            } else if (gate instanceof TwoQubitGate) {
+                TwoQubitGate tqg = (TwoQubitGate) gate;
+                int first = tqg.getMainQubit();
+                int second = tqg.getSecondQubit();
+                if (first == second - 1) {
+                    firstGates.add(gate);
+                } else {
+                    if (first == second) throw new RuntimeException ("Wrong gate, first == second for "+gate);
+                    if (second > first) {
+                        Step prePermutation = new Step();
+
+                        PermutationGate pg = new PermutationGate(first + 1, second, nqubit);
+                        prePermutation.addGate(pg);
+                        answer.add(0, prePermutation);
+                        answer.add(prePermutation);
+//                        for (int i = first+1; i < second; i++) {
+//                            Swap swap = new Swap(i, i+1);
+//                            prePermutation.addGate(swap);
+//                        }
+//                        tqg.setAdditionalQubit(first+1,0);
+
+                    } else {
+                        Step prePermutation = new Step();
+
+                        PermutationGate pg = new PermutationGate(first, second, nqubit );
+                        prePermutation.addGate(pg);
+
+                        answer.add(0, prePermutation);
+                        answer.add(prePermutation);
+                        Step postPermutation = new Step();
+
+                        PermutationGate pg2 = new PermutationGate(second+1, first, nqubit );
+                        postPermutation.addGate(pg2);
+                          answer.add(0, postPermutation);
+                        answer.add(postPermutation);
+                        for (int i = second; i < first; i++) {
+                            Swap swap = new Swap(i, i+1);
+                            prePermutation.addGate(swap);
+                        }
+                        tqg.setMainQubit(first-1);
+                        tqg.setAdditionalQubit(first,0);
+                    }
+                }
+            } else {
+                throw new RuntimeException("Gate must be SingleQubit or TwoQubit");
+            }
+        }
+        return answer;
+    }
+    
+    private List<Step> decomposeSteps(List<Step> steps) {
+        return steps;
+    }
+    
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
         List<Gate> gates = step.getGates();
         Complex[][] a = calculateStepMatrix(gates, qubits.length);
+     //   System.out.println("applystep, gates = "+gates);
+// printMatrix(a);
         Complex[] result = new Complex[vector.length];
         for (int i = 0; i < vector.length; i++) {
             result[i] = Complex.ZERO;
@@ -86,6 +170,7 @@ public class SimpleQuantumExecutionEnvironment {
     }
     
     private Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits) {
+     //   System.out.println("calcstepmatrix, nq = "+nQubits+", gates = "+gates);
         Complex[][] a = new Complex[1][1];
         a[0][0] = Complex.ONE;
         int idx = 0;
@@ -101,12 +186,22 @@ public class SimpleQuantumExecutionEnvironment {
                 SingleQubitGate sqg = (SingleQubitGate)myGate;
                 a = tensor(a,sqg.getMatrix());
             }
+            if (myGate instanceof TwoQubitGate) {
+                TwoQubitGate tqg = (TwoQubitGate)myGate;
+                a = tensor (a, tqg.getMatrix());
+                idx++;
+            }
+            if (myGate instanceof PermutationGate) {
+                a = tensor (a, myGate.getMatrix());
+                idx = nQubits;
+            }
             idx++;
         }
+       // System.out.println("done calcstepmatrix, nq = "+nQubits+", dim = "+a.length);
         return a;
     }
     
-        private Complex[][] tensor(Complex[][] a, Complex[][] b) {
+    private Complex[][] tensor(Complex[][] a, Complex[][] b) {
         int d1 = a.length;
         int d2 = b.length;
         Complex[][] result = new Complex[d1 * d2][d1 * d2];
@@ -139,6 +234,36 @@ public class SimpleQuantumExecutionEnvironment {
         }
         return answer;
     }
+    
+    public Complex[][] createPermutationMatrix(int first, int second, int n) {
+        Complex[][] swapMatrix = new Swap().getMatrix();
+        Complex[][] iMatrix = new Identity().getMatrix();
+        Complex[][] answer = iMatrix;
+        int i = 1;
+        if (first == 0) {
+            answer = swapMatrix;
+            i++;
+        }
+        while (i < n) {
+            if (i == first) {
+                i++;
+                answer = tensor(answer, swapMatrix);
+            } else {
+                answer = tensor(answer, iMatrix);
+            }
+            i++;
+        }
+        return answer;
+    }
 
+    private void printMatrix(Complex[][] a) {
+        for (int i = 0; i < a.length; i++) {
+            StringBuffer sb = new StringBuffer();
+            for (int j = 0; j < a[i].length; j++) {
+                sb.append(a[i][j]).append("    ");
+            }
+            System.out.println("m["+i+"]: "+sb);
+        }
+    }
     
 }

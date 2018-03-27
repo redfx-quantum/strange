@@ -33,61 +33,84 @@ package com.gluonhq.strange.gate;
 
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  *
- * This class describe a Gate that operates on a single qubit only.
  * @author johan
  */
-public abstract class SingleQubitGate implements Gate {
-    
-    private int idx;
-    
-    public SingleQubitGate() {}
-    
-    public SingleQubitGate (int idx) {
-        this.idx = idx;
-    }
+public class PermutationGate implements Gate {
 
+    private int a;
+    private int b;
+    private int n;
+    
+    private Complex[][] m;
+    private List<Integer> affected = new LinkedList<>();
+    
+    public PermutationGate(int a, int b, int n) {
+        assert(a < n);
+        assert(b < n);
+        this.a = a;
+        this.b = b;
+        this.n = n;
+        int dim = 1 << n;
+        m = new Complex[dim][dim];
+        int amask = 1 << a;
+        int bmask = 1 << b;
+        for (int i = 0; i < dim; i++) {
+            int x = (amask & i) /amask;
+            int y = (bmask & i) /bmask;
+            if (x == y) {
+                for (int j = 0; j < dim; j++) {
+                    m[i][j] = (i ==j ? Complex.ONE : Complex.ZERO);
+                }
+            } else {
+                int flipped = ((i ^ amask) ^ bmask);
+                for (int j = 0; j < dim; j++) {
+                    m[i][j] = (j == flipped ? Complex.ONE : Complex.ZERO );
+                }
+            }
+        }
+        for (int i =0 ; i < n; i++) {
+            affected.add(i);
+        }
+    }
+    
     @Override
     public void setMainQubit(int idx) {
-        this.idx = idx;
-    }
-    
-    @Override
-    public void setAdditionalQubit(int idx, int cnt) {
-        throw new RuntimeException("A SingleQubitGate can not have additional qubits");
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-        
+    @Override
+    public void setAdditionalQubit(int idx, int cnt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     @Override
     public List<Integer> getAffectedQubitIndex() {
-        List<Integer> answer = new ArrayList<>(1);
-        answer.add(idx);
-        return answer;
+        return affected;
     }
-    
-    @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-    
+
     @Override
     public String getCaption() {
-        return getName();    
+        return "P";
     }
-    
+
+    @Override
+    public String getName() {
+        return "permutation gate";
+    }
+
     @Override
     public String getGroup() {
-        return "SingleQubit";
+        return "permutation";
     }
-    
-    public abstract Complex[][] getMatrix();
-    
-    @Override public String toString() {
-        return "Gate with index "+idx+" and caption "+getCaption();
+
+    @Override
+    public Complex[][] getMatrix() {
+        return m;
     }
     
 }
