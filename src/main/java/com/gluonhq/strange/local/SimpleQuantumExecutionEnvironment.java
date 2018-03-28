@@ -133,14 +133,14 @@ public class SimpleQuantumExecutionEnvironment {
 
                         PermutationGate pg2 = new PermutationGate(second+1, first, nqubit );
                         postPermutation.addGate(pg2);
-                          answer.add(0, postPermutation);
+                        answer.add(0, postPermutation);
                         answer.add(postPermutation);
-                        for (int i = second; i < first; i++) {
-                            Swap swap = new Swap(i, i+1);
-                            prePermutation.addGate(swap);
-                        }
-                        tqg.setMainQubit(first-1);
-                        tqg.setAdditionalQubit(first,0);
+//                        for (int i = second; i < first; i++) {
+//                            Swap swap = new Swap(i, i+1);
+//                            prePermutation.addGate(swap);
+//                        }
+                        tqg.setMainQubit(second);
+                        tqg.setAdditionalQubit(second+1,0);
                     }
                 }
             } else {

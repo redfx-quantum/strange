@@ -193,22 +193,22 @@ public class TwoQubitGateTests {
         assertTrue(qubits[2].measure()==1);
     }
     
-//    @Test
-//    public void swapGate202() {
-//        Program p = new Program(3);
-//        Step s0 = new Step();
-//        s0.addGate(new X(0));
-//        p.addStep(s0);
-//        Step s1 = new Step();
-//        s1.addGate(new Swap(2,0));
-//        p.addStep(s1);
-//        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-//        Result res = sqee.runProgram(p);
-//        Qubit[] qubits = res.getQubits();
-//        assertTrue(qubits.length == 3);
-//        assertTrue(qubits[0].measure()==0);
-//        assertTrue(qubits[1].measure()==0);
-//        assertTrue(qubits[2].measure()==1);
-//    }
-    
+    @Test
+    public void swapGate202() {
+        Program p = new Program(3);
+        Step s0 = new Step();
+        s0.addGate(new X(0));
+        p.addStep(s0);
+        Step s1 = new Step();
+        s1.addGate(new Swap(2,0));
+        p.addStep(s1);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result res = sqee.runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertTrue(qubits.length == 3);
+        assertTrue(qubits[0].measure()==0);
+        assertTrue(qubits[1].measure()==0);
+        assertTrue(qubits[2].measure()==1);
+    }
+
 }
