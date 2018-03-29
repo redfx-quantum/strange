@@ -13,7 +13,7 @@ Strange is distributed via the traditional Java distribution channels (e.g. mave
 Using gradle
 
 A typical build.gradle file looks as follows:
-```
+```gradle
 apply plugin: 'java'
 apply plugin: 'application'
 
@@ -30,7 +30,7 @@ mainClassName = 'SimpleStrangeDemo'
 ```
 
 The sample application contains a single Java file:
-```
+```java
 import com.gluonhq.strange.*;
 import com.gluonhq.strange.gate.*;
 import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
