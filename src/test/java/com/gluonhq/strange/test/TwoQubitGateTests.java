@@ -35,6 +35,7 @@ import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
+import com.gluonhq.strange.gate.Cnot;
 import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.Swap;
 import com.gluonhq.strange.gate.X;
@@ -209,6 +210,37 @@ public class TwoQubitGateTests {
         assertTrue(qubits[0].measure()==0);
         assertTrue(qubits[1].measure()==0);
         assertTrue(qubits[2].measure()==1);
+    }
+    
+    @Test
+    public void cnot01() {
+        Program p = new Program(2);
+        Step s0 = new Step();
+        s0.addGate(new Cnot(0,1));
+        p.addStep(s0);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result res = sqee.runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertTrue(qubits.length == 2);
+        assertTrue(qubits[0].measure()==0);
+        assertTrue(qubits[1].measure()==0);
+    }    
+    
+    @Test
+    public void cnotx01() {
+        Program p = new Program(2);
+        Step s0 = new Step();
+        s0.addGate(new X(0));
+        p.addStep(s0);
+        Step s1 = new Step();
+        s1.addGate(new Cnot(0,1));
+        p.addStep(s1);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result res = sqee.runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertTrue(qubits.length == 2);
+        assertTrue(qubits[0].measure()==1);
+        assertTrue(qubits[1].measure()==1);
     }
 
 }
