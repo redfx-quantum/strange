@@ -74,7 +74,42 @@ public class SingleQubitGateTests {
         Qubit[] qubits = res.getQubits();
         assertTrue(qubits[0].measure()==1);
     }    
-    
+        
+    @Test
+    public void simpleIXGate() {
+        Program p = new Program(2);
+        Step s = new Step();
+        s.addGate(new X(0));
+        p.addStep(s);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result res = sqee.runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertTrue(qubits[0].measure()==1);
+    }    
+            
+    @Test
+    public void simpleXIGate() {
+        Program p = new Program(2);
+        Step s = new Step();
+        s.addGate(new X(1));
+        p.addStep(s);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result res = sqee.runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertTrue(qubits[1].measure()==1);
+    }    
+               
+    @Test
+    public void simpleXIIGate() {
+        Program p = new Program(3);
+        Step s = new Step();
+        s.addGate(new X(2));
+        p.addStep(s);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result res = sqee.runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertTrue(qubits[2].measure()==1);
+    }    
     @Test
     public void simpleYGate() {
         Program p = new Program(1);

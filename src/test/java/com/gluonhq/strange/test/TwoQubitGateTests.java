@@ -225,7 +225,8 @@ public class TwoQubitGateTests {
         assertTrue(qubits[0].measure()==0);
         assertTrue(qubits[1].measure()==0);
     }    
-    
+      
+          
     @Test
     public void cnotx01() {
         Program p = new Program(2);
@@ -242,5 +243,75 @@ public class TwoQubitGateTests {
         assertTrue(qubits[0].measure()==1);
         assertTrue(qubits[1].measure()==1);
     }
+    
+    @Test
+    public void cnotx10() {
+        Program p = new Program(2);
+        Step s0 = new Step();
+        s0.addGate(new X(1));
+        p.addStep(s0);
+        Step s1 = new Step();
+        s1.addGate(new Cnot(1,0));
+        p.addStep(s1);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result res = sqee.runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertTrue(qubits.length == 2);
+        assertTrue(qubits[0].measure()==1);
+        assertTrue(qubits[1].measure()==1);
+    }
+    
+    @Test
+    public void cnotx02() {
+        Program p = new Program(3);
+        Step s0 = new Step();
+        s0.addGate(new X(0));
+        p.addStep(s0);
+        Step s1 = new Step();
+        s1.addGate(new Cnot(0,2));
+        p.addStep(s1);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result res = sqee.runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertTrue(qubits.length == 3);
+        assertTrue(qubits[0].measure()==1);
+        assertTrue(qubits[1].measure()==0);
+        assertTrue(qubits[2].measure()==1);
+    }
 
+    @Test
+    public void cnotx20() {
+        Program p = new Program(3);
+        Step s0 = new Step();
+        s0.addGate(new X(2));
+        p.addStep(s0);
+        Step s1 = new Step();
+        s1.addGate(new Cnot(2,0));
+        p.addStep(s1);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result res = sqee.runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertTrue(qubits.length == 3);
+        assertTrue(qubits[0].measure()==1);
+        assertTrue(qubits[1].measure()==0);
+        assertTrue(qubits[2].measure()==1);
+    }
+
+    @Test
+    public void cnotx21() {
+        Program p = new Program(3);
+        Step s0 = new Step();
+        s0.addGate(new X(2));
+        p.addStep(s0);
+        Step s1 = new Step();
+        s1.addGate(new Cnot(2,1));
+        p.addStep(s1);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result res = sqee.runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertTrue(qubits.length == 3);
+        assertTrue(qubits[0].measure()==0);
+        assertTrue(qubits[1].measure()==1);
+        assertTrue(qubits[2].measure()==1);
+    }
 }

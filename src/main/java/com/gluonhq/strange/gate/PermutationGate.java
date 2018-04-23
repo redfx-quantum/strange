@@ -113,4 +113,8 @@ public class PermutationGate implements Gate {
         return m;
     }
     
+    @Override
+    public String toString() {
+        return "Perm "+a+", "+b;
+    }
 }
