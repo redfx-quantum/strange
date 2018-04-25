@@ -36,7 +36,7 @@ package com.gluonhq.strange;
  * @author johan
  */
 public interface QuantumExecutionEnvironment {
-    
-        public void runProgram(Program p);
+
+    public Result runProgram(Program p);
 
 }

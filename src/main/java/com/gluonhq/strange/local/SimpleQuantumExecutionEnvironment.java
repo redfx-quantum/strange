@@ -34,6 +34,7 @@ package com.gluonhq.strange.local;
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
+import com.gluonhq.strange.QuantumExecutionEnvironment;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
@@ -51,8 +52,9 @@ import java.util.Optional;
  *
  * @author johan
  */
-public class SimpleQuantumExecutionEnvironment {
+public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
     
+    @Override
     public Result runProgram(Program p) {
         int nQubits = p.getNumberQubits();
         Qubit[] qubit = new Qubit[nQubits];
