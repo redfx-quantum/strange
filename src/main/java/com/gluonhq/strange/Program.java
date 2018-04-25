@@ -45,7 +45,7 @@ public class Program {
  
     private final int numberQubits;
     
-    private final ArrayList<Step> steps = new ArrayList();
+    private final ArrayList<Step> steps = new ArrayList<>();
     
     public Program(int nQubits) {
         this.numberQubits = nQubits;

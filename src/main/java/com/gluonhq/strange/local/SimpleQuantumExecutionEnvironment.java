@@ -96,13 +96,13 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
      * @param s
      * @return 
      */
-    private List<Step> decomposeStep (Step s, int nqubit) {
+    private List<Step> decomposeStep(Step s, int nqubit) {
         ArrayList<Step> answer = new ArrayList<>();
         answer.add(s);
         List<Gate> gates = s.getGates();
         if (gates.isEmpty()) return answer;
-        boolean notsimple = gates.stream().anyMatch(g -> (!(g instanceof SingleQubitGate)));
-        if (!notsimple) return answer;
+        boolean simple = gates.stream().allMatch(g -> g instanceof SingleQubitGate);
+        if (simple) return answer;
         // at least one non-singlequbitgate
        // System.out.println("Complex gates!");
         List<Gate> firstGates = new ArrayList<>();

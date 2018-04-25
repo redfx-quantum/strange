@@ -79,10 +79,7 @@ public abstract class TwoQubitGate implements Gate {
         
     @Override
     public List<Integer> getAffectedQubitIndex() {
-        List<Integer> answer = new ArrayList<>(1);
-        answer.add(first);
-        answer.add(second);
-        return answer;
+        return List.of(first, second);
     }
     
     @Override

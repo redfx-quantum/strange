@@ -66,12 +66,9 @@ public abstract class SingleQubitGate implements Gate {
         throw new RuntimeException("A SingleQubitGate can not have additional qubits");
     }
 
-        
     @Override
     public List<Integer> getAffectedQubitIndex() {
-        List<Integer> answer = new ArrayList<>(1);
-        answer.add(idx);
-        return answer;
+        return List.of(idx);
     }
     
     @Override

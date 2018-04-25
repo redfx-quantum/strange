@@ -39,15 +39,15 @@ import com.gluonhq.strange.gate.Cnot;
 import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.Swap;
 import com.gluonhq.strange.gate.X;
-import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
  *
  * @author johan
  */
-public class TwoQubitGateTests {
+public class TwoQubitGateTests extends BaseGateTests {
     
     @Test
     public void empty() {
@@ -60,12 +60,11 @@ public class TwoQubitGateTests {
         s0.addGate(new Identity(0));
         s0.addGate(new Identity(1));
         p.addStep(s0);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 2);
-        assertTrue(qubits[0].measure()==0);
-        assertTrue(qubits[1].measure()==0);
+        assertEquals(2, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
     }
     
     @Test
@@ -78,12 +77,11 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Swap(0,1));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 2);
-        assertTrue(qubits[0].measure()==0);
-        assertTrue(qubits[1].measure()==0);
+        assertEquals(2, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
     }    
          
     @Test
@@ -96,12 +94,11 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Swap(0,1));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 2);
-        assertTrue(qubits[0].measure()==1);
-        assertTrue(qubits[1].measure()==0);
+        assertEquals(2, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
     }
     
     @Test
@@ -114,12 +111,11 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Swap(0,1));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 2);
-        assertTrue(qubits[1].measure()==1);
-        assertTrue(qubits[0].measure()==0);
+        assertEquals(2, qubits.length);
+        assertEquals(1, qubits[1].measure());
+        assertEquals(0, qubits[0].measure());
     }
     
     @Test
@@ -132,12 +128,11 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Swap(0,1));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 2);
-        assertTrue(qubits[0].measure()==1);
-        assertTrue(qubits[1].measure()==1);
+        assertEquals(2, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
     }    
     
     @Test
@@ -149,13 +144,12 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Swap(0,1));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 3);
-        assertTrue(qubits[0].measure()==0);
-        assertTrue(qubits[1].measure()==1);
-        assertTrue(qubits[2].measure()==0);
+        assertEquals(3, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+        assertEquals(0, qubits[2].measure());
     }  
         
     @Test
@@ -167,13 +161,12 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Swap(1,2));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 3);
-        assertTrue(qubits[0].measure()==0);
-        assertTrue(qubits[1].measure()==0);
-        assertTrue(qubits[2].measure()==1);
+        assertEquals(3, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
     }
     
     @Test
@@ -185,13 +178,12 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Swap(0,2));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 3);
-        assertTrue(qubits[0].measure()==0);
-        assertTrue(qubits[1].measure()==0);
-        assertTrue(qubits[2].measure()==1);
+        assertEquals(3, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
     }
     
     @Test
@@ -203,13 +195,12 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Swap(2,0));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 3);
-        assertTrue(qubits[0].measure()==0);
-        assertTrue(qubits[1].measure()==0);
-        assertTrue(qubits[2].measure()==1);
+        assertEquals(3, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
     }
     
     @Test
@@ -218,12 +209,11 @@ public class TwoQubitGateTests {
         Step s0 = new Step();
         s0.addGate(new Cnot(0,1));
         p.addStep(s0);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 2);
-        assertTrue(qubits[0].measure()==0);
-        assertTrue(qubits[1].measure()==0);
+        assertEquals(2, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
     }    
       
           
@@ -236,12 +226,11 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Cnot(0,1));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 2);
-        assertTrue(qubits[0].measure()==1);
-        assertTrue(qubits[1].measure()==1);
+        assertEquals(2, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
     }
     
     @Test
@@ -253,12 +242,11 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Cnot(1,0));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 2);
-        assertTrue(qubits[0].measure()==1);
-        assertTrue(qubits[1].measure()==1);
+        assertEquals(2, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
     }
     
     @Test
@@ -270,13 +258,12 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Cnot(0,2));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 3);
-        assertTrue(qubits[0].measure()==1);
-        assertTrue(qubits[1].measure()==0);
-        assertTrue(qubits[2].measure()==1);
+        assertEquals(3, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
     }
 
     @Test
@@ -288,13 +275,12 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Cnot(2,0));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 3);
-        assertTrue(qubits[0].measure()==1);
-        assertTrue(qubits[1].measure()==0);
-        assertTrue(qubits[2].measure()==1);
+        assertEquals(3, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
     }
 
     @Test
@@ -306,12 +292,11 @@ public class TwoQubitGateTests {
         Step s1 = new Step();
         s1.addGate(new Cnot(2,1));
         p.addStep(s1);
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertTrue(qubits.length == 3);
-        assertTrue(qubits[0].measure()==0);
-        assertTrue(qubits[1].measure()==1);
-        assertTrue(qubits[2].measure()==1);
+        assertEquals(3, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
     }
 }
