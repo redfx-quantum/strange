@@ -60,6 +60,11 @@ public abstract class TwoQubitGate implements Gate {
     }
     
     @Override
+    public int getMainQubitIndex() {
+        return this.first;
+    }
+    
+    @Override
     public void setAdditionalQubit(int idx, int cnt) {
         this.second = idx;
     }

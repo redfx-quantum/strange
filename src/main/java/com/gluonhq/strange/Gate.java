@@ -46,6 +46,12 @@ public interface Gate {
      */
     public void setMainQubit(int idx);
     
+    /**
+     * Return the index of the main qubit this gate acts upon
+     * @return the index of the main qubit
+     */
+    public int getMainQubitIndex();
+    
     public void setAdditionalQubit(int idx, int cnt);
     
     public List<Integer> getAffectedQubitIndex();

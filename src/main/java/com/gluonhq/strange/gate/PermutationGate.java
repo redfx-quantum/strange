@@ -49,6 +49,11 @@ public class PermutationGate implements Gate {
     private Complex[][] m;
     private List<Integer> affected = new LinkedList<>();
     
+    @Override
+    public int getMainQubitIndex() {
+        return this.a;
+    }
+    
     public PermutationGate(int a, int b, int n) {
         assert(a < n);
         assert(b < n);
