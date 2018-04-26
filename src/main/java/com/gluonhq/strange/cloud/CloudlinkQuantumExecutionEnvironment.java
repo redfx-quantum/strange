@@ -78,6 +78,7 @@ public class CloudlinkQuantumExecutionEnvironment implements QuantumExecutionEnv
 
         return Json.createObjectBuilder()
                 .add("caption", gate.getCaption())
+                .add("group", gate.getGroup())
                 .add("affectedQubitIndex", jsonAffectedQubitIndex.build())
                 .build();
     }
