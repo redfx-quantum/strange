@@ -33,7 +33,7 @@ package com.gluonhq.strange.gate;
 
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,7 +68,7 @@ public abstract class SingleQubitGate implements Gate {
 
     @Override
     public List<Integer> getAffectedQubitIndex() {
-        return List.of(idx);
+        return Collections.singletonList(idx);
     }
     
     @Override

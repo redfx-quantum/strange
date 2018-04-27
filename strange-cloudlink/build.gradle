@@ -6,4 +6,5 @@ repositories {
 
 dependencies {
     compile 'javax:javaee-api:8.0'
+    compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.5'
 }

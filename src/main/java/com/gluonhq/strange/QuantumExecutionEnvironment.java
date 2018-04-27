@@ -31,12 +31,14 @@
  */
 package com.gluonhq.strange;
 
+import com.gluonhq.connect.GluonObservableObject;
+
 /**
  *
  * @author johan
  */
 public interface QuantumExecutionEnvironment {
 
-    public Result runProgram(Program p);
+    public GluonObservableObject<Result> runProgram(Program p);
 
 }
