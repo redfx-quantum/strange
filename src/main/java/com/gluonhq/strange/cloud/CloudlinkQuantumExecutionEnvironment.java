@@ -14,13 +14,19 @@ import javax.json.JsonObject;
 
 public class CloudlinkQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
 
+    private final String functionName;
+
+    public CloudlinkQuantumExecutionEnvironment(String functionName) {
+        this.functionName = functionName;
+    }
+
     @Override
     public GluonObservableObject<Result> runProgram(Program p) {
         String serializedProgram = serializeProgram(p).toString();
 
         System.out.println("serializedProgram = " + serializedProgram);
 
-        return RemoteFunctionBuilder.create("executeProgram")
+        return RemoteFunctionBuilder.create(functionName)
                 .param("program", serializedProgram)
                 .cachingEnabled(false)
                 .object()

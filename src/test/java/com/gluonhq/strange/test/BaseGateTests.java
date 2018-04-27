@@ -29,7 +29,7 @@ public class BaseGateTests {
 
         CompletableFuture<Result> futureResult = new CompletableFuture<>();
         Platform.runLater(() -> {
-            QuantumExecutionEnvironment qee = new CloudlinkQuantumExecutionEnvironment();
+            QuantumExecutionEnvironment qee = new CloudlinkQuantumExecutionEnvironment("executeProgram");
             GluonObservableObject<Result> result = qee.runProgram(program);
             if (result.get() != null) {
                 futureResult.complete(result.get());
