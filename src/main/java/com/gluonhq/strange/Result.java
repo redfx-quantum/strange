@@ -59,6 +59,9 @@ public class Result {
     }
     
     public Qubit[] getQubits() {
+        if (this.qubits != null) {
+            return this.qubits;
+        }
         Qubit[] answer = new Qubit[nqubits];
         double[] d = calculateQubitStatesFromVector(intermediates[nsteps-1]);
         for (int i = 0; i < answer.length; i++) {
