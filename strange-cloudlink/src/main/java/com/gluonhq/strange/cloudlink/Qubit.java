@@ -29,38 +29,53 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.gluonhq.strange.cloudlink;
 
 /**
  *
- * A Quantum Program.
- * A Program contains a list of <code>Step</code>s that are executed sequentially 
- * by a QuantumExecutionEnvironment.
  * @author johan
  */
-public class Program {
- 
-    private final int numberQubits;
+public class Qubit {
     
-    private final ArrayList<Step> steps = new ArrayList<>();
+    double theta = 0;
+    double phi = 0;
     
-    public Program(int nQubits) {
-        this.numberQubits = nQubits;
+    boolean measured = false;
+    boolean measuredValue;
+    
+    private double prob;
+    
+    private double calculate0() {
+        return Math.cos(theta/2);
     }
     
-    public void addStep (Step s) {
-        steps.add(s);
+    private Complex calculate1() {
+        double s = Math.sin(theta/2);
+        return new Complex(Math.cos(phi)*s, Math.sin(phi)*s);
     }
     
-    public List<Step> getSteps() {
-        return this.steps;
+    public void setProbability(double p) {
+        this.prob = p;
     }
     
-    public int getNumberQubits() {
-        return this.numberQubits;
+    /**
+     * Performs a measurement on this qubit.
+     * @return <code>0</code> or <code>1</code>
+     */
+    public int measure() {
+        if (measured) {
+            throw new IllegalStateException("Can't measure an already-measured qubit");
+        }
+        measured = true;
+        measuredValue = Math.random()< prob;
+        return measuredValue ? 1 : 0;
     }
+    
+    public double getProbability() {
+        return this.prob;
+    }
+    
+    
+    
     
 }

@@ -29,38 +29,70 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange;
+package com.gluonhq.strange.cloudlink;
 
-import java.util.ArrayList;
-import java.util.List;
+public class Complex {
+    
+    public static final Complex ZERO = new Complex(0.d, 0.d);
+    public static final Complex ONE = new Complex(1.d, 0.d);
+    public static final Complex I = new Complex(0.d, 1.d);
+    
+    private static final double HV = 1./Math.sqrt(2.);
 
-/**
- *
- * A Quantum Program.
- * A Program contains a list of <code>Step</code>s that are executed sequentially 
- * by a QuantumExecutionEnvironment.
- * @author johan
- */
-public class Program {
- 
-    private final int numberQubits;
+    public static final Complex HC = new Complex(HV, 0.d);
+    public static final Complex HCN = new Complex(-HV, 0.d);
     
-    private final ArrayList<Step> steps = new ArrayList<>();
+    public final double r;
+    public final double i;
     
-    public Program(int nQubits) {
-        this.numberQubits = nQubits;
+    /**
+     * Create a complex number with a real component only
+     * @param r the real component
+     */
+    public Complex(double r) {
+        this(r, 0.d);
     }
     
-    public void addStep (Step s) {
-        steps.add(s);
+    /**
+     * Create a complex number with a real and imaginary component
+     * @param r the real component
+     * @param i the imaginary component
+     */
+    public Complex(double r, double i) {
+        this.r = r;
+        this.i = i;
     }
     
-    public List<Step> getSteps() {
-        return this.steps;
+    public Complex add(Complex b) {
+        double nr = this.r + b.r;
+        double ni = this.i + b.i;
+        return new Complex(nr, ni);
     }
     
-    public int getNumberQubits() {
-        return this.numberQubits;
+    public Complex mul(Complex b) {
+        double nr = (this.r * b.r) - (this.i * b.i);
+        double ni = (this.r * b.i) + (this.i * b.r);
+        return new Complex(nr, ni);
     }
     
+    public Complex mul(double b) {
+        return new Complex(this.r * b, this.i * b);
+    }
+    
+    public double abssqr() {
+        return (this.r*this.r + this.i*this.i);
+    }
+
+    public double getR() {
+        return r;
+    }
+
+    public double getI() {
+        return i;
+    }
+
+    @Override
+    public String toString() {
+        return "("+this.r+", "+this.i+")";
+    }
 }

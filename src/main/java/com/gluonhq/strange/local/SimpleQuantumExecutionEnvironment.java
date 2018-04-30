@@ -43,10 +43,12 @@ import com.gluonhq.strange.gate.PermutationGate;
 import com.gluonhq.strange.gate.SingleQubitGate;
 import com.gluonhq.strange.gate.Swap;
 import com.gluonhq.strange.gate.TwoQubitGate;
+
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -55,7 +57,7 @@ import java.util.Optional;
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
     
     @Override
-    public Result runProgram(Program p) {
+    public Future<Result> runProgram(Program p) {
         int nQubits = p.getNumberQubits();
         Qubit[] qubit = new Qubit[nQubits];
         for (int i = 0; i < nQubits; i++) {
@@ -83,8 +85,12 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             qubit[i].setProbability(qp[i]);
         }
         Result result = new Result(qubit, probs);
-        return result;
+
+        CompletableFuture<Result> futureResult = new CompletableFuture<>();
+        futureResult.complete(result);
+        return futureResult;
     }
+
     private void printProbs(Complex[] p) {
         System.out.println("\n");
         for (int i = 0; i < p.length; i++) {
@@ -96,13 +102,13 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
      * @param s
      * @return 
      */
-    private List<Step> decomposeStep (Step s, int nqubit) {
+    private List<Step> decomposeStep(Step s, int nqubit) {
         ArrayList<Step> answer = new ArrayList<>();
         answer.add(s);
         List<Gate> gates = s.getGates();
         if (gates.isEmpty()) return answer;
-        boolean notsimple = gates.stream().anyMatch(g -> (!(g instanceof SingleQubitGate)));
-        if (!notsimple) return answer;
+        boolean simple = gates.stream().allMatch(g -> g instanceof SingleQubitGate);
+        if (simple) return answer;
         // at least one non-singlequbitgate
        // System.out.println("Complex gates!");
         List<Gate> firstGates = new ArrayList<>();

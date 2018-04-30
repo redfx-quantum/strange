@@ -31,9 +31,8 @@
  */
 package com.gluonhq.strange.gate;
 
-import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -79,10 +78,7 @@ public abstract class TwoQubitGate implements Gate {
         
     @Override
     public List<Integer> getAffectedQubitIndex() {
-        List<Integer> answer = new ArrayList<>(1);
-        answer.add(first);
-        answer.add(second);
-        return answer;
+        return Arrays.asList(first, second);
     }
     
     @Override

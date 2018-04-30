@@ -33,7 +33,7 @@ package com.gluonhq.strange.gate;
 
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -66,12 +66,9 @@ public abstract class SingleQubitGate implements Gate {
         throw new RuntimeException("A SingleQubitGate can not have additional qubits");
     }
 
-        
     @Override
     public List<Integer> getAffectedQubitIndex() {
-        List<Integer> answer = new ArrayList<>(1);
-        answer.add(idx);
-        return answer;
+        return Collections.singletonList(idx);
     }
     
     @Override

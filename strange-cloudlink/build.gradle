@@ -1,0 +1,24 @@
+apply plugin: 'war'
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    payara
+}
+
+dependencies {
+    providedCompile 'javax:javaee-api:7.0'
+    providedCompile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.5'
+
+    payara 'fish.payara.extras:payara-micro:4.1.2.181'
+}
+
+mainClassName = 'fish.payara.micro.PayaraMicro'
+
+run {
+    classpath = project.files(configurations.payara.resolve())
+    args '--deploy', war.archivePath.absolutePath, '--nocluster'
+}

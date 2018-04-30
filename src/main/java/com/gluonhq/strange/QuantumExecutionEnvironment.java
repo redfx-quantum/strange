@@ -31,12 +31,14 @@
  */
 package com.gluonhq.strange;
 
+import java.util.concurrent.Future;
+
 /**
  *
  * @author johan
  */
 public interface QuantumExecutionEnvironment {
 
-    public Result runProgram(Program p);
+    Future<Result> runProgram(Program p);
 
 }

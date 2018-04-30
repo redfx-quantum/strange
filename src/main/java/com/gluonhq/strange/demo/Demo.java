@@ -39,10 +39,11 @@ import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.*;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 public class Demo {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Hello, demo");
         Program p = new Program(4);
         Step s = new Step();
@@ -51,7 +52,7 @@ public class Demo {
         s.addGate(new Z(3));
         p.addStep(s);
         SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p);
+        Result res = sqee.runProgram(p).get();
         Qubit[] qubits = res.getQubits();
         Arrays.asList(qubits).forEach(q -> System.out.println(q.measure()));
         Arrays.asList(res.getProbability()).forEach(c -> System.out.println("prob = "+c));

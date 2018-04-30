@@ -13,10 +13,16 @@ mainClassName = 'com.gluonhq.strange.demo.Demo'
 
 repositories {
     mavenCentral()
+    maven {
+        url 'http://nexus.gluonhq.com/nexus/content/repositories/releases/'
+    }
 }
 
 dependencies {
-    testCompile "junit:junit:4.2"
+    compile "com.gluonhq:charm-cloudlink-client:4.4.7"
+    runtime "com.gluonhq:charm-down-plugin-storage-desktop:3.6.0"
+
+    testCompile "junit:junit:4.12"
 }
 
 task sourceJar(type: Jar) {
