@@ -13,7 +13,11 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CloudlinkQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
 
@@ -24,7 +28,35 @@ public class CloudlinkQuantumExecutionEnvironment implements QuantumExecutionEnv
     }
 
     @Override
-    public Future<Result> runProgram(Program p) {
+    public Result runProgram(Program p) {
+        Future<Result> f = doRunProgram(p);
+        try {
+            return f.get();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void runProgram(Program p, Consumer<Result> resultConsumer) {
+        String serializedProgram = serializeProgram(p).toString();
+
+        CompletableFuture<Result> futureResult = new CompletableFuture<>();
+
+        GluonObservableObject<Result> result = RemoteFunctionBuilder.create(functionName)
+                .param("program", serializedProgram)
+                .cachingEnabled(false)
+                .object()
+                .call(new ResultConverter());
+         result.stateProperty().addListener((obs, ov, nv) -> {
+            if (nv == ConnectState.SUCCEEDED) {
+                resultConsumer.accept(result.get());
+            }
+         });
+    }
+    
+    private Future<Result> doRunProgram(Program p) {
         String serializedProgram = serializeProgram(p).toString();
 
         CompletableFuture<Result> futureResult = new CompletableFuture<>();
@@ -81,4 +113,5 @@ public class CloudlinkQuantumExecutionEnvironment implements QuantumExecutionEnv
                 .add("affectedQubitIndex", jsonAffectedQubitIndex.build())
                 .build();
     }
+
 }

@@ -39,6 +39,7 @@ public class Result {
     
     private final Qubit[] qubits;
     private final Complex[] probability;
+    private Complex[][] intermediates;
     
     public Result(Qubit[] q, Complex[] p) {
         this.qubits = q;
@@ -51,6 +52,10 @@ public class Result {
     
     public Complex[] getProbability() {
         return this.probability;
+    }
+    
+    public Complex[] getIntermediateProbability(int step) {
+        return intermediates[step];
     }
     
 }

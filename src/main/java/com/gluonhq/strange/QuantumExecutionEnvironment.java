@@ -32,6 +32,7 @@
 package com.gluonhq.strange;
 
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 /**
  *
@@ -39,6 +40,10 @@ import java.util.concurrent.Future;
  */
 public interface QuantumExecutionEnvironment {
 
-    Future<Result> runProgram(Program p);
+    Result runProgram(Program p);
+    
+    void runProgram (Program p, Consumer<Result> result);
+    
+   // Future<Result> runProgram(Program p);
 
 }

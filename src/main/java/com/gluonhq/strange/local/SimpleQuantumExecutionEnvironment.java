@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 /**
  *
@@ -57,7 +58,7 @@ import java.util.concurrent.Future;
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
     
     @Override
-    public Future<Result> runProgram(Program p) {
+    public Result runProgram(Program p) {
         int nQubits = p.getNumberQubits();
         Qubit[] qubit = new Qubit[nQubits];
         for (int i = 0; i < nQubits; i++) {
@@ -85,10 +86,18 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             qubit[i].setProbability(qp[i]);
         }
         Result result = new Result(qubit, probs);
-
-        CompletableFuture<Result> futureResult = new CompletableFuture<>();
-        futureResult.complete(result);
-        return futureResult;
+        return result;
+    }
+    
+    @Override
+    public void runProgram(Program p, Consumer<Result> result) {
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                result.accept(runProgram(p));
+            }
+        };
+        t.start();
     }
 
     private void printProbs(Complex[] p) {

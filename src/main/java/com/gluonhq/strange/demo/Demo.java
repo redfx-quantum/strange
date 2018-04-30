@@ -52,7 +52,7 @@ public class Demo {
         s.addGate(new Z(3));
         p.addStep(s);
         SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result res = sqee.runProgram(p).get();
+        Result res = sqee.runProgram(p);
         Qubit[] qubits = res.getQubits();
         Arrays.asList(qubits).forEach(q -> System.out.println(q.measure()));
         Arrays.asList(res.getProbability()).forEach(c -> System.out.println("prob = "+c));
