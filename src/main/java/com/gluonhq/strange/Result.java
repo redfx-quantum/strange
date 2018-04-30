@@ -31,31 +31,70 @@
  */
 package com.gluonhq.strange;
 
+import java.util.Arrays;
+
 /**
  *
  * @author johan
  */
 public class Result {
     
-    private final Qubit[] qubits;
-    private final Complex[] probability;
-    private Complex[][] intermediates;
+    private int nqubits;
+    private int nsteps;
     
+    private Qubit[] qubits;
+    private Complex[] probability;
+    private Complex[][] intermediates;
+ 
+    public Result(int nqubits, int steps) {
+        assert(steps > 0);
+        this.nqubits = nqubits;
+        this.nsteps = steps;
+        intermediates = new Complex[steps][];
+    }
+
     public Result(Qubit[] q, Complex[] p) {
         this.qubits = q;
         this.probability = p;
     }
     
     public Qubit[] getQubits() {
-        return this.qubits;
+        Qubit[] answer = new Qubit[nqubits];
+        double[] d = calculateQubitStatesFromVector(intermediates[nsteps-1]);
+        for (int i = 0; i < answer.length; i++) {
+            answer[i] = new Qubit();
+            answer[i].setProbability(d[i]);
+        }
+        return answer;
     }
     
     public Complex[] getProbability() {
         return this.probability;
     }
     
+    public void setIntermediateProbability(int step, Complex[] p) {
+        System.out.println("set ip for step "+step+" to "+Arrays.asList(p));
+        this.intermediates[step] = p;
+    }
+    
     public Complex[] getIntermediateProbability(int step) {
         return intermediates[step];
     }
     
+    private double[] calculateQubitStatesFromVector(Complex[] vectorresult) {
+        int nq = (int) Math.round(Math.log(vectorresult.length) / Math.log(2));
+        double[] answer = new double[nq];
+        int ressize = 1 << nq;
+        for (int i = 0; i < nq; i++) {
+            int pw = i;//nq - i - 1;
+            int div = 1 << pw;
+            for (int j = 0; j < ressize; j++) {
+                int p1 = j / div;
+                if (p1 % 2 == 1) {
+                    answer[i] = answer[i] + vectorresult[j].abssqr();
+                }
+            }
+        }
+        return answer;
+    }
 }

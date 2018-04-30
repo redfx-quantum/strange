@@ -52,6 +52,7 @@ public class Program {
     }
     
     public void addStep (Step s) {
+        s.setIndex(steps.size());
         steps.add(s);
     }
     

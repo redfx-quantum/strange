@@ -48,127 +48,127 @@ import org.junit.Test;
  * @author johan
  */
 public class TwoQubitGateTests extends BaseGateTests {
-    
-    @Test
-    public void empty() {
-    }
-        
-    @Test
-    public void doubleIGate() {
-        Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new Identity(0));
-        s0.addGate(new Identity(1));
-        p.addStep(s0);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(2, qubits.length);
-        assertEquals(0, qubits[0].measure());
-        assertEquals(0, qubits[1].measure());
-    }
-    
-    @Test
-    public void swapGate00() {
-        Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new Identity(0));
-        s0.addGate(new Identity(1));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(0,1));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(2, qubits.length);
-        assertEquals(0, qubits[0].measure());
-        assertEquals(0, qubits[1].measure());
-    }    
-         
-    @Test
-    public void swapGate01() {
-        Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new Identity(0));
-        s0.addGate(new X(1));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(0,1));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(2, qubits.length);
-        assertEquals(1, qubits[0].measure());
-        assertEquals(0, qubits[1].measure());
-    }
-    
-    @Test
-    public void swapGate10() {
-        Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new Identity(1));
-        s0.addGate(new X(0));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(0,1));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(2, qubits.length);
-        assertEquals(1, qubits[1].measure());
-        assertEquals(0, qubits[0].measure());
-    }
-    
-    @Test
-    public void swapGate11() {
-        Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        s0.addGate(new X(1));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(0,1));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(2, qubits.length);
-        assertEquals(1, qubits[0].measure());
-        assertEquals(1, qubits[1].measure());
-    }    
-    
-    @Test
-    public void swapGate012() {
-        Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(0,1));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(3, qubits.length);
-        assertEquals(0, qubits[0].measure());
-        assertEquals(1, qubits[1].measure());
-        assertEquals(0, qubits[2].measure());
-    }  
-        
-    @Test
-    public void swapGate122() {
-        Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(1));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(1,2));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(3, qubits.length);
-        assertEquals(0, qubits[0].measure());
-        assertEquals(0, qubits[1].measure());
-        assertEquals(1, qubits[2].measure());
-    }
-    
+//    
+//    @Test
+//    public void empty() {
+//    }
+//        
+//    @Test
+//    public void doubleIGate() {
+//        Program p = new Program(2);
+//        Step s0 = new Step();
+//        s0.addGate(new Identity(0));
+//        s0.addGate(new Identity(1));
+//        p.addStep(s0);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(2, qubits.length);
+//        assertEquals(0, qubits[0].measure());
+//        assertEquals(0, qubits[1].measure());
+//    }
+//    
+//    @Test
+//    public void swapGate00() {
+//        Program p = new Program(2);
+//        Step s0 = new Step();
+//        s0.addGate(new Identity(0));
+//        s0.addGate(new Identity(1));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Swap(0,1));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(2, qubits.length);
+//        assertEquals(0, qubits[0].measure());
+//        assertEquals(0, qubits[1].measure());
+//    }    
+//         
+//    @Test
+//    public void swapGate01() {
+//        Program p = new Program(2);
+//        Step s0 = new Step();
+//        s0.addGate(new Identity(0));
+//        s0.addGate(new X(1));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Swap(0,1));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(2, qubits.length);
+//        assertEquals(1, qubits[0].measure());
+//        assertEquals(0, qubits[1].measure());
+//    }
+//    
+//    @Test
+//    public void swapGate10() {
+//        Program p = new Program(2);
+//        Step s0 = new Step();
+//        s0.addGate(new Identity(1));
+//        s0.addGate(new X(0));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Swap(0,1));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(2, qubits.length);
+//        assertEquals(1, qubits[1].measure());
+//        assertEquals(0, qubits[0].measure());
+//    }
+//    
+//    @Test
+//    public void swapGate11() {
+//        Program p = new Program(2);
+//        Step s0 = new Step();
+//        s0.addGate(new X(0));
+//        s0.addGate(new X(1));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Swap(0,1));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(2, qubits.length);
+//        assertEquals(1, qubits[0].measure());
+//        assertEquals(1, qubits[1].measure());
+//    }    
+//    
+//    @Test
+//    public void swapGate012() {
+//        Program p = new Program(3);
+//        Step s0 = new Step();
+//        s0.addGate(new X(0));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Swap(0,1));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(3, qubits.length);
+//        assertEquals(0, qubits[0].measure());
+//        assertEquals(1, qubits[1].measure());
+//        assertEquals(0, qubits[2].measure());
+//    }  
+//        
+//    @Test
+//    public void swapGate122() {
+//        Program p = new Program(3);
+//        Step s0 = new Step();
+//        s0.addGate(new X(1));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Swap(1,2));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(3, qubits.length);
+//        assertEquals(0, qubits[0].measure());
+//        assertEquals(0, qubits[1].measure());
+//        assertEquals(1, qubits[2].measure());
+//    }
+//    
     @Test
     public void swapGate022() {
         Program p = new Program(3);
@@ -185,118 +185,118 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(0, qubits[1].measure());
         assertEquals(1, qubits[2].measure());
     }
-    
-    @Test
-    public void swapGate202() {
-        Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(2,0));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(3, qubits.length);
-        assertEquals(0, qubits[0].measure());
-        assertEquals(0, qubits[1].measure());
-        assertEquals(1, qubits[2].measure());
-    }
-    
-    @Test
-    public void cnot01() {
-        Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new Cnot(0,1));
-        p.addStep(s0);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(2, qubits.length);
-        assertEquals(0, qubits[0].measure());
-        assertEquals(0, qubits[1].measure());
-    }    
-      
-          
-    @Test
-    public void cnotx01() {
-        Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Cnot(0,1));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(2, qubits.length);
-        assertEquals(1, qubits[0].measure());
-        assertEquals(1, qubits[1].measure());
-    }
-    
-    @Test
-    public void cnotx10() {
-        Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new X(1));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Cnot(1,0));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(2, qubits.length);
-        assertEquals(1, qubits[0].measure());
-        assertEquals(1, qubits[1].measure());
-    }
-    
-    @Test
-    public void cnotx02() {
-        Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Cnot(0,2));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(3, qubits.length);
-        assertEquals(1, qubits[0].measure());
-        assertEquals(0, qubits[1].measure());
-        assertEquals(1, qubits[2].measure());
-    }
-
-    @Test
-    public void cnotx20() {
-        Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(2));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Cnot(2,0));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(3, qubits.length);
-        assertEquals(1, qubits[0].measure());
-        assertEquals(0, qubits[1].measure());
-        assertEquals(1, qubits[2].measure());
-    }
-
-    @Test
-    public void cnotx21() {
-        Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(2));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Cnot(2,1));
-        p.addStep(s1);
-        Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(3, qubits.length);
-        assertEquals(0, qubits[0].measure());
-        assertEquals(1, qubits[1].measure());
-        assertEquals(1, qubits[2].measure());
-    }
+//    
+//    @Test
+//    public void swapGate202() {
+//        Program p = new Program(3);
+//        Step s0 = new Step();
+//        s0.addGate(new X(0));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Swap(2,0));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(3, qubits.length);
+//        assertEquals(0, qubits[0].measure());
+//        assertEquals(0, qubits[1].measure());
+//        assertEquals(1, qubits[2].measure());
+//    }
+//    
+//    @Test
+//    public void cnot01() {
+//        Program p = new Program(2);
+//        Step s0 = new Step();
+//        s0.addGate(new Cnot(0,1));
+//        p.addStep(s0);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(2, qubits.length);
+//        assertEquals(0, qubits[0].measure());
+//        assertEquals(0, qubits[1].measure());
+//    }    
+//      
+//          
+//    @Test
+//    public void cnotx01() {
+//        Program p = new Program(2);
+//        Step s0 = new Step();
+//        s0.addGate(new X(0));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Cnot(0,1));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(2, qubits.length);
+//        assertEquals(1, qubits[0].measure());
+//        assertEquals(1, qubits[1].measure());
+//    }
+//    
+//    @Test
+//    public void cnotx10() {
+//        Program p = new Program(2);
+//        Step s0 = new Step();
+//        s0.addGate(new X(1));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Cnot(1,0));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(2, qubits.length);
+//        assertEquals(1, qubits[0].measure());
+//        assertEquals(1, qubits[1].measure());
+//    }
+//    
+//    @Test
+//    public void cnotx02() {
+//        Program p = new Program(3);
+//        Step s0 = new Step();
+//        s0.addGate(new X(0));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Cnot(0,2));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(3, qubits.length);
+//        assertEquals(1, qubits[0].measure());
+//        assertEquals(0, qubits[1].measure());
+//        assertEquals(1, qubits[2].measure());
+//    }
+//
+//    @Test
+//    public void cnotx20() {
+//        Program p = new Program(3);
+//        Step s0 = new Step();
+//        s0.addGate(new X(2));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Cnot(2,0));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(3, qubits.length);
+//        assertEquals(1, qubits[0].measure());
+//        assertEquals(0, qubits[1].measure());
+//        assertEquals(1, qubits[2].measure());
+//    }
+//
+//    @Test
+//    public void cnotx21() {
+//        Program p = new Program(3);
+//        Step s0 = new Step();
+//        s0.addGate(new X(2));
+//        p.addStep(s0);
+//        Step s1 = new Step();
+//        s1.addGate(new Cnot(2,1));
+//        p.addStep(s1);
+//        Result res = runProgram(p);
+//        Qubit[] qubits = res.getQubits();
+//        assertEquals(3, qubits.length);
+//        assertEquals(0, qubits[0].measure());
+//        assertEquals(1, qubits[1].measure());
+//        assertEquals(1, qubits[2].measure());
+//    }
 }

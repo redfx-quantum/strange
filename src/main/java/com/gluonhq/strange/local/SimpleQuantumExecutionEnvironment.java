@@ -77,15 +77,23 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         }
        System.out.println("stepsize "+steps.size()+" and simplestepsize = "+simpleSteps.size());
        printProbs(probs);
+       Result result = new Result(nQubits, steps.size());
+     //  int idx = 0;
         for (Step step: simpleSteps) {
             probs = applyStep(step, probs, qubit);
-//            printProbs(probs);
+            int idx = step.getComplexStep();
+            if (idx > -1)  {
+            result.setIntermediateProbability(idx, probs);
+            } else {
+                System.out.println("don't set intermediates ");
+            }
+         //   idx++;
         }
         double[] qp = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < nQubits; i++) {
             qubit[i].setProbability(qp[i]);
         }
-        Result result = new Result(qubit, probs);
+    //    Result result = new Result(qubit, probs);
         return result;
     }
     
@@ -134,28 +142,38 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                     if (first == second) throw new RuntimeException ("Wrong gate, first == second for "+gate);
                     if (first > second) {
                         Step prePermutation = new Step();
-
+                        Step postPermutation = new Step();
                         PermutationGate pg = new PermutationGate(first - 1, second, nqubit);
                         prePermutation.addGate(pg);
+                        postPermutation.addGate(pg);
                         answer.add(0, prePermutation);
-                        answer.add(prePermutation);
+                        answer.add(postPermutation);
+                        postPermutation.setComplexStep(s.getIndex());
+                        s.setComplexStep(-1);
                         tqg.setAdditionalQubit(first -1, second);
 
                     } else {
                         Step prePermutation = new Step();
 
+                        Step prePermutationInv = new Step();
                         PermutationGate pg = new PermutationGate(first, second, nqubit );
                         prePermutation.addGate(pg);
-
+                        prePermutationInv.addGate(pg);
+                        int realStep = s.getIndex();
+                        s.setComplexStep(-1);
                         answer.add(0, prePermutation);
-                        answer.add(prePermutation);
+                        answer.add(prePermutationInv);
                         Step postPermutation = new Step();
+                        Step postPermutationInv = new Step();
                         if (first != second -1) {
                             PermutationGate pg2 = new PermutationGate(second-1, first, nqubit );
                             postPermutation.addGate(pg2);
+                            postPermutationInv.addGate(pg2);
                             answer.add(1, postPermutation);
-                            answer.add(3,postPermutation);
-                        }
+                            answer.add(3, postPermutationInv);
+                        } 
+                        prePermutationInv.setComplexStep(realStep);
+
                         tqg.setMainQubit(second);
                         tqg.setAdditionalQubit(second-1,0);
                     }

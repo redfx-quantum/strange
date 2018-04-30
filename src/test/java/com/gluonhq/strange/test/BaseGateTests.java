@@ -25,15 +25,15 @@ public class BaseGateTests {
             jfxIsSetup = true;
         }
 
-        QuantumExecutionEnvironment qee = new CloudlinkQuantumExecutionEnvironment("executeProgram");
-//        QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
-
-        Future<Result> futureResult = qee.runProgram(program);
-        try {
-            return futureResult.get(1, TimeUnit.MINUTES);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+//        QuantumExecutionEnvironment qee = new CloudlinkQuantumExecutionEnvironment("executeProgram");
+        QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
+//        Future<Result> futureResult = qee.runProgram(program);
+//        try {
+//            return futureResult.get(1, TimeUnit.MINUTES);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+        return qee.runProgram(program);
     }
 
     private void setupJavaFX() {

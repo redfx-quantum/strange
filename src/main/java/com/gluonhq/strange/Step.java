@@ -45,6 +45,10 @@ import java.util.List;
 public class Step {
     
     private final ArrayList<Gate> gates = new ArrayList<>();
+    private int index;
+    
+    private int complexStep = -1; // if a complex step needs to broken into
+    // simple steps, only one simple step can have this value to be the index of the complex step
     
     public void addGate(Gate g) {
         gates.add(g);
@@ -52,6 +56,23 @@ public class Step {
     
     public List<Gate> getGates() {
         return gates;
+    }
+    
+    public void setComplexStep(int idx) {
+        this.complexStep = idx;
+    }
+    
+    public int getComplexStep() {
+        return this.complexStep;
+    }
+
+    public void setIndex(int s) {
+        this.index = s;
+        this.complexStep = s;
+    }
+    
+    public int getIndex() {
+        return this.index;
     }
     
 }
