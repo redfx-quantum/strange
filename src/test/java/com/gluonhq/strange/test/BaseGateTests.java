@@ -1,17 +1,15 @@
 package com.gluonhq.strange.test;
 
-import com.gluonhq.connect.ConnectState;
-import com.gluonhq.connect.GluonObservableObject;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.QuantumExecutionEnvironment;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.cloud.CloudlinkQuantumExecutionEnvironment;
-import javafx.application.Platform;
+import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
 import javafx.embed.swing.JFXPanel;
 
 import javax.swing.SwingUtilities;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class BaseGateTests {
@@ -27,25 +25,10 @@ public class BaseGateTests {
             jfxIsSetup = true;
         }
 
-        CompletableFuture<Result> futureResult = new CompletableFuture<>();
-        Platform.runLater(() -> {
-            QuantumExecutionEnvironment qee = new CloudlinkQuantumExecutionEnvironment("executeProgram");
-            GluonObservableObject<Result> result = qee.runProgram(program);
-            if (result.get() != null) {
-                futureResult.complete(result.get());
-            } else {
-                result.stateProperty().addListener((obs, ov, nv) -> {
-                    if (nv == ConnectState.SUCCEEDED) {
-                        futureResult.complete(result.get());
-                    } else if (nv == ConnectState.FAILED) {
-                        futureResult.completeExceptionally(result.getException());
-                    } else if (nv == ConnectState.CANCELLED) {
-                        futureResult.completeExceptionally(new InterruptedException("Remote function call was cancelled."));
-                    }
-                });
-            }
-        });
+        QuantumExecutionEnvironment qee = new CloudlinkQuantumExecutionEnvironment("executeProgram");
+//        QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
 
+        Future<Result> futureResult = qee.runProgram(program);
         try {
             return futureResult.get(1, TimeUnit.MINUTES);
         } catch (Exception e) {
@@ -66,7 +49,7 @@ public class BaseGateTests {
 
                 latch.countDown();
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
 

@@ -31,8 +31,6 @@
  */
 package com.gluonhq.strange.local;
 
-import com.gluonhq.connect.ConnectState;
-import com.gluonhq.connect.GluonObservableObject;
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
@@ -45,9 +43,12 @@ import com.gluonhq.strange.gate.PermutationGate;
 import com.gluonhq.strange.gate.SingleQubitGate;
 import com.gluonhq.strange.gate.Swap;
 import com.gluonhq.strange.gate.TwoQubitGate;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -56,7 +57,7 @@ import java.util.Optional;
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
     
     @Override
-    public GluonObservableObject<Result> runProgram(Program p) {
+    public Future<Result> runProgram(Program p) {
         int nQubits = p.getNumberQubits();
         Qubit[] qubit = new Qubit[nQubits];
         for (int i = 0; i < nQubits; i++) {
@@ -84,11 +85,12 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             qubit[i].setProbability(qp[i]);
         }
         Result result = new Result(qubit, probs);
-        GluonObservableObject<Result> gluonObservableObject = new GluonObservableObject<>();
-        gluonObservableObject.setState(ConnectState.SUCCEEDED);
-        gluonObservableObject.setValue(result);
-        return gluonObservableObject;
+
+        CompletableFuture<Result> futureResult = new CompletableFuture<>();
+        futureResult.complete(result);
+        return futureResult;
     }
+
     private void printProbs(Complex[] p) {
         System.out.println("\n");
         for (int i = 0; i < p.length; i++) {

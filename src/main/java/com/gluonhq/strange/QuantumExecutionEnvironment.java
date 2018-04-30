@@ -31,7 +31,7 @@
  */
 package com.gluonhq.strange;
 
-import com.gluonhq.connect.GluonObservableObject;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -39,6 +39,6 @@ import com.gluonhq.connect.GluonObservableObject;
  */
 public interface QuantumExecutionEnvironment {
 
-    public GluonObservableObject<Result> runProgram(Program p);
+    Future<Result> runProgram(Program p);
 
 }

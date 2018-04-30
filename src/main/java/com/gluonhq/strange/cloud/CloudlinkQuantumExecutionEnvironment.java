@@ -1,6 +1,7 @@
 package com.gluonhq.strange.cloud;
 
 import com.gluonhq.cloudlink.client.data.RemoteFunctionBuilder;
+import com.gluonhq.connect.ConnectState;
 import com.gluonhq.connect.GluonObservableObject;
 import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
@@ -11,6 +12,8 @@ import com.gluonhq.strange.Step;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 public class CloudlinkQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
 
@@ -21,16 +24,28 @@ public class CloudlinkQuantumExecutionEnvironment implements QuantumExecutionEnv
     }
 
     @Override
-    public GluonObservableObject<Result> runProgram(Program p) {
+    public Future<Result> runProgram(Program p) {
         String serializedProgram = serializeProgram(p).toString();
 
-        System.out.println("serializedProgram = " + serializedProgram);
+        CompletableFuture<Result> futureResult = new CompletableFuture<>();
 
-        return RemoteFunctionBuilder.create(functionName)
+        GluonObservableObject<Result> result = RemoteFunctionBuilder.create(functionName)
                 .param("program", serializedProgram)
                 .cachingEnabled(false)
                 .object()
                 .call(new ResultConverter());
+
+        result.stateProperty().addListener((obs, ov, nv) -> {
+            if (nv == ConnectState.SUCCEEDED) {
+                futureResult.complete(result.get());
+            } else if (nv == ConnectState.FAILED) {
+                futureResult.completeExceptionally(result.getException());
+            } else if (nv == ConnectState.CANCELLED) {
+                futureResult.cancel(true);
+            }
+        });
+
+        return futureResult;
     }
 
     private JsonObject serializeProgram(Program program) {

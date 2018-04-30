@@ -39,10 +39,11 @@ import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.*;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 public class Demo {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Hello, demo");
         Program p = new Program(4);
         Step s = new Step();
