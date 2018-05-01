@@ -20,6 +20,9 @@ public class BaseGateTests {
     private static boolean jfxIsSetup;
 
     public Result runProgram(Program program) throws RuntimeException {
+        QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
+        return qee.runProgram(program);
+        /*
         if(!jfxIsSetup) {
             setupJavaFX();
             jfxIsSetup = true;
@@ -34,6 +37,7 @@ public class BaseGateTests {
 //            throw new RuntimeException(e);
 //        }
         return qee.runProgram(program);
+*/
     }
 
     private void setupJavaFX() {
