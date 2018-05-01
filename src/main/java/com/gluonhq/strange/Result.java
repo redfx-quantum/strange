@@ -31,8 +31,6 @@
  */
 package com.gluonhq.strange;
 
-import java.util.Arrays;
-
 /**
  *
  * @author johan
@@ -51,6 +49,7 @@ public class Result {
         this.nqubits = nqubits;
         this.nsteps = steps;
         intermediates = new Complex[steps][];
+        this.qubits = new Qubit[nqubits];
     }
 
     public Result(Qubit[] q, Complex[] p) {
@@ -76,8 +75,10 @@ public class Result {
     }
     
     public void setIntermediateProbability(int step, Complex[] p) {
-        System.out.println("set ip for step "+step+" to "+Arrays.asList(p));
         this.intermediates[step] = p;
+        if (step == nsteps -1) {
+            this.probability = p;
+        }
     }
     
     public Complex[] getIntermediateProbability(int step) {
@@ -99,5 +100,28 @@ public class Result {
             }
         }
         return answer;
+    }
+    
+    public void measureSystem() {
+        double random = Math.random();
+        int ressize = 1 << nqubits;
+        double[] probamp = new double[ressize];
+        double probtot = 0;
+        // we don't need all probabilities, but we might use this later
+        for (int i = 0; i < ressize; i++) {
+            probamp[i] = this.probability[i].abssqr();
+        }
+        int sel = 0;
+        probtot = probamp[0];
+        while (probtot < random) {
+            sel++;
+            probtot = probtot + probamp[sel];
+        }
+        double outcome = probamp[sel];
+        for (int i = 0; i < nqubits; i++) {
+            qubits[i] = new Qubit();
+            qubits[i].setMeasuredValue(sel %2 == 1);
+            sel = sel/2;
+        }
     }
 }

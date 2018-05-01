@@ -63,12 +63,16 @@ public class Qubit {
      * @return <code>0</code> or <code>1</code>
      */
     public int measure() {
-        if (measured) {
-            throw new IllegalStateException("Can't measure an already-measured qubit");
-        }
-        measured = true;
-        measuredValue = Math.random()< prob;
+//        if (measured) {
+//            throw new IllegalStateException("Can't measure an already-measured qubit");
+//        }
+//        measured = true;
+//        measuredValue = Math.random()< prob;
         return measuredValue ? 1 : 0;
+    }
+    
+    public void setMeasuredValue (boolean v) {
+        this.measuredValue = v;
     }
     
     public double getProbability() {

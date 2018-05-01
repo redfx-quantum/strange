@@ -93,6 +93,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         for (int i = 0; i < nQubits; i++) {
             qubit[i].setProbability(qp[i]);
         }
+        result.measureSystem();
     //    Result result = new Result(qubit, probs);
         return result;
     }
