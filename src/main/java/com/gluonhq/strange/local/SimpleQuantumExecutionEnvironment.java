@@ -42,6 +42,7 @@ import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.PermutationGate;
 import com.gluonhq.strange.gate.SingleQubitGate;
 import com.gluonhq.strange.gate.Swap;
+import com.gluonhq.strange.gate.ThreeQubitGate;
 import com.gluonhq.strange.gate.TwoQubitGate;
 
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     private void printProbs(Complex[] p) {
         System.out.println("\n");
         for (int i = 0; i < p.length; i++) {
-            System.out.println("P["+i+"]: "+p[i]);
+            System.out.println("Probabiliy["+i+"]: "+p[i]);
         }
     }
     /**
@@ -179,7 +180,18 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                         tqg.setAdditionalQubit(second-1,0);
                     }
                 }
-            } else {
+            } else if (gate instanceof ThreeQubitGate) {
+                ThreeQubitGate tqg = (ThreeQubitGate) gate;
+                int first = tqg.getMainQubit();
+                int second = tqg.getSecondQubit();
+                int third = tqg.getThirdQubit();
+                if ((first == second + 1) && (second == third + 1)) {
+                    firstGates.add(gate);
+                } else {
+                    throw new RuntimeException("ThreeQubit Gate should have qubits in order 1-2-3");
+                }
+            }
+            else {
                 throw new RuntimeException("Gate must be SingleQubit or TwoQubit");
             }
         }
@@ -287,6 +299,11 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 TwoQubitGate tqg = (TwoQubitGate)myGate;
                 a = tensor(a, tqg.getMatrix());
                 idx--;
+            }
+            if (myGate instanceof ThreeQubitGate) {
+                ThreeQubitGate tqg = (ThreeQubitGate)myGate;
+                a = tensor(a, tqg.getMatrix());
+                idx = idx-2;
             }
             if (myGate instanceof PermutationGate) {
                 a = tensor(a, myGate.getMatrix());
