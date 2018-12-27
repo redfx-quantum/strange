@@ -38,12 +38,7 @@ import com.gluonhq.strange.QuantumExecutionEnvironment;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
-import com.gluonhq.strange.gate.Identity;
-import com.gluonhq.strange.gate.PermutationGate;
-import com.gluonhq.strange.gate.SingleQubitGate;
-import com.gluonhq.strange.gate.Swap;
-import com.gluonhq.strange.gate.ThreeQubitGate;
-import com.gluonhq.strange.gate.TwoQubitGate;
+import com.gluonhq.strange.gate.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,6 +123,8 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         if (gates.isEmpty()) return answer;
         boolean simple = gates.stream().allMatch(g -> g instanceof SingleQubitGate);
         if (simple) return answer;
+        // if only 1 gate, which is an oracle, return as well
+        if ((gates.size() ==1) && (gates.get(0) instanceof Oracle)) return answer;
         // at least one non-singlequbitgate
        // System.out.println("Complex gates!");
         List<Gate> firstGates = new ArrayList<>();
@@ -307,6 +304,10 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             }
             if (myGate instanceof PermutationGate) {
                 a = tensor(a, myGate.getMatrix());
+                idx = 0;
+            }
+            if (myGate instanceof Oracle) {
+                a = myGate.getMatrix();
                 idx = 0;
             }
             idx--;
