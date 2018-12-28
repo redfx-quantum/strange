@@ -348,7 +348,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         return a;
     }
     
-    private Complex[][] tensor(Complex[][] a, Complex[][] b) {
+    public Complex[][] tensor(Complex[][] a, Complex[][] b) {
         int d1 = a.length;
         int d2 = b.length;
         Complex[][] result = new Complex[d1 * d2][d1 * d2];
