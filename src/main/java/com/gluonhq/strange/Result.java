@@ -36,7 +36,7 @@ package com.gluonhq.strange;
  * @author johan
  */
 public class Result {
-    
+
     private int nqubits;
     private int nsteps;
     
@@ -49,7 +49,6 @@ public class Result {
         this.nqubits = nqubits;
         this.nsteps = steps;
         intermediates = new Complex[steps][];
-        this.qubits = new Qubit[nqubits];
     }
 
     public Result(Qubit[] q, Complex[] p) {
@@ -58,9 +57,14 @@ public class Result {
     }
     
     public Qubit[] getQubits() {
-        if (this.qubits != null) {
-            return this.qubits;
+        if (this.qubits == null) {
+
+            this.qubits = calculateQubits();
         }
+        return this.qubits;
+    }
+
+    private Qubit[] calculateQubits() {
         Qubit[] answer = new Qubit[nqubits];
         double[] d = calculateQubitStatesFromVector(intermediates[nsteps-1]);
         for (int i = 0; i < answer.length; i++) {
@@ -103,6 +107,9 @@ public class Result {
     }
     
     public void measureSystem() {
+        if (this.qubits == null) {
+            this.qubits = getQubits();
+        }
         double random = Math.random();
         int ressize = 1 << nqubits;
         double[] probamp = new double[ressize];
@@ -119,7 +126,6 @@ public class Result {
         }
         double outcome = probamp[sel];
         for (int i = 0; i < nqubits; i++) {
-            qubits[i] = new Qubit();
             qubits[i].setMeasuredValue(sel %2 == 1);
             sel = sel/2;
         }

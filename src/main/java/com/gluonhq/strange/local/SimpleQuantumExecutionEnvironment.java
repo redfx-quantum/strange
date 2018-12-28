@@ -40,9 +40,7 @@ import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -263,7 +261,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
         List<Gate> gates = step.getGates();
         Complex[][] a = calculateStepMatrix(gates, qubits.length);
-//        System.out.println("applystep, gates = "+gates);
+       // System.out.println("applystep, gates = "+gates);
         Complex[] result = new Complex[vector.length];
         for (int i = 0; i < vector.length; i++) {
             result[i] = Complex.ZERO;
