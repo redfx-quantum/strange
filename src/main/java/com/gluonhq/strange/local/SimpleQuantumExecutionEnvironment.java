@@ -72,14 +72,15 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             simpleSteps.addAll(decomposeStep(step, nQubits));
         }
        System.out.println("stepsize "+steps.size()+" and simplestepsize = "+simpleSteps.size());
-       printProbs(probs);
+     //  printProbs(probs);
        Result result = new Result(nQubits, steps.size());
      //  int idx = 0;
         for (Step step: simpleSteps) {
             probs = applyStep(step, probs, qubit);
             int idx = step.getComplexStep();
+            System.out.println("applied step, idz = "+idx);
             if (idx > -1)  {
-            result.setIntermediateProbability(idx, probs);
+                result.setIntermediateProbability(idx, probs);
             } else {
                 System.out.println("don't set intermediates ");
             }
