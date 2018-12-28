@@ -46,10 +46,26 @@ public class Step {
     
     private final ArrayList<Gate> gates = new ArrayList<>();
     private int index;
+    private String name = "unknown";
     
     private int complexStep = -1; // if a complex step needs to broken into
     // simple steps, only one simple step can have this value to be the index of the complex step
-    
+
+    public Step() {}
+
+    public Step(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Return the name of this step. This is for descriptive information only, it has no impact on the
+     * computations
+     * @return the name of the step, if supplied by the user.
+     */
+    public String getName() {
+        return this.name;
+    }
+
     public void addGate(Gate g) {
         gates.add(g);
     }

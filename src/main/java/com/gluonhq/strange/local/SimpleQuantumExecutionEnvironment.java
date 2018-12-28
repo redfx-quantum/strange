@@ -71,14 +71,13 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         for (Step step: steps) {
             simpleSteps.addAll(decomposeStep(step, nQubits));
         }
-       System.out.println("stepsize "+steps.size()+" and simplestepsize = "+simpleSteps.size());
+     //  System.out.println("stepsize "+steps.size()+" and simplestepsize = "+simpleSteps.size());
      //  printProbs(probs);
        Result result = new Result(nQubits, steps.size());
      //  int idx = 0;
         for (Step step: simpleSteps) {
             probs = applyStep(step, probs, qubit);
             int idx = step.getComplexStep();
-            System.out.println("applied step, idz = "+idx);
             if (idx > -1)  {
                 result.setIntermediateProbability(idx, probs);
             } else {
@@ -287,7 +286,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             if (myGateOpt.isPresent()) {
                 myGate = myGateOpt.get();
             }
-            System.out.println("idx = "+idx+", gate = "+myGate);
             if (myGate instanceof SingleQubitGate) {
                 SingleQubitGate sqg = (SingleQubitGate)myGate;
                 a = tensor(a, sqg.getMatrix());
