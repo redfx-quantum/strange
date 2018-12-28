@@ -41,9 +41,10 @@ import com.gluonhq.strange.gate.X;
 import com.gluonhq.strange.gate.Y;
 import com.gluonhq.strange.gate.Z;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 public class SingleQubitGateTests extends BaseGateTests {
 

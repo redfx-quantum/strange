@@ -38,8 +38,8 @@ import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.Toffoli;
 import com.gluonhq.strange.gate.X;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 /**
  *
