@@ -32,4 +32,6 @@
 module com.gluonhq.strange {
     exports com.gluonhq.strange;
     exports com.gluonhq.strange.algorithm;
+    exports com.gluonhq.strange.gate;
+    exports com.gluonhq.strange.local;
 }
