@@ -66,6 +66,7 @@ public class Result {
 
     private Qubit[] calculateQubits() {
         Qubit[] answer = new Qubit[nqubits];
+        System.out.println("get qubits, nsteps = "+nsteps);
         double[] d = calculateQubitStatesFromVector(intermediates[nsteps-1]);
         for (int i = 0; i < answer.length; i++) {
             answer[i] = new Qubit();

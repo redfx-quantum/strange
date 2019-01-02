@@ -51,6 +51,8 @@ public class Step {
     private int complexStep = -1; // if a complex step needs to broken into
     // simple steps, only one simple step can have this value to be the index of the complex step
 
+    private boolean informal = false;
+
     public Step() {}
 
     public Step(String name) {
@@ -80,6 +82,14 @@ public class Step {
     
     public int getComplexStep() {
         return this.complexStep;
+    }
+
+    public void setInformalStep(boolean b) {
+        this.informal = b;
+    }
+
+    public boolean isInformal() {
+        return informal;
     }
 
     public void setIndex(int s) {

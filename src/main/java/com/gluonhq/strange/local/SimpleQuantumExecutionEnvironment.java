@@ -73,16 +73,24 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
      //  printProbs(probs);
        Result result = new Result(nQubits, steps.size());
      //  int idx = 0;
+        int cnt = 0;
         for (Step step: simpleSteps) {
-            probs = applyStep(step, probs, qubit);
-            int idx = step.getComplexStep();
-            if (idx > -1)  {
-                result.setIntermediateProbability(idx, probs);
+            if (!step.getGates().isEmpty()) {
+                System.out.println("STEP "+cnt);
+                cnt++;
+                probs = applyStep(step, probs, qubit);
+                int idx = step.getComplexStep();
+                if (idx > -1) {
+                    result.setIntermediateProbability(idx, probs);
+                } else {
+                    System.out.println("don't set intermediates ");
+                }
             } else {
-                System.out.println("don't set intermediates ");
+                System.out.println("DOOH");
             }
          //   idx++;
         }
+        System.out.println("probs = "+probs);
         double[] qp = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < nQubits; i++) {
             qubit[i].setProbability(qp[i]);
@@ -127,6 +135,10 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
        // System.out.println("Complex gates!");
         List<Gate> firstGates = new ArrayList<>();
         for (Gate gate : gates) {
+            if (gate instanceof ProbabilitiesGate) {
+                s.setInformalStep(true);
+                return answer;
+            }
             if (gate instanceof SingleQubitGate) {
                 firstGates.add(gate);
             } else if (gate instanceof TwoQubitGate) {
@@ -193,7 +205,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         return answer;
     }
     
-       private List<Step> olddecomposeStep (Step s, int nqubit) {
+    private List<Step> olddecomposeStep (Step s, int nqubit) {
         ArrayList<Step> answer = new ArrayList<>();
         answer.add(s);
         List<Gate> gates = s.getGates();
