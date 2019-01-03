@@ -69,7 +69,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         for (Step step: steps) {
             simpleSteps.addAll(decomposeStep(step, nQubits));
         }
-     //  System.out.println("stepsize "+steps.size()+" and simplestepsize = "+simpleSteps.size());
+//       System.out.println("stepsize "+steps.size()+" and simplestepsize = "+simpleSteps.size());
      //  printProbs(probs);
        Result result = new Result(nQubits, steps.size());
      //  int idx = 0;
@@ -272,9 +272,15 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
         List<Gate> gates = step.getGates();
+        if (!gates.isEmpty()) {
+            if (gates.get(0) instanceof ProbabilitiesGate) {
+                return vector;
+            }
+        }
         Complex[][] a = calculateStepMatrix(gates, qubits.length);
        // System.out.println("applystep, gates = "+gates);
         Complex[] result = new Complex[vector.length];
+//        System.out.println("[applystep], vsize = "+vector.length+", asize = "+a.length);
         for (int i = 0; i < vector.length; i++) {
             result[i] = Complex.ZERO;
             for (int j = 0; j < vector.length; j++) {

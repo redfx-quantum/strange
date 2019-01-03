@@ -7,6 +7,16 @@ import java.util.*;
 public abstract class InformalGate implements Gate {
 
     private List<Integer> affected = new LinkedList<>();
+    private int mainIndex;
+
+    public InformalGate() {
+        this(0);
+    }
+
+    public InformalGate(int idx) {
+        this.mainIndex = idx;
+        affected.add(idx);
+    }
 
     @Override
     public void setMainQubit(int idx) {
