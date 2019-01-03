@@ -47,6 +47,8 @@ public class Step {
     private final ArrayList<Gate> gates = new ArrayList<>();
     private int index;
     private String name = "unknown";
+
+    private Program program;
     
     private int complexStep = -1; // if a complex step needs to broken into
     // simple steps, only one simple step can have this value to be the index of the complex step
@@ -99,6 +101,14 @@ public class Step {
     
     public int getIndex() {
         return this.index;
+    }
+
+    public void setProgram(Program p) {
+        this.program = p;
+    }
+
+    public Program getProgram() {
+        return this.program;
     }
     
 }

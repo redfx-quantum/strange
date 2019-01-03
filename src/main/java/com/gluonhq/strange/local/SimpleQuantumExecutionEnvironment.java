@@ -96,6 +96,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             qubit[i].setProbability(qp[i]);
         }
         result.measureSystem();
+        p.setResult(result);
     //    Result result = new Result(qubit, probs);
         return result;
     }

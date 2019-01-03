@@ -44,7 +44,8 @@ import java.util.List;
 public class Program {
  
     private final int numberQubits;
-    
+    private Result result;
+
     private final ArrayList<Step> steps = new ArrayList<>();
     
     public Program(int nQubits) {
@@ -53,6 +54,7 @@ public class Program {
     
     public void addStep (Step s) {
         s.setIndex(steps.size());
+        s.setProgram(this);
         steps.add(s);
     }
     
@@ -62,6 +64,14 @@ public class Program {
     
     public int getNumberQubits() {
         return this.numberQubits;
+    }
+
+    public void setResult(Result r) {
+        this.result = r;
+    }
+
+    public Result getResult() {
+        return this.result;
     }
     
 }
