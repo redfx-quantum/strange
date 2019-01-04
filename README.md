@@ -14,15 +14,17 @@ Using gradle
 
 A typical build.gradle file looks as follows:
 ```gradle
-apply plugin: 'java'
-apply plugin: 'application'
+plugins {
+    id 'application'
+    id 'org.javamodularity.moduleplugin' version '1.2.1'
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'com.gluonhq:strange:0.0.1'
+    compile 'com.gluonhq:strange:0.0.3'
 }
 
 mainClassName = 'SimpleStrangeDemo'

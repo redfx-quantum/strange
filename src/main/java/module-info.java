@@ -29,30 +29,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange.test;
-import com.gluonhq.strange.algorithm.Classic;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.Test;
-
-/**
- *
- * @author johan
- */
-public class ClassicTests {
-    
-    @Test
-    public void random() {
-        int z = 0;
-        int o = 0;
-        for (int i = 0; i < 100; i++) {
-            int b = Classic.randomBit();
-            System.out.println("b = "+b);
-            if (b == 0) z++;
-            if (b == 1) o++;
-        }
-        System.out.println("AFTER RUN, z= "+z);
-        assertTrue (z > 10);
-        assertTrue (o > 10);
-    }
-    
+module com.gluonhq.strange {
+    exports com.gluonhq.strange;
+    exports com.gluonhq.strange.algorithm;
+    exports com.gluonhq.strange.gate;
+    exports com.gluonhq.strange.local;
 }

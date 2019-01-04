@@ -1,13 +1,13 @@
 plugins {
-    id 'java'
     id 'application'
+    id 'org.javamodularity.moduleplugin' version '1.2.1'
     id 'signing'
     id 'maven'
 }
 apply from: 'gradle/mavenPublish.gradle'
 
 group = 'com.gluonhq'
-version = '0.0.3-SNAPSHOT'
+version = '0.0.4-SNAPSHOT'
 
 mainClassName = 'com.gluonhq.strange.demo.Demo'
 
@@ -28,13 +28,22 @@ if (currentOS.isWindows()) {
     classifier = 'mac'
 }
 
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+    }
+}
+
 dependencies {
-    compile "com.gluonhq:charm-cloudlink-client:4.4.7"
-    runtime "com.gluonhq:charm-down-plugin-storage-desktop:3.6.0"
-    testCompile "junit:junit:4.12"
-    compile "org.openjfx:javafx-controls:11-ea+23:$classifier"
-    compile "org.openjfx:javafx-graphics:11-ea+23:$classifier"
-    compile "org.openjfx:javafx-base:11-ea+23:$classifier"
+    // compile "com.gluonhq:charm-cloudlink-client:4.4.7"
+    // runtime "com.gluonhq:charm-down-plugin-storage-desktop:3.6.0"
+    compile "org.openjfx:javafx-controls:11:$classifier"
+    compile "org.openjfx:javafx-graphics:11:$classifier"
+    compile "org.openjfx:javafx-base:11:$classifier"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
 
 task sourceJar(type: Jar) {

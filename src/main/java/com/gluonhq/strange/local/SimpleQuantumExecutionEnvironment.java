@@ -39,7 +39,9 @@ import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.gate.Oracle;
 import com.gluonhq.strange.gate.PermutationGate;
+import com.gluonhq.strange.gate.ProbabilitiesGate;
 import com.gluonhq.strange.gate.SingleQubitGate;
 import com.gluonhq.strange.gate.Swap;
 import com.gluonhq.strange.gate.ThreeQubitGate;
@@ -48,8 +50,6 @@ import com.gluonhq.strange.gate.TwoQubitGate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
@@ -76,25 +76,34 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         for (Step step: steps) {
             simpleSteps.addAll(decomposeStep(step, nQubits));
         }
-       System.out.println("stepsize "+steps.size()+" and simplestepsize = "+simpleSteps.size());
-       printProbs(probs);
+//       System.out.println("stepsize "+steps.size()+" and simplestepsize = "+simpleSteps.size());
+     //  printProbs(probs);
        Result result = new Result(nQubits, steps.size());
      //  int idx = 0;
+        int cnt = 0;
         for (Step step: simpleSteps) {
-            probs = applyStep(step, probs, qubit);
-            int idx = step.getComplexStep();
-            if (idx > -1)  {
-            result.setIntermediateProbability(idx, probs);
+            if (!step.getGates().isEmpty()) {
+                // System.out.println("STEP "+cnt);
+                cnt++;
+                probs = applyStep(step, probs, qubit);
+                int idx = step.getComplexStep();
+                if (idx > -1) {
+                    result.setIntermediateProbability(idx, probs);
+                } else {
+                    // System.out.println("don't set intermediates ");
+                }
             } else {
-                System.out.println("don't set intermediates ");
+                // System.out.println("DOOH");
             }
          //   idx++;
         }
+        // System.out.println("probs = "+probs);
         double[] qp = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < nQubits; i++) {
             qubit[i].setProbability(qp[i]);
         }
         result.measureSystem();
+        p.setResult(result);
     //    Result result = new Result(qubit, probs);
         return result;
     }
@@ -128,10 +137,16 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         if (gates.isEmpty()) return answer;
         boolean simple = gates.stream().allMatch(g -> g instanceof SingleQubitGate);
         if (simple) return answer;
+        // if only 1 gate, which is an oracle, return as well
+        if ((gates.size() ==1) && (gates.get(0) instanceof Oracle)) return answer;
         // at least one non-singlequbitgate
        // System.out.println("Complex gates!");
         List<Gate> firstGates = new ArrayList<>();
         for (Gate gate : gates) {
+            if (gate instanceof ProbabilitiesGate) {
+                s.setInformalStep(true);
+                return answer;
+            }
             if (gate instanceof SingleQubitGate) {
                 firstGates.add(gate);
             } else if (gate instanceof TwoQubitGate) {
@@ -198,7 +213,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         return answer;
     }
     
-       private List<Step> olddecomposeStep (Step s, int nqubit) {
+    private List<Step> olddecomposeStep (Step s, int nqubit) {
         ArrayList<Step> answer = new ArrayList<>();
         answer.add(s);
         List<Gate> gates = s.getGates();
@@ -265,10 +280,15 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
         List<Gate> gates = step.getGates();
+        if (!gates.isEmpty()) {
+            if (gates.get(0) instanceof ProbabilitiesGate) {
+                return vector;
+            }
+        }
         Complex[][] a = calculateStepMatrix(gates, qubits.length);
-        System.out.println("applystep, gates = "+gates);
- printMatrix(a);
+       // System.out.println("applystep, gates = "+gates);
         Complex[] result = new Complex[vector.length];
+//        System.out.println("[applystep], vsize = "+vector.length+", asize = "+a.length);
         for (int i = 0; i < vector.length; i++) {
             result[i] = Complex.ZERO;
             for (int j = 0; j < vector.length; j++) {
@@ -290,7 +310,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             if (myGateOpt.isPresent()) {
                 myGate = myGateOpt.get();
             }
-            System.out.println("idx = "+idx+", gate = "+myGate);
             if (myGate instanceof SingleQubitGate) {
                 SingleQubitGate sqg = (SingleQubitGate)myGate;
                 a = tensor(a, sqg.getMatrix());
@@ -309,12 +328,16 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 a = tensor(a, myGate.getMatrix());
                 idx = 0;
             }
+            if (myGate instanceof Oracle) {
+                a = myGate.getMatrix();
+                idx = 0;
+            }
             idx--;
         }
        // System.out.println("done calcstepmatrix, nq = "+nQubits+", dim = "+a.length);
         return a;
     }
-    
+
     private Complex[][] oldcalculateStepMatrix(List<Gate> gates, int nQubits) {
      //   System.out.println("calcstepmatrix, nq = "+nQubits+", gates = "+gates);
         Complex[][] a = new Complex[1][1];
@@ -347,7 +370,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         return a;
     }
     
-    private Complex[][] tensor(Complex[][] a, Complex[][] b) {
+    public Complex[][] tensor(Complex[][] a, Complex[][] b) {
         int d1 = a.length;
         int d2 = b.length;
         Complex[][] result = new Complex[d1 * d2][d1 * d2];
