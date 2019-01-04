@@ -38,7 +38,6 @@ test {
 dependencies {
     // compile "com.gluonhq:charm-cloudlink-client:4.4.7"
     // runtime "com.gluonhq:charm-down-plugin-storage-desktop:3.6.0"
-    // testCompile "junit:junit:4.12"
     compile "org.openjfx:javafx-controls:11:$classifier"
     compile "org.openjfx:javafx-graphics:11:$classifier"
     compile "org.openjfx:javafx-base:11:$classifier"
@@ -68,7 +67,7 @@ configurations {
 }
 
 
-// artifacts {
-    // archives sourceJar, javadocJar
-// }
+artifacts {
+    archives sourceJar, javadocJar
+}
 

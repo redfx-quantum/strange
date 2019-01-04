@@ -38,11 +38,18 @@ import com.gluonhq.strange.QuantumExecutionEnvironment;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
-import com.gluonhq.strange.gate.*;
+import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.gate.Oracle;
+import com.gluonhq.strange.gate.PermutationGate;
+import com.gluonhq.strange.gate.ProbabilitiesGate;
+import com.gluonhq.strange.gate.SingleQubitGate;
+import com.gluonhq.strange.gate.Swap;
+import com.gluonhq.strange.gate.ThreeQubitGate;
+import com.gluonhq.strange.gate.TwoQubitGate;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -76,21 +83,21 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         int cnt = 0;
         for (Step step: simpleSteps) {
             if (!step.getGates().isEmpty()) {
-                System.out.println("STEP "+cnt);
+                // System.out.println("STEP "+cnt);
                 cnt++;
                 probs = applyStep(step, probs, qubit);
                 int idx = step.getComplexStep();
                 if (idx > -1) {
                     result.setIntermediateProbability(idx, probs);
                 } else {
-                    System.out.println("don't set intermediates ");
+                    // System.out.println("don't set intermediates ");
                 }
             } else {
-                System.out.println("DOOH");
+                // System.out.println("DOOH");
             }
          //   idx++;
         }
-        System.out.println("probs = "+probs);
+        // System.out.println("probs = "+probs);
         double[] qp = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < nQubits; i++) {
             qubit[i].setProbability(qp[i]);
@@ -330,7 +337,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
        // System.out.println("done calcstepmatrix, nq = "+nQubits+", dim = "+a.length);
         return a;
     }
-    
+
     private Complex[][] oldcalculateStepMatrix(List<Gate> gates, int nQubits) {
      //   System.out.println("calcstepmatrix, nq = "+nQubits+", gates = "+gates);
         Complex[][] a = new Complex[1][1];
