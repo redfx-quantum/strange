@@ -19,13 +19,13 @@ repositories {
 }
 
 def currentOS = org.gradle.internal.os.OperatingSystem.current();
-def classifier
+def javafxclassifier
 if (currentOS.isWindows()) {
-    classifier = 'win'
+    javafxclassifier = 'win'
 } else if (currentOS.isLinux()) {
-    classifier = 'linux'
+    javafxclassifier = 'linux'
 } else if (currentOS.isMacOsX()) {
-    classifier = 'mac'
+    javafxclassifier = 'mac'
 }
 
 test {
@@ -38,9 +38,9 @@ test {
 dependencies {
     // compile "com.gluonhq:charm-cloudlink-client:4.4.7"
     // runtime "com.gluonhq:charm-down-plugin-storage-desktop:3.6.0"
-    compile "org.openjfx:javafx-controls:11:$classifier"
-    compile "org.openjfx:javafx-graphics:11:$classifier"
-    compile "org.openjfx:javafx-base:11:$classifier"
+    compile "org.openjfx:javafx-controls:11:$javafxclassifier"
+    compile "org.openjfx:javafx-graphics:11:$javafxclassifier"
+    compile "org.openjfx:javafx-base:11:$javafxclassifier"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
