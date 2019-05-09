@@ -5,6 +5,7 @@ This project defines a Java API that can be used to create Quantum Programs.
 A Quantum Program, defined by <code>com.gluonhq.strange.Program</code> can be executed on an implementation of the 
 <code>com.gluonhq.strange.QuantumExecutionEnvironment</code>.
 
+You can read more about Java and QuantumComputing in [Quantum Computing for Java Developers](https://www.manning.com/books/quantum-computing-for-java-developers?a_aid=quantumjava&a_bid=e5166ab9)
 
 # Getting Started
 
