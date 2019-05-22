@@ -70,8 +70,16 @@ public class Step {
         return this.name;
     }
 
-    public void addGate(Gate g) {
-        gates.add(g);
+    /**
+     * Adds the supplied Gate to the list of gates for this step
+     * @param gate the Gate to be added
+     * @throws IllegalArgumentException in case the supplied Gate operates on a qubit that is already
+     * been operated on in this step
+     */
+
+    public void addGate(Gate gate) throws IllegalArgumentException {
+        verifyUnique(gate);
+        gates.add(gate);
     }
     
     public List<Gate> getGates() {
@@ -109,6 +117,13 @@ public class Step {
 
     public Program getProgram() {
         return this.program;
+    }
+
+    private void verifyUnique (Gate gate) {
+        for (Gate g: gates) {
+            long overlap = g.getAffectedQubitIndex().stream().filter(gate.getAffectedQubitIndex()::contains).count();
+            if (overlap > 0) throw new IllegalArgumentException("Adding gate that affects a qubit already involved in this step");
+        }
     }
     
 }
