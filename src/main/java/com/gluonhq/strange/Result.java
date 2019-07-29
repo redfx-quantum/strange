@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2018, Gluon Software
+ * Copyright (c) 2018, 2019, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,6 +43,7 @@ public class Result {
     private Qubit[] qubits;
     private Complex[] probability;
     private Complex[][] intermediates;
+    private int measuredProbability = -1;
  
     public Result(int nqubits, int steps) {
         assert(steps > 0);
@@ -124,10 +125,19 @@ public class Result {
             sel++;
             probtot = probtot + probamp[sel];
         }
+        this.measuredProbability = sel;
         double outcome = probamp[sel];
         for (int i = 0; i < nqubits; i++) {
             qubits[i].setMeasuredValue(sel %2 == 1);
             sel = sel/2;
         }
+    }
+
+    /**
+     * Returns a measurement based on the probability vector
+     * @return an integer representation of the measurement
+     */
+    public int getMeasuredProbability() {
+        return measuredProbability;
     }
 }

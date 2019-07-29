@@ -4,13 +4,13 @@
   <groupId>com.gluonhq</groupId>
   <artifactId>strange</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.7-SNAPSHOT</version>
   <name>Strange</name>
   <url>http://maven.apache.org</url>
   <parent>
     <groupId>org.openjfx</groupId>
     <artifactId>javafx</artifactId>
-    <version>11-ea+24</version>
+    <version>11.0.2</version>
   </parent>
   <repositories>
     <repository>
