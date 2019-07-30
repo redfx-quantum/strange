@@ -47,6 +47,9 @@ public class Program {
     private Result result;
 
     private final ArrayList<Step> steps = new ArrayList<>();
+
+    // cache decomposedSteps
+    private List<Step> decomposedSteps = null;
     
     public Program(int nQubits) {
         this.numberQubits = nQubits;
@@ -60,6 +63,14 @@ public class Program {
     
     public List<Step> getSteps() {
         return this.steps;
+    }
+
+    public List<Step> getDecomposedSteps () {
+        return this.decomposedSteps;
+    }
+
+    public void setDecomposedSteps(List<Step> ds) {
+        this.decomposedSteps = ds;
     }
     
     public int getNumberQubits() {

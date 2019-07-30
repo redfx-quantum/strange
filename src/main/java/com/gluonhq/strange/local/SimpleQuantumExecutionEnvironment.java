@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2018, Gluon Software
+ * Copyright (c) 2018, 2019, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,32 +72,27 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             probs[i] = Complex.ZERO;
         }
         List<Step> steps = p.getSteps();
-        List<Step> simpleSteps = new ArrayList<>();
-        for (Step step: steps) {
-            simpleSteps.addAll(decomposeStep(step, nQubits));
+        List<Step> simpleSteps = p.getDecomposedSteps();
+        if (simpleSteps == null) {
+            simpleSteps = new ArrayList<>();
+            for (Step step : steps) {
+                simpleSteps.addAll(decomposeStep(step, nQubits));
+            }
+            p.setDecomposedSteps(simpleSteps);
         }
-//       System.out.println("stepsize "+steps.size()+" and simplestepsize = "+simpleSteps.size());
-     //  printProbs(probs);
-       Result result = new Result(nQubits, steps.size());
-     //  int idx = 0;
+        Result result = new Result(nQubits, steps.size());
         int cnt = 0;
         for (Step step: simpleSteps) {
             if (!step.getGates().isEmpty()) {
-                // System.out.println("STEP "+cnt);
                 cnt++;
                 probs = applyStep(step, probs, qubit);
                 int idx = step.getComplexStep();
                 if (idx > -1) {
                     result.setIntermediateProbability(idx, probs);
-                } else {
-                    // System.out.println("don't set intermediates ");
                 }
-            } else {
-                // System.out.println("DOOH");
             }
          //   idx++;
         }
-        // System.out.println("probs = "+probs);
         double[] qp = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < nQubits; i++) {
             qubit[i].setProbability(qp[i]);
@@ -134,13 +129,13 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         ArrayList<Step> answer = new ArrayList<>();
         answer.add(s);
         List<Gate> gates = s.getGates();
+
         if (gates.isEmpty()) return answer;
         boolean simple = gates.stream().allMatch(g -> g instanceof SingleQubitGate);
         if (simple) return answer;
         // if only 1 gate, which is an oracle, return as well
         if ((gates.size() ==1) && (gates.get(0) instanceof Oracle)) return answer;
         // at least one non-singlequbitgate
-       // System.out.println("Complex gates!");
         List<Gate> firstGates = new ArrayList<>();
         for (Gate gate : gates) {
             if (gate instanceof ProbabilitiesGate) {
@@ -243,7 +238,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                         answer.add(prePermutation);
 
                     } else {
-                        System.out.println("FIRST > SECOND");
                         Step prePermutation = new Step();
 
                         PermutationGate pg = new PermutationGate(first, second, nqubit );
@@ -253,7 +247,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                         answer.add(prePermutation);
                         Step postPermutation = new Step();
                         if (first != second +1) {
-                            System.out.println("FIRST NOT SECOND + 1, first = "+first+", second = "+second);
                             PermutationGate pg2 = new PermutationGate(second+1, first, nqubit );
                             postPermutation.addGate(pg2);
                             answer.add(0, postPermutation);
@@ -286,9 +279,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             }
         }
         Complex[][] a = calculateStepMatrix(gates, qubits.length);
-       // System.out.println("applystep, gates = "+gates);
         Complex[] result = new Complex[vector.length];
-//        System.out.println("[applystep], vsize = "+vector.length+", asize = "+a.length);
         for (int i = 0; i < vector.length; i++) {
             result[i] = Complex.ZERO;
             for (int j = 0; j < vector.length; j++) {
@@ -334,12 +325,10 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             }
             idx--;
         }
-       // System.out.println("done calcstepmatrix, nq = "+nQubits+", dim = "+a.length);
         return a;
     }
 
     private Complex[][] oldcalculateStepMatrix(List<Gate> gates, int nQubits) {
-     //   System.out.println("calcstepmatrix, nq = "+nQubits+", gates = "+gates);
         Complex[][] a = new Complex[1][1];
         a[0][0] = Complex.ONE;
         int idx = 0;
@@ -366,7 +355,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             }
             idx++;
         }
-       // System.out.println("done calcstepmatrix, nq = "+nQubits+", dim = "+a.length);
         return a;
     }
     
