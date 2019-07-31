@@ -87,6 +87,7 @@ public class Step {
     }
     
     public void setComplexStep(int idx) {
+        System.err.println("Set complex step to "+idx+" for "+this);
         this.complexStep = idx;
     }
     
@@ -125,5 +126,5 @@ public class Step {
             if (overlap > 0) throw new IllegalArgumentException("Adding gate that affects a qubit already involved in this step");
         }
     }
-    
+
 }
