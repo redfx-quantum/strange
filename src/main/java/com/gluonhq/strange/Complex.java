@@ -68,7 +68,13 @@ public class Complex {
         double ni = this.i + b.i;
         return new Complex(nr, ni);
     }
-    
+
+    public Complex min(Complex b) {
+        double nr = this.r - b.r;
+        double ni = this.i - b.i;
+        return new Complex(nr, ni);
+    }
+
     public Complex mul(Complex b) {
         double nr = (this.r * b.r) - (this.i * b.i);
         double ni = (this.r * b.i) + (this.i * b.r);
