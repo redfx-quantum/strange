@@ -45,16 +45,47 @@ public class Program {
  
     private final int numberQubits;
     private Result result;
+    private double[] initAlpha;
 
     private final ArrayList<Step> steps = new ArrayList<>();
 
     // cache decomposedSteps
     private List<Step> decomposedSteps = null;
-    
+
+    /**
+     * Create a Quantum Program and indicate how many qubits will be involved.
+     * By default, all qubits are initialized to the |0 &gt; state.
+     * @param nQubits the amount of qubits that will be used in this program
+     */
     public Program(int nQubits) {
         this.numberQubits = nQubits;
+        this.initAlpha = new double[numberQubits];
+        for (int i = 0; i < numberQubits; i++) {
+            this.initAlpha[i] = 1d;
+        }
     }
-    
+
+    /**
+     * Initialize this qubit. The qubit will be in a state
+     * \psi = \alpha |0 &gt; + \beta |1 &gt; .
+     * Since \alpha^2 + \beta^2 should equals 1, only
+     * \alpha is required.
+     * @param idx the index of the qubit to be initialized
+     * @param alpha the alpha value of the qubit state.
+     * @throws IllegalArgumentException in case the index of the qubit is higher than the amount of qubits -1 .
+     */
+    public void initializeQubit(int idx, double alpha) {
+        if (idx >= numberQubits) {
+            throw new IllegalArgumentException("Can not initialize qubit "+
+                    idx+" since we have only "+numberQubits+" qubits.");
+        }
+        this.initAlpha[idx] = alpha;
+    }
+
+    public double[] getInitialAlphas() {
+        return this.initAlpha;
+    }
+
     public void addStep (Step s) {
         s.setIndex(steps.size());
         s.setProgram(this);

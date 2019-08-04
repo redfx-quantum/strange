@@ -46,7 +46,7 @@ public class Result {
     private int measuredProbability = -1;
  
     public Result(int nqubits, int steps) {
-        assert(steps > 0);
+        assert(steps >= 0);
         this.nqubits = nqubits;
         this.nsteps = steps;
         intermediates = new Complex[steps][];

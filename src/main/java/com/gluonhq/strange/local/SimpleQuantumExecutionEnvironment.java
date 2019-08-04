@@ -66,10 +66,21 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             qubit[i] = new Qubit();
         }
         int dim = 1 << nQubits;
+        double[] initalpha = p.getInitialAlphas();
         Complex[] probs = new Complex[dim];
-        probs[0] = Complex.ONE;
-        for (int i = 1; i < dim; i++) {
-            probs[i] = Complex.ZERO;
+        for (int i = 0; i < dim; i++) {
+            probs[i] = Complex.ONE;
+            for (int j = 0; j < nQubits; j++) {
+                int pw = nQubits - j -1 ;
+                int pt = 1 << pw;
+                int div = i/pt;
+                int md = div % 2;
+                if (md == 0) {
+                    probs[i] = probs[i].mul(initalpha[j]);
+                } else {
+                    probs[i] = probs[i].mul(Math.sqrt(1-initalpha[j]*initalpha[j]));
+                }
+            }
         }
         List<Step> steps = p.getSteps();
         List<Step> simpleSteps = p.getDecomposedSteps();
@@ -91,7 +102,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                     result.setIntermediateProbability(idx, probs);
                 }
             }
-         //   idx++;
         }
         double[] qp = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < nQubits; i++) {
@@ -99,7 +109,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         }
         result.measureSystem();
         p.setResult(result);
-    //    Result result = new Result(qubit, probs);
         return result;
     }
     

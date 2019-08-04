@@ -36,7 +36,10 @@ package com.gluonhq.strange;
  * @author johan
  */
 public class Qubit {
-    
+
+    Complex alpha;
+    Complex beta;
+
     double theta = 0;
     double phi = 0;
     
@@ -44,7 +47,17 @@ public class Qubit {
     boolean measuredValue;
     
     private double prob;
-    
+
+    public Qubit() {
+        this.alpha = Complex.ONE;
+        this.beta = Complex.ZERO;
+    }
+
+    public Qubit (double ralpha) {
+        this.alpha = new Complex(ralpha,0);
+        this.beta = new Complex(Math.sqrt(1 - ralpha*ralpha), 0);
+    }
+
     private double calculate0() {
         return Math.cos(theta/2);
     }
