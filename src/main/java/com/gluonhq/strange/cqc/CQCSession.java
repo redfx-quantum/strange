@@ -2,6 +2,7 @@ package com.gluonhq.strange.cqc;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -9,6 +10,7 @@ public class CQCSession {
 
     private Socket socket;
     private OutputStream os;
+    private InputStream is;
     private short appId;
 
     public CQCSession() {
@@ -24,11 +26,32 @@ public class CQCSession {
     }
 
     public void sendHello() throws IOException {
-        sendCqcHeadercd op  -   (Protocol.CQC_TP_HELLO, 0);
+        sendCqcHeader(Protocol.CQC_TP_HELLO, 0);
     }
 
     public void createQubit() throws IOException {
         sendSimpleCommand(Protocol.CQC_CMD_NEW, (short)0);
+    }
+
+    private void sendComman() {
+
+    }
+    public void createEPR(String name) throws IOException {
+        sendCommand(Protocol.CQC_CMD_EPR,(short)0,true,false, true, 12);
+   //     sendSimpleCommand(Protocol.CQC_CMD_EPR, (short)0);
+    }
+
+    public ResponseMessage readMessage() throws IOException {
+        if (is == null) {
+            is = socket.getInputStream();
+        }
+        byte[] msg = new byte[256];
+        int len = is.read(msg);
+        if (len < 8) {
+            throw new IOException ("Can't read message if it has less than 8 bytes (got "+len+")");
+        }
+        ResponseMessage answer = new ResponseMessage(msg, len);
+        return answer;
     }
 
     static short appIdCounter = 0;
@@ -49,15 +72,20 @@ public class CQCSession {
         dos.writeShort(appId);
         dos.writeInt(len);
         dos.flush();
-//        byte[] data = new byte[8];
-//        data[0] = Protocol.VERSION;
-//        data[1] = type;
-//        data[2] = (byte)(appId & 0xff);
-//        data[3] = (byte)((appId >> 8) & 0xff);
-
     }
+
     private void sendCommand(byte command, short qubit_id, boolean notify, boolean action, boolean block, int length) throws IOException {
         sendCqcHeader(Protocol.CQC_TP_COMMAND, length);
+        if (command == Protocol.CQC_CMD_EPR) {
+            DataOutputStream dos = new DataOutputStream(os);
+            dos.writeShort(0); // qubit_id
+            dos.writeByte(command);
+            dos.writeByte(0);
+dos.writeShort(1);
+dos.writeShort(2);
+dos.writeInt(4);
+dos.flush();
+        }
 
     }
 
