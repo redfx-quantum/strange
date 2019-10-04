@@ -90,6 +90,7 @@ public class Program {
         s.setIndex(steps.size());
         s.setProgram(this);
         steps.add(s);
+        this.decomposedSteps = null;
     }
     
     public List<Step> getSteps() {
