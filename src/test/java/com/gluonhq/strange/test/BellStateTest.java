@@ -39,6 +39,8 @@ import com.gluonhq.strange.gate.Cnot;
 import com.gluonhq.strange.gate.Hadamard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -66,9 +68,34 @@ public class BellStateTest extends BaseGateTests {
         assertEquals(2, qubits.length);
         int q0 = qubits[0].measure();
         int q1 = qubits[1].measure();
-        System.out.println("q0 = "+q0+", q1 = "+q1);
         assertEquals(q0,q1);
-//        assertEquals(1, q0+ q1);
-  //      assertEquals(0, q0* q1);
+    }
+
+    /**
+     * When making multiple measurements on the same Result object, we
+     * should be able to see different outcomes (0-0 or 1-1)
+     */
+    @Test
+    public void multimeasurement() {
+        Program p = new Program(2);
+        Step s0 = new Step();
+        s0.addGate(new Hadamard(0));
+        p.addStep(s0);
+        Step s1 = new Step();
+        s1.addGate(new Cnot(0,1));
+        p.addStep(s1);
+        Result res = runProgram(p);
+        int zeroCount = 0;
+        final int RUNS = 100;
+        for (int i = 0; i < 100; i++) {
+            res.measureSystem();
+            Qubit[] qubits = res.getQubits();
+            int q0 = qubits[0].measure();
+            int q1 = qubits[1].measure();
+            assertEquals(q0,q1);
+            if (q0 == 0) zeroCount++;
+        }
+        assertTrue(zeroCount > 0);
+        assertTrue(zeroCount < RUNS);
     }
 }

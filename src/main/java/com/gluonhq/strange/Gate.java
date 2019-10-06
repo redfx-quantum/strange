@@ -42,7 +42,7 @@ public interface Gate {
     
     /**
      * Set the main qubit where this gate operates on.
-     * @param idx 
+     * @param idx the index of the main qubit
      */
     public void setMainQubit(int idx);
     
