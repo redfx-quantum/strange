@@ -106,7 +106,14 @@ public class Result {
         }
         return answer;
     }
-    
+
+    /**
+     * Based on the probabilities of the system, this method will measure all qubits.
+     * When this method is called, the <code>measuredValue</code> value of every qubit
+     * contains a possible measurement value. The values are consistent for the entire system.
+     * (e.g. when an entangled pair is measured, its values are equal)
+     * However, different invocations of this method may result in different values.
+     */
     public void measureSystem() {
         if (this.qubits == null) {
             this.qubits = getQubits();
