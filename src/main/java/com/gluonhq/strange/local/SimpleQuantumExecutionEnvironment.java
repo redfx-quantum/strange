@@ -91,16 +91,13 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             }
             p.setDecomposedSteps(simpleSteps);
         }
-        System.err.println("steps = "+steps);
-        System.err.println("simplesteps = "+simpleSteps);
         Result result = new Result(nQubits, steps.size());
         int cnt = 0;
         for (Step step: simpleSteps) {
-            System.err.println("apply simplestep "+step+" with gates "+step.getGates());
             if (!step.getGates().isEmpty()) {
                 cnt++;
                 probs = applyStep(step, probs, qubit);
-                printProbs(probs);
+                // printProbs(probs);
                 int idx = step.getComplexStep();
                 if (idx > -1) {
                     result.setIntermediateProbability(idx, probs);
@@ -161,7 +158,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 TwoQubitGate tqg = (TwoQubitGate) gate;
                 int first = tqg.getMainQubit();
                 int second = tqg.getSecondQubit();
-                System.err.println("TQG, first = "+first+" and second = "+second);
                 if (first == second + 1) {
                     firstGates.add(gate);
                 } else {
@@ -176,8 +172,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                         answer.add(postPermutation);
                         postPermutation.setComplexStep(s.getIndex());
                         s.setComplexStep(-1);
-                        tqg.setAdditionalQubit(first -1, second);
-
                     } else {
                         Step prePermutation = new Step();
 
@@ -199,9 +193,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                             answer.add(3, postPermutationInv);
                         } 
                         prePermutationInv.setComplexStep(realStep);
-
-                        tqg.setMainQubit(second);
-                        tqg.setAdditionalQubit(second-1,0);
                     }
                 }
             } else if (gate instanceof ThreeQubitGate) {
@@ -251,7 +242,10 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         while (idx >= 0) {
             Gate myGate = new Identity(idx);
             final int cnt = idx;
-            Optional<Gate> myGateOpt = gates.stream().filter(gate -> gate.getAffectedQubitIndex().contains(cnt))
+            Optional<Gate> myGateOpt = gates.stream().filter(
+                   // gate -> gate.getAffectedQubitIndex().contains(cnt)
+                    gate -> gate.getHighestAffectedQubit() == cnt
+            )
                     .findFirst();
             if (myGateOpt.isPresent()) {
                 myGate = myGateOpt.get();
