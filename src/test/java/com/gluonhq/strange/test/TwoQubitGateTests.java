@@ -52,7 +52,7 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void empty() {
     }
-        
+
     @Test
     public void doubleIGate() {
         Program p = new Program(2);
@@ -66,7 +66,7 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(0, qubits[0].measure());
         assertEquals(0, qubits[1].measure());
     }
-    
+
     @Test
     public void swapGate00() {
         Program p = new Program(2);
@@ -82,8 +82,8 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(2, qubits.length);
         assertEquals(0, qubits[0].measure());
         assertEquals(0, qubits[1].measure());
-    }    
-         
+    }
+
     @Test
     public void swapGate01() {
         Program p = new Program(2);
@@ -100,7 +100,7 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(1, qubits[0].measure());
         assertEquals(0, qubits[1].measure());
     }
-    
+
     @Test
     public void swapGate10() {
         Program p = new Program(2);
@@ -117,7 +117,7 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(1, qubits[1].measure());
         assertEquals(0, qubits[0].measure());
     }
-    
+
     @Test
     public void swapGate11() {
         Program p = new Program(2);
@@ -133,8 +133,8 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(2, qubits.length);
         assertEquals(1, qubits[0].measure());
         assertEquals(1, qubits[1].measure());
-    }    
-    
+    }
+
     @Test
     public void swapGate012() {
         Program p = new Program(3);
@@ -150,8 +150,8 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(0, qubits[0].measure());
         assertEquals(1, qubits[1].measure());
         assertEquals(0, qubits[2].measure());
-    }  
-        
+    }
+
     @Test
     public void swapGate122() {
         Program p = new Program(3);
@@ -168,7 +168,7 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(0, qubits[1].measure());
         assertEquals(1, qubits[2].measure());
     }
-    
+
     @Test
     public void swapGate022() {
         Program p = new Program(3);
@@ -185,7 +185,7 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(0, qubits[1].measure());
         assertEquals(1, qubits[2].measure());
     }
-    
+
     @Test
     public void swapGate202() {
         Program p = new Program(3);
@@ -202,7 +202,7 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(0, qubits[1].measure());
         assertEquals(1, qubits[2].measure());
     }
-    
+
     @Test
     public void cnot01() {
         Program p = new Program(2);
@@ -214,9 +214,9 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(2, qubits.length);
         assertEquals(0, qubits[0].measure());
         assertEquals(0, qubits[1].measure());
-    }    
-      
-          
+    }
+
+
     @Test
     public void cnotx01() {
         Program p = new Program(2);
@@ -232,7 +232,7 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(1, qubits[0].measure());
         assertEquals(1, qubits[1].measure());
     }
-    
+
     @Test
     public void cnotx10() {
         Program p = new Program(2);
@@ -248,7 +248,7 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(1, qubits[0].measure());
         assertEquals(1, qubits[1].measure());
     }
-    
+
     @Test
     public void cnotx02() {
         Program p = new Program(3);

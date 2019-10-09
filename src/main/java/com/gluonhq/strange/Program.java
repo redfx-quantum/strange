@@ -116,5 +116,18 @@ public class Program {
     public Result getResult() {
         return this.result;
     }
+
+    /**
+     * Print info about this program to stdout
+     */
+    public void printInfo() {
+        System.out.println("Info about Quantum Program");
+        System.out.println("==========================");
+        System.out.println("Number of qubits = "+numberQubits+", number of steps = "+steps.size());
+        for (Step step: steps) {
+            System.out.println("Step: "+step.getGates());
+        }
+        System.out.println("==========================");
+    }
     
 }

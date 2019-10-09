@@ -147,4 +147,17 @@ public class Result {
     public int getMeasuredProbability() {
         return measuredProbability;
     }
+
+    /**
+     * Print info about this result to stdout
+     */
+    public void printInfo() {
+        System.out.println("Info about Quantum Result");
+        System.out.println("==========================");
+        System.out.println("Number of qubits = "+nqubits+", number of steps = "+nsteps);
+        for (int i = 0; i < probability.length;i++) {
+            System.out.println("Probability on "+i+":"+ probability[i].abssqr());
+        }
+        System.out.println("==========================");
+    }
 }

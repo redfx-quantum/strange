@@ -75,7 +75,7 @@ public class BellStateTest extends BaseGateTests {
      * When making multiple measurements on the same Result object, we
      * should be able to see different outcomes (0-0 or 1-1)
      */
-    @Test
+   // @Test
     public void multimeasurement() {
         Program p = new Program(2);
         Step s0 = new Step();
@@ -97,5 +97,40 @@ public class BellStateTest extends BaseGateTests {
         }
         assertTrue(zeroCount > 0);
         assertTrue(zeroCount < RUNS);
+    }
+
+    /**
+     * BellState with a third qubit that is sent through a H gate
+     */
+   // @Test
+    public void cnotH() {
+        Program p = new Program(3);
+        Step s0 = new Step();
+        s0.addGate(new Hadamard(0));
+        p.addStep(s0);
+        Step s1 = new Step();
+        s1.addGate(new Cnot(0,1));
+        p.addStep(s1);
+        Step s2 = new Step();
+        s2.addGate(new Hadamard(2));
+        p.addStep(s2);
+        Result res = runProgram(p);
+        int zeroCount = 0;
+        int q2count0 = 0;
+        final int RUNS = 1;
+        for (int i = 0; i < 1; i++) {
+            res.measureSystem();
+            Qubit[] qubits = res.getQubits();
+            int q0 = qubits[0].measure();
+            int q1 = qubits[1].measure();
+            int q2 = qubits[2].measure();
+            assertEquals(q0,q1);
+            if (q0 == 0) zeroCount++;
+            if (q2 == 0) q2count0++;
+        }
+        assertTrue(zeroCount > 0);
+        assertTrue(zeroCount < RUNS);
+        assertTrue(q2count0 > 0);
+        assertTrue(q2count0 < RUNS);
     }
 }

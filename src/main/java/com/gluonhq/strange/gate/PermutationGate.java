@@ -33,6 +33,8 @@ package com.gluonhq.strange.gate;
 
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
+
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -96,6 +98,11 @@ public class PermutationGate implements Gate {
     @Override
     public List<Integer> getAffectedQubitIndex() {
         return affected;
+    }
+
+    @Override
+    public int getHighestAffectedQubit() {
+        return Collections.max(affected);
     }
 
     @Override
