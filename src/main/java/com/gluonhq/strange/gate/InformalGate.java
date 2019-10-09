@@ -34,6 +34,11 @@ public abstract class InformalGate implements Gate {
     }
 
     @Override
+    public int getHighestAffectedQubit() {
+        return Collections.max(affected);
+    }
+
+    @Override
     public List<Integer> getAffectedQubitIndex() {
         return affected;
     }

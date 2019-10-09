@@ -33,6 +33,7 @@ package com.gluonhq.strange.gate;
 
 import com.gluonhq.strange.Gate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -90,7 +91,12 @@ public abstract class ThreeQubitGate implements Gate {
     public List<Integer> getAffectedQubitIndex() {
         return Arrays.asList(first, second, third);
     }
-    
+
+    @Override
+    public int getHighestAffectedQubit() {
+        return Collections.max(getAffectedQubitIndex());
+    }
+
     @Override
     public String getName() {
         return this.getClass().getName();

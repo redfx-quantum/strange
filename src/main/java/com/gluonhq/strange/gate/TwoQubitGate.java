@@ -45,12 +45,14 @@ public abstract class TwoQubitGate implements Gate {
     
     private int first;
     private int second;
+    private int highest = -1;
     
     public TwoQubitGate() {}
     
     public TwoQubitGate (int first, int second) {
         this.first = first;
         this.second = second;
+        this.highest = Math.max(first, second);
     }
 
     @Override
@@ -75,12 +77,21 @@ public abstract class TwoQubitGate implements Gate {
     public int getSecondQubit() {
         return this.second;
     }
+
+    public void setHighestAffectedQubitIndex(int v) {
+        this.highest = v;
+    }
         
     @Override
     public List<Integer> getAffectedQubitIndex() {
         return Arrays.asList(first, second);
     }
-    
+
+    @Override
+    public int getHighestAffectedQubit() {
+        return highest;
+    }
+
     @Override
     public String getName() {
         return this.getClass().getName();

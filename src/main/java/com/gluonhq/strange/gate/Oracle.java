@@ -4,6 +4,7 @@ package com.gluonhq.strange.gate;
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,6 +55,11 @@ public class Oracle implements Gate {
     @Override
     public List<Integer> getAffectedQubitIndex() {
         return this.affected;
+    }
+
+    @Override
+    public int getHighestAffectedQubit() {
+        return Collections.max(getAffectedQubitIndex());
     }
 
     @Override

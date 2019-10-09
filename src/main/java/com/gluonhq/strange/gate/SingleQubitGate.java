@@ -70,6 +70,11 @@ public abstract class SingleQubitGate implements Gate {
     public List<Integer> getAffectedQubitIndex() {
         return Collections.singletonList(idx);
     }
+
+    @Override
+    public int getHighestAffectedQubit() {
+        return idx;
+    }
     
     @Override
     public String getName() {

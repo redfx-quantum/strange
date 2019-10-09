@@ -56,6 +56,12 @@ public interface Gate {
     
     public List<Integer> getAffectedQubitIndex();
 
+    /**
+     * Get the highest index of the qubit that is affected by this gate
+     * @return the index of the highest affected qubit
+     */
+    public int getHighestAffectedQubit();
+
     public String getCaption();
     
     public String getName();
