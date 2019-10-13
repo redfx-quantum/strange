@@ -58,6 +58,12 @@ public class InitialStateTests extends BaseGateTests {
         assertEquals(0, qubits[0].measure());
     }
 
+    @Test
+    public void noStep() {
+        Program p = new Program(0);
+        Result res = runProgram(p);
+        assertEquals(0, res.getQubits().length);
+    }
 
     @Test
     public void initialize0() {
