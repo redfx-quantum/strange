@@ -49,7 +49,7 @@ public class Result {
         assert(steps >= 0);
         this.nqubits = nqubits;
         this.nsteps = steps;
-        intermediates = new Complex[steps][];
+        intermediates = new Complex[steps > 0 ? steps : 1][];
     }
 
     public Result(Qubit[] q, Complex[] p) {
@@ -67,6 +67,9 @@ public class Result {
 
     private Qubit[] calculateQubits() {
         Qubit[] answer = new Qubit[nqubits];
+        if (nqubits == 0) {
+            return answer;
+        }
         double[] d = calculateQubitStatesFromVector(intermediates[nsteps-1]);
         for (int i = 0; i < answer.length; i++) {
             answer[i] = new Qubit();
@@ -81,7 +84,7 @@ public class Result {
     
     public void setIntermediateProbability(int step, Complex[] p) {
         this.intermediates[step] = p;
-        if (step == nsteps -1) {
+        if ((step == nsteps -1) || (nsteps == 0)) { // in case we have no steps, this is the final result
             this.probability = p;
         }
     }

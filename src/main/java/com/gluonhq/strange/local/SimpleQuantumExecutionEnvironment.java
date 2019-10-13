@@ -93,6 +93,9 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         }
         Result result = new Result(nQubits, steps.size());
         int cnt = 0;
+        if (simpleSteps.size() == 0) {
+            result.setIntermediateProbability(0, probs);
+        }
         for (Step step: simpleSteps) {
             if (!step.getGates().isEmpty()) {
                 cnt++;
