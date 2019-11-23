@@ -37,13 +37,16 @@ import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Hadamard;
 import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.gate.Measurement;
 import com.gluonhq.strange.gate.X;
 import com.gluonhq.strange.gate.Y;
 import com.gluonhq.strange.gate.Z;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
 public class SingleQubitGateTests extends BaseGateTests {
@@ -140,7 +143,6 @@ public class SingleQubitGateTests extends BaseGateTests {
             Qubit[] qubits = res.getQubits();
             results[qubits[0].measure()]++;
         }
-        System.out.println("res0 = "+results[0]+" and res1 = "+results[1]);
         assertTrue(results[0] > 10);
         assertTrue(results[1] > 10);
     }   
@@ -161,5 +163,48 @@ public class SingleQubitGateTests extends BaseGateTests {
         assertEquals(0, qubits[2].measure());
         assertEquals(0, qubits[3].measure());
     }
+
+    @Test
+    public void simpleIM() {
+        Program p = new Program(1);
+        Step s1 = new Step();
+        s1.addGate(new Identity(0));
+        Step s2 = new Step();
+        s2.addGate(new Measurement(0));
+        p.addStep(s1);
+        p.addStep(s2);
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(0, qubits[0].measure());
+    }
+
+    @Test
+    public void simpleXM() {
+        Program p = new Program(1);
+        Step s1 = new Step();
+        s1.addGate(new X(0));
+        Step s2 = new Step();
+        s2.addGate(new Measurement(0));
+        p.addStep(s1);
+        p.addStep(s2);
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(1, qubits[0].measure());
+    }
+
+    @Test
+    public void simpleXMH() {
+        Program p = new Program(1);
+        Step s1 = new Step();
+        s1.addGate(new X(0));
+        Step s2 = new Step();
+        s2.addGate(new Measurement(0));
+        Step s3 = new Step();
+        s3.addGate( new Hadamard(0));
+        p.addStep(s1);
+        p.addStep(s2);
+        assertThrows(IllegalArgumentException.class, () -> p.addStep(s3));
+    }
+
 
 }

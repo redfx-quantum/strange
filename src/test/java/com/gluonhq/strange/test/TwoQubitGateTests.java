@@ -36,11 +36,15 @@ import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Cnot;
+import com.gluonhq.strange.gate.Hadamard;
 import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.gate.Measurement;
 import com.gluonhq.strange.gate.Swap;
 import com.gluonhq.strange.gate.X;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -298,5 +302,34 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(0, qubits[0].measure());
         assertEquals(1, qubits[1].measure());
         assertEquals(1, qubits[2].measure());
+    }
+
+
+    @Test
+    public void IMcnot() {
+        Program p = new Program(2);
+        Step s1 = new Step();
+        s1.addGate(new Identity(0));
+        Step s2 = new Step();
+        s2.addGate(new Measurement(0));
+        Step s3 = new Step();
+        s3.addGate( new Cnot(0,1));
+        p.addStep(s1);
+        p.addStep(s2);
+        p.addStep(s3);
+    }
+
+    @Test
+    public void IMcnot10() {
+        Program p = new Program(2);
+        Step s1 = new Step();
+        s1.addGate(new Identity(0));
+        Step s2 = new Step();
+        s2.addGate(new Measurement(0));
+        Step s3 = new Step();
+        s3.addGate( new Cnot(1,0));
+        p.addStep(s1);
+        p.addStep(s2);
+        assertThrows(IllegalArgumentException.class, () -> p.addStep(s3));
     }
 }
