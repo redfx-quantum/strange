@@ -7,7 +7,7 @@ plugins {
 apply from: 'gradle/mavenPublish.gradle'
 
 group = 'com.gluonhq'
-version = '0.0.10-SNAPSHOT'
+version = '0.0.10'
 
 mainClassName = 'com.gluonhq.strange.demo.Demo'
 
