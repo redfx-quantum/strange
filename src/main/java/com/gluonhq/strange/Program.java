@@ -31,8 +31,15 @@
  */
 package com.gluonhq.strange;
 
+import com.gluonhq.strange.gate.Cnot;
+import com.gluonhq.strange.gate.Hadamard;
+import com.gluonhq.strange.gate.Measurement;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -86,11 +93,35 @@ public class Program {
         return this.initAlpha;
     }
 
+    /**
+     * Adds a step with one or more gates to the existing program.
+     * In case the Step contains an operation that would put a measured qubit into a potential superposition
+     * again, an IllegalArgumentException is thrown.
+     * @param s the step to be added to the program
+     */
     public void addStep (Step s) {
+        if (!ensureMeasuresafe(s)) throw new IllegalArgumentException ("Adding a superposition step to a measured qubit");
         s.setIndex(steps.size());
         s.setProgram(this);
         steps.add(s);
         this.decomposedSteps = null;
+    }
+
+    private boolean ensureMeasuresafe(Step newStep) {
+        // determine which qubits might get superpositioned
+        List<Integer> mainQubits = new LinkedList<>();
+        for (Gate g : newStep.getGates()) {
+            if (g instanceof Hadamard) {
+                mainQubits.add(g.getMainQubitIndex());
+            } else if (g instanceof Cnot) mainQubits.add(((Cnot) g).getSecondQubit());
+        }
+        for (Step step : this.getSteps()) {
+            boolean match = step.getGates().stream().filter(g -> g instanceof Measurement)
+                    .map(g -> g.getMainQubitIndex()).anyMatch(idx -> mainQubits.contains(idx));
+            if (match) return false;
+        }
+        ;
+        return true;
     }
     
     public List<Step> getSteps() {
