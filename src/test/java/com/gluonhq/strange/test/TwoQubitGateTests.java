@@ -36,6 +36,7 @@ import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Cnot;
+import com.gluonhq.strange.gate.Cz;
 import com.gluonhq.strange.gate.Hadamard;
 import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.Measurement;
@@ -304,6 +305,51 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(1, qubits[2].measure());
     }
 
+    @Test
+    public void cz01() {
+        Program p = new Program(2);
+        Step s0 = new Step();
+        s0.addGate(new Cz(0,1));
+        p.addStep(s0);
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(2, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+    }
+
+    @Test
+    public void czx01() {
+        Program p = new Program(2);
+        Step s0 = new Step();
+        s0.addGate(new X(0));
+        Step s1 = new Step();
+        s1.addGate(new Cz(0,1));
+        p.addStep(s0);
+        p.addStep(s1);
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(2, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+    }
+
+    @Test
+    public void czxx01() {
+        Program p = new Program(2);
+        Step s0 = new Step();
+        s0.addGate(new X(0));
+        s0.addGate(new X(1));
+        Step s1 = new Step();
+        s1.addGate(new Cz(0,1));
+        p.addStep(s0);
+        p.addStep(s1);
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(2, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+    }
 
     @Test
     public void IMcnot() {
