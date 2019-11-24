@@ -2,6 +2,7 @@
 # The goal is that a full build & test, followed by "git status" would show
 # no untracked files
 
+.idea
 *.orig
 *.bak
 *.rej
