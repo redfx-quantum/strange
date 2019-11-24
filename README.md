@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.gluonhq:strange:0.0.5'
+    implementation 'com.gluonhq:strange:0.0.10'
 }
 
 mainClassName = 'SimpleStrangeDemo'
