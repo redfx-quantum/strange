@@ -92,9 +92,10 @@ public class CQCSession {
     }
 
     public boolean measure(int qid) throws IOException {
-        sendCqcHeader(Protocol.CQC_TP_COMMAND, 4);
+        sendCqcHeader(Protocol.CQC_TP_COMMAND, 8);
         byte option = Protocol.CQC_OPT_BLOCK;
         sendCommandHeader((short) qid, Protocol.CQC_CMD_MEASURE, option);
+        sendCQCAssignHeader(qid);
         System.err.println("send measure command, read response");
         ResponseMessage done = readMessage();
         System.err.println("got measure response");
@@ -149,6 +150,14 @@ public class CQCSession {
     private void sendExtraQubitHeader(short extraQubit) throws IOException {
         DataOutputStream dos = new DataOutputStream(os);
         dos.writeShort(extraQubit);
+        dos.flush();
+    }
+
+
+
+    private void sendCQCAssignHeader(int refId) throws IOException {
+        DataOutputStream dos = new DataOutputStream(os);
+        dos.writeInt(refId);
         dos.flush();
     }
 
