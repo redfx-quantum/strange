@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2018, Gluon Software
+ * Copyright (c) 2018, 2019, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,22 +37,30 @@ package com.gluonhq.strange;
  */
 public class Qubit {
 
-    Complex alpha;
-    Complex beta;
+    private Complex alpha;
+    private Complex beta;
 
-    double theta = 0;
-    double phi = 0;
+    private double theta = 0;
+    private double phi = 0;
     
-    boolean measured = false;
-    boolean measuredValue;
+    private boolean measured = false;
+    private boolean measuredValue;
     
     private double prob;
 
+    /**
+     * Creates a qubit. The qubit will be in the |0> state
+     */
     public Qubit() {
         this.alpha = Complex.ONE;
         this.beta = Complex.ZERO;
     }
 
+    /**
+     * Creates a qubit with an initial value for alpha.
+     * The initial state of the qubit is ralpha |0> + (1-ralpha^2)^(1/2) |1>
+     * @param ralpha the real part of the alpha coefficient in alfa |0> + beta |1>
+     */
     public Qubit (double ralpha) {
         this.alpha = new Complex(ralpha,0);
         this.beta = new Complex(Math.sqrt(1 - ralpha*ralpha), 0);
