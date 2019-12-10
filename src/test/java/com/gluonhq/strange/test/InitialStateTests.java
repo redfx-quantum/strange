@@ -47,8 +47,7 @@ public class InitialStateTests extends BaseGateTests {
     @Test
     public void dontInitialize() {
         Program p = new Program(1);
-        Step s = new Step(new Identity(0));
-        p.addStep(s);
+        p.addStep(new Step(new Identity(0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(0, qubits[0].measure());
@@ -65,8 +64,7 @@ public class InitialStateTests extends BaseGateTests {
     public void initialize0() {
         Program p = new Program(1);
         p.initializeQubit(0, 1);
-        Step s = new Step(new Identity(0));
-        p.addStep(s);
+        p.addStep(new Step(new Identity(0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(0, qubits[0].measure());
@@ -76,8 +74,7 @@ public class InitialStateTests extends BaseGateTests {
     public void initialize1() {
         Program p = new Program(1);
         p.initializeQubit(0, 0);
-        Step s = new Step(new Identity(0));
-        p.addStep(s);
+        p.addStep(new Step(new Identity(0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(1, qubits[0].measure());
@@ -87,8 +84,7 @@ public class InitialStateTests extends BaseGateTests {
     public void initialize1Not() {
         Program p = new Program(1);
         p.initializeQubit(0, 0);
-        Step s = new Step(new X(0));
-        p.addStep(s);
+        p.addStep(new Step(new X(0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(0, qubits[0].measure());
@@ -100,8 +96,7 @@ public class InitialStateTests extends BaseGateTests {
         Program p = new Program(2);
         p.initializeQubit(0, 0);
         p.initializeQubit(1, 0);
-        Step s = new Step(new X(0));
-        p.addStep(s);
+        p.addStep(new Step(new X(0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(0, qubits[0].measure());
@@ -115,8 +110,7 @@ public class InitialStateTests extends BaseGateTests {
         Program p = new Program(1);
         double sq = Math.sqrt(.5);
         p.initializeQubit(0, sq);
-        Step s = new Step(new Identity(0));
-        p.addStep(s);
+        p.addStep( new Step(new Identity(0)) );
         int cnt = 0;
         boolean got0 = false;
         boolean got1 = false;
@@ -143,8 +137,7 @@ public class InitialStateTests extends BaseGateTests {
         Program p = new Program(1);
         double sq = Math.sqrt(.1);
         p.initializeQubit(0, sq);
-        Step s = new Step(new Identity(0));
-        p.addStep(s);
+        p.addStep(new Step(new Identity(0)));
 
         for (int c = 0; c < 10; c++){
             int cnt0 = 0;

@@ -55,8 +55,7 @@ public class ThreeQubitGateTests extends BaseGateTests {
     public void ToffoliGate0() {
         // |000> -> |000>
         Program p = new Program(3);
-        Step s0 = new Step(new Toffoli(2,1,0));
-        p.addStep(s0);
+        p.addStep(new Step(new Toffoli(2,1,0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(3, qubits.length);
@@ -69,10 +68,8 @@ public class ThreeQubitGateTests extends BaseGateTests {
     public void ToffoliGate1() {
         // |100> -> |100>
         Program p = new Program(3);
-        Step s0 = new Step(new X(2));
-        Step s1 = new Step(new Toffoli(2,1,0));
-        p.addStep(s0);
-        p.addStep(s1);
+        p.addStep(new Step(new X(2)));
+        p.addStep(new Step(new Toffoli(2,1,0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(3, qubits.length);
@@ -85,10 +82,8 @@ public class ThreeQubitGateTests extends BaseGateTests {
     public void ToffoliGate2() {
         // |110> -> |111>
         Program p = new Program(3);
-        Step s0 = new Step(new X(2),new X(1));
-        Step s1 = new Step(new Toffoli(2,1,0));
-        p.addStep(s0);
-        p.addStep(s1);
+        p.addStep(new Step(new X(2),new X(1)));
+        p.addStep(new Step(new Toffoli(2,1,0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(3, qubits.length);
@@ -101,10 +96,8 @@ public class ThreeQubitGateTests extends BaseGateTests {
     public void ToffoliGate3() {
         // |111> -> |110>
         Program p = new Program(3);
-        Step s0 = new Step(new X(2),new X(1),new X(0));
-        Step s1 = new Step(new Toffoli(2,1,0));
-        p.addStep(s0);
-        p.addStep(s1);
+        p.addStep(new Step(new X(2),new X(1),new X(0)));
+        p.addStep(new Step(new Toffoli(2,1,0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(3, qubits.length);

@@ -56,10 +56,8 @@ public class BellStateTest extends BaseGateTests {
     @Test
     public void hcnot01() {
         Program p = new Program(2);
-        Step s0 = new Step(new Hadamard(0));
-        p.addStep(s0);
-        Step s1 = new Step(new Cnot(0,1));
-        p.addStep(s1);
+        p.addStep(new Step(new Hadamard(0)));
+        p.addStep(new Step(new Cnot(0,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -75,10 +73,8 @@ public class BellStateTest extends BaseGateTests {
     @Test
     public void multimeasurement() {
         Program p = new Program(2);
-        Step s0 = new Step(new Hadamard(0));
-        p.addStep(s0);
-        Step s1 = new Step(new Cnot(0,1));
-        p.addStep(s1);
+        p.addStep(new Step(new Hadamard(0)));
+        p.addStep(new Step(new Cnot(0,1)));
         Result res = runProgram(p);
         int zeroCount = 0;
         final int RUNS = 100;
@@ -100,12 +96,9 @@ public class BellStateTest extends BaseGateTests {
     @Test
     public void cnotH() {
         Program p = new Program(3);
-        Step s0 = new Step(new Hadamard(0));
-        p.addStep(s0);
-        Step s1 = new Step(new Cnot(0,1));
-        p.addStep(s1);
-        Step s2 = new Step(new Hadamard(2));
-        p.addStep(s2);
+        p.addStep(new Step(new Hadamard(0)));
+        p.addStep(new Step(new Cnot(0,1)));
+        p.addStep(new Step(new Hadamard(2)));
         Result res = runProgram(p);
         int zeroCount = 0;
         int q2count0 = 0;
