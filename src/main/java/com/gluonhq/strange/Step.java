@@ -55,10 +55,8 @@ public class Step {
 
     private boolean informal = false;
 
-    public Step() {}
-
-    public Step(String name) {
-        this.name = name;
+    public Step( Gate... moreGates ) {
+        addGates(moreGates);
     }
 
     /**
@@ -80,6 +78,18 @@ public class Step {
     public void addGate(Gate gate) throws IllegalArgumentException {
         verifyUnique(gate);
         gates.add(gate);
+    }
+
+    /**
+     * Adds the multiple Gates to the list of gates for this step
+     * @param moreGates more gates
+     * @throws IllegalArgumentException in case the supplied Gate operates on a qubit that is already
+     * been operated on in this step
+     */
+    public void addGates(Gate... moreGates) throws IllegalArgumentException {
+        for( Gate g: moreGates ){
+            addGate(g);
+        }
     }
     
     public List<Gate> getGates() {

@@ -37,16 +37,14 @@ import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Cnot;
 import com.gluonhq.strange.gate.Cz;
-import com.gluonhq.strange.gate.Hadamard;
 import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.Measurement;
 import com.gluonhq.strange.gate.Swap;
 import com.gluonhq.strange.gate.X;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -61,10 +59,7 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void doubleIGate() {
         Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new Identity(0));
-        s0.addGate(new Identity(1));
-        p.addStep(s0);
+        p.addStep(new Step(new Identity(0),new Identity(1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -75,13 +70,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void swapGate00() {
         Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new Identity(0));
-        s0.addGate(new Identity(1));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(0,1));
-        p.addStep(s1);
+        p.addStep(new Step(new Identity(0),new Identity(1)));
+        p.addStep(new Step(new Swap(0,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -92,13 +82,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void swapGate01() {
         Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new Identity(0));
-        s0.addGate(new X(1));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(0,1));
-        p.addStep(s1);
+        p.addStep(new Step(new Identity(0),new X(1)));
+        p.addStep(new Step(new Swap(0,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -109,13 +94,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void swapGate10() {
         Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new Identity(1));
-        s0.addGate(new X(0));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(0,1));
-        p.addStep(s1);
+        p.addStep(new Step(new Identity(1),new X(0)));
+        p.addStep(new Step(new Swap(0,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -126,13 +106,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void swapGate11() {
         Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        s0.addGate(new X(1));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(0,1));
-        p.addStep(s1);
+        p.addStep(new Step(new X(0),new X(1)));
+        p.addStep(new Step(new Swap(0,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -143,12 +118,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void swapGate012() {
         Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(0,1));
-        p.addStep(s1);
+        p.addStep(new Step(new X(0)));
+        p.addStep(new Step(new Swap(0,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(3, qubits.length);
@@ -160,12 +131,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void swapGate122() {
         Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(1));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(1,2));
-        p.addStep(s1);
+        p.addStep(new Step(new X(1)));
+        p.addStep(new Step(new Swap(1,2)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(3, qubits.length);
@@ -177,12 +144,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void swapGate022() {
         Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(0,2));
-        p.addStep(s1);
+        p.addStep(new Step(new X(0)));
+        p.addStep(new Step(new Swap(0,2)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(3, qubits.length);
@@ -194,12 +157,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void swapGate202() {
         Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Swap(2,0));
-        p.addStep(s1);
+        p.addStep(new Step(new X(0)));
+        p.addStep(new Step(new Swap(2,0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(3, qubits.length);
@@ -211,9 +170,7 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void cnot01() {
         Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new Cnot(0,1));
-        p.addStep(s0);
+        p.addStep(new Step(new Cnot(0,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -225,12 +182,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void cnotx01() {
         Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Cnot(0,1));
-        p.addStep(s1);
+        p.addStep(new Step(new X(0)));
+        p.addStep(new Step(new Cnot(0,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -241,12 +194,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void cnotx10() {
         Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new X(1));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Cnot(1,0));
-        p.addStep(s1);
+        p.addStep(new Step(new X(1)));
+        p.addStep(new Step(new Cnot(1,0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -257,12 +206,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void cnotx02() {
         Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Cnot(0,2));
-        p.addStep(s1);
+        p.addStep(new Step(new X(0)));
+        p.addStep(new Step(new Cnot(0,2)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(3, qubits.length);
@@ -274,12 +219,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void cnotx20() {
         Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(2));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Cnot(2,0));
-        p.addStep(s1);
+        p.addStep(new Step(new X(2)));
+        p.addStep(new Step(new Cnot(2,0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(3, qubits.length);
@@ -291,12 +232,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void cnotx21() {
         Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(2));
-        p.addStep(s0);
-        Step s1 = new Step();
-        s1.addGate(new Cnot(2,1));
-        p.addStep(s1);
+        p.addStep(new Step(new X(2)));
+        p.addStep(new Step(new Cnot(2,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(3, qubits.length);
@@ -308,9 +245,7 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void cz01() {
         Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new Cz(0,1));
-        p.addStep(s0);
+        p.addStep(new Step(new Cz(0,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -321,12 +256,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void czx01() {
         Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        Step s1 = new Step();
-        s1.addGate(new Cz(0,1));
-        p.addStep(s0);
-        p.addStep(s1);
+        p.addStep(new Step(new X(0)));
+        p.addStep(new Step(new Cz(0,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -337,13 +268,8 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void czxx01() {
         Program p = new Program(2);
-        Step s0 = new Step();
-        s0.addGate(new X(0));
-        s0.addGate(new X(1));
-        Step s1 = new Step();
-        s1.addGate(new Cz(0,1));
-        p.addStep(s0);
-        p.addStep(s1);
+        p.addStep(new Step(new X(0), new X(1)));
+        p.addStep(new Step(new Cz(0,1)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(2, qubits.length);
@@ -354,28 +280,18 @@ public class TwoQubitGateTests extends BaseGateTests {
     @Test
     public void IMcnot() {
         Program p = new Program(2);
-        Step s1 = new Step();
-        s1.addGate(new Identity(0));
-        Step s2 = new Step();
-        s2.addGate(new Measurement(0));
-        Step s3 = new Step();
-        s3.addGate( new Cnot(0,1));
-        p.addStep(s1);
-        p.addStep(s2);
-        p.addStep(s3);
+        p.addStep(new Step(new Identity(0)));
+        p.addStep(new Step(new Measurement(0)));
+        p.addStep(new Step(new Cnot(0,1)));
     }
 
     @Test
     public void IMcnot10() {
         Program p = new Program(2);
-        Step s1 = new Step();
-        s1.addGate(new Identity(0));
-        Step s2 = new Step();
-        s2.addGate(new Measurement(0));
-        Step s3 = new Step();
-        s3.addGate( new Cnot(1,0));
-        p.addStep(s1);
-        p.addStep(s2);
-        assertThrows(IllegalArgumentException.class, () -> p.addStep(s3));
+        p.addStep(new Step(new Identity(0)));
+        p.addStep(new Step(new Measurement(0)));
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> p.addStep(new Step(new Cnot(1,0))));
     }
 }
