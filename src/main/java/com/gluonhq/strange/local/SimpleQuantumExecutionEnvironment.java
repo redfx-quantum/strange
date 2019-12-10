@@ -166,22 +166,17 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 } else {
                     if (first == second) throw new RuntimeException ("Wrong gate, first == second for "+gate);
                     if (first > second) {
-                        Step prePermutation = new Step();
-                        Step postPermutation = new Step();
                         PermutationGate pg = new PermutationGate(first - 1, second, nqubit);
-                        prePermutation.addGate(pg);
-                        postPermutation.addGate(pg);
+                        Step prePermutation = new Step(pg);
+                        Step postPermutation = new Step(pg);
                         answer.add(0, prePermutation);
                         answer.add(postPermutation);
                         postPermutation.setComplexStep(s.getIndex());
                         s.setComplexStep(-1);
                     } else {
-                        Step prePermutation = new Step();
-
-                        Step prePermutationInv = new Step();
                         PermutationGate pg = new PermutationGate(first, second, nqubit );
-                        prePermutation.addGate(pg);
-                        prePermutationInv.addGate(pg);
+                        Step prePermutation = new Step(pg);
+                        Step prePermutationInv = new Step(pg);
                         int realStep = s.getIndex();
                         s.setComplexStep(-1);
                         answer.add(0, prePermutation);

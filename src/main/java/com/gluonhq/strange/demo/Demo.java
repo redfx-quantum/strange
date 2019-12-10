@@ -46,11 +46,7 @@ public class Demo {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Hello, demo");
         Program p = new Program(4);
-        Step s = new Step();
-        s.addGate(new Y(0));
-        s.addGate(new X(1));
-        s.addGate(new Z(3));
-        p.addStep(s);
+        p.addStep( new Step(new Y(0), new X(1), new Z(3)) );
         SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
         Result res = sqee.runProgram(p);
         Qubit[] qubits = res.getQubits();

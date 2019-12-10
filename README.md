@@ -47,8 +47,7 @@ public class SimpleStrangeDemo {
         s.addGate(new X(0));
         p.addStep(s);
         Step t = new Step();
-        t.addGate(new Hadamard(0));
-        t.addGate(new X(1));
+        t.addGate(new Hadamard(0),new X(1));
         p.addStep(t);
         SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
         Result res = sqee.runProgram(p);

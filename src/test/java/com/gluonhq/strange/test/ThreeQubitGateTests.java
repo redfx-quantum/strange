@@ -35,11 +35,11 @@ import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
-import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.Toffoli;
 import com.gluonhq.strange.gate.X;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -55,8 +55,7 @@ public class ThreeQubitGateTests extends BaseGateTests {
     public void ToffoliGate0() {
         // |000> -> |000>
         Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new Toffoli(2,1,0));
+        Step s0 = new Step(new Toffoli(2,1,0));
         p.addStep(s0);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
@@ -70,10 +69,8 @@ public class ThreeQubitGateTests extends BaseGateTests {
     public void ToffoliGate1() {
         // |100> -> |100>
         Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(2));
-        Step s1 = new Step();
-        s1.addGate(new Toffoli(2,1,0));
+        Step s0 = new Step(new X(2));
+        Step s1 = new Step(new Toffoli(2,1,0));
         p.addStep(s0);
         p.addStep(s1);
         Result res = runProgram(p);
@@ -88,11 +85,8 @@ public class ThreeQubitGateTests extends BaseGateTests {
     public void ToffoliGate2() {
         // |110> -> |111>
         Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(2));
-        s0.addGate(new X(1));
-        Step s1 = new Step();
-        s1.addGate(new Toffoli(2,1,0));
+        Step s0 = new Step(new X(2),new X(1));
+        Step s1 = new Step(new Toffoli(2,1,0));
         p.addStep(s0);
         p.addStep(s1);
         Result res = runProgram(p);
@@ -107,12 +101,8 @@ public class ThreeQubitGateTests extends BaseGateTests {
     public void ToffoliGate3() {
         // |111> -> |110>
         Program p = new Program(3);
-        Step s0 = new Step();
-        s0.addGate(new X(2));
-        s0.addGate(new X(1));
-        s0.addGate(new X(0));
-        Step s1 = new Step();
-        s1.addGate(new Toffoli(2,1,0));
+        Step s0 = new Step(new X(2),new X(1),new X(0));
+        Step s1 = new Step(new Toffoli(2,1,0));
         p.addStep(s0);
         p.addStep(s1);
         Result res = runProgram(p);

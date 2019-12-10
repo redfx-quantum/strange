@@ -41,13 +41,9 @@ import com.gluonhq.strange.gate.Measurement;
 import com.gluonhq.strange.gate.X;
 import com.gluonhq.strange.gate.Y;
 import com.gluonhq.strange.gate.Z;
-
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SingleQubitGateTests extends BaseGateTests {
 
@@ -58,19 +54,17 @@ public class SingleQubitGateTests extends BaseGateTests {
     @Test
     public void simpleIGate() {
         Program p = new Program(1);
-        Step s = new Step();
-        s.addGate(new Identity(0));
+        Step s = new Step(new Identity(0));
         p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(0, qubits[0].measure());
-    }    
-    
+    }
+
     @Test
     public void simpleXGate() {
         Program p = new Program(1);
-        Step s = new Step();
-        s.addGate(new X(0));
+        Step s = new Step(new X(0));
         p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
@@ -80,8 +74,7 @@ public class SingleQubitGateTests extends BaseGateTests {
     @Test
     public void simpleIXGate() {
         Program p = new Program(2);
-        Step s = new Step();
-        s.addGate(new X(0));
+        Step s = new Step(new X(0));
         p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
@@ -91,8 +84,7 @@ public class SingleQubitGateTests extends BaseGateTests {
     @Test
     public void simpleXIGate() {
         Program p = new Program(2);
-        Step s = new Step();
-        s.addGate(new X(1));
+        Step s = new Step(new X(1));
         p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
@@ -102,8 +94,7 @@ public class SingleQubitGateTests extends BaseGateTests {
     @Test
     public void simpleXIIGate() {
         Program p = new Program(3);
-        Step s = new Step();
-        s.addGate(new X(2));
+        Step s = new Step(new X(2));
         p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
@@ -112,8 +103,7 @@ public class SingleQubitGateTests extends BaseGateTests {
     @Test
     public void simpleYGate() {
         Program p = new Program(1);
-        Step s = new Step();
-        s.addGate(new Y(0));
+        Step s = new Step(new Y(0));
         p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
@@ -123,8 +113,7 @@ public class SingleQubitGateTests extends BaseGateTests {
     @Test
     public void simpleZGate() {
         Program p = new Program(1);
-        Step s = new Step();
-        s.addGate(new Z(0));
+        Step s = new Step(new Z(0));
         p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
@@ -136,8 +125,7 @@ public class SingleQubitGateTests extends BaseGateTests {
         int[] results = new int[2];
         for (int i = 0; i < 100; i++) {
             Program p = new Program(1);
-            Step s = new Step();
-            s.addGate(new Hadamard(0));
+            Step s = new Step(new Hadamard(0));
             p.addStep(s);
             Result res = runProgram(p);
             Qubit[] qubits = res.getQubits();
@@ -150,11 +138,7 @@ public class SingleQubitGateTests extends BaseGateTests {
     @Test
     public void simpleTogetherGate() {
         Program p = new Program(4);
-        Step s = new Step();
-        s.addGate(new X(0));
-        s.addGate(new Y(1));
-        s.addGate(new Z(2));
-        s.addGate(new Identity(3));
+        Step s = new Step(new X(0), new Y(1), new Z(2), new Identity(3));
         p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
@@ -167,10 +151,8 @@ public class SingleQubitGateTests extends BaseGateTests {
     @Test
     public void simpleIM() {
         Program p = new Program(1);
-        Step s1 = new Step();
-        s1.addGate(new Identity(0));
-        Step s2 = new Step();
-        s2.addGate(new Measurement(0));
+        Step s1 = new Step(new Identity(0));
+        Step s2 = new Step(new Measurement(0));
         p.addStep(s1);
         p.addStep(s2);
         Result res = runProgram(p);
@@ -181,10 +163,8 @@ public class SingleQubitGateTests extends BaseGateTests {
     @Test
     public void simpleXM() {
         Program p = new Program(1);
-        Step s1 = new Step();
-        s1.addGate(new X(0));
-        Step s2 = new Step();
-        s2.addGate(new Measurement(0));
+        Step s1 = new Step(new X(0));
+        Step s2 = new Step(new Measurement(0));
         p.addStep(s1);
         p.addStep(s2);
         Result res = runProgram(p);
@@ -195,12 +175,9 @@ public class SingleQubitGateTests extends BaseGateTests {
     @Test
     public void simpleXMH() {
         Program p = new Program(1);
-        Step s1 = new Step();
-        s1.addGate(new X(0));
-        Step s2 = new Step();
-        s2.addGate(new Measurement(0));
-        Step s3 = new Step();
-        s3.addGate( new Hadamard(0));
+        Step s1 = new Step(new X(0));
+        Step s2 = new Step(new Measurement(0));
+        Step s3 = new Step(new Hadamard(0));
         p.addStep(s1);
         p.addStep(s2);
         assertThrows(IllegalArgumentException.class, () -> p.addStep(s3));

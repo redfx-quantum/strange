@@ -47,9 +47,7 @@ public class Classic {
     
     public static int randomBit() {
         Program program = new Program(1);
-        Step s0 = new Step();
-        s0.addGate(new Hadamard(0));    
-        program.addStep(s0);
+        program.addStep(new Step(new Hadamard(0)));
         QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
         Result result = qee.runProgram(program);
         Qubit[] qubits = result.getQubits();
