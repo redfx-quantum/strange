@@ -56,11 +56,6 @@ public class Step {
     private boolean informal = false;
 
     public Step( Gate... moreGates ) {
-        this("unknown", moreGates);
-    }
-
-    public Step(String name, Gate... moreGates) {
-        this.name = name;
         addGates(moreGates);
     }
 
