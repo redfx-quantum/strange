@@ -32,6 +32,7 @@
 package com.gluonhq.strange;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -93,7 +94,7 @@ public class Step {
     }
     
     public List<Gate> getGates() {
-        return gates;
+        return Collections.unmodifiableList(gates);
     }
     
     public void setComplexStep(int idx) {
