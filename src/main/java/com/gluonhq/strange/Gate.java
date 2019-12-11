@@ -44,7 +44,7 @@ public interface Gate {
      * Set the main qubit where this gate operates on.
      * @param idx the index of the main qubit
      */
-    public void setMainQubit(int idx);
+    public void setMainQubitIndex(int idx);
     
     /**
      * Return the index of the main qubit this gate acts upon
@@ -54,13 +54,13 @@ public interface Gate {
     
     public void setAdditionalQubit(int idx, int cnt);
     
-    public List<Integer> getAffectedQubitIndex();
+    public List<Integer> getAffectedQubitIndexes();
 
     /**
      * Get the highest index of the qubit that is affected by this gate
      * @return the index of the highest affected qubit
      */
-    public int getHighestAffectedQubit();
+    public int getHighestAffectedQubitIndex();
 
     public String getCaption();
     

@@ -133,7 +133,7 @@ public class Step {
 
     private void verifyUnique (Gate gate) {
         for (Gate g: gates) {
-            long overlap = g.getAffectedQubitIndex().stream().filter(gate.getAffectedQubitIndex()::contains).count();
+            long overlap = g.getAffectedQubitIndexes().stream().filter(gate.getAffectedQubitIndexes()::contains).count();
             if (overlap > 0) throw new IllegalArgumentException("Adding gate that affects a qubit already involved in this step");
         }
     }
