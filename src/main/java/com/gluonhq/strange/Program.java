@@ -62,11 +62,13 @@ public class Program {
      * Create a Quantum Program and indicate how many qubits will be involved.
      * By default, all qubits are initialized to the |0 &gt; state.
      * @param nQubits the amount of qubits that will be used in this program
+     * @param moreSteps steps to add to the program
      */
-    public Program(int nQubits) {
+    public Program(int nQubits, Step... moreSteps) {
         this.numberQubits = nQubits;
         this.initAlpha = new double[numberQubits];
         Arrays.fill(initAlpha, 1d);
+        addSteps(moreSteps);
     }
 
     /**

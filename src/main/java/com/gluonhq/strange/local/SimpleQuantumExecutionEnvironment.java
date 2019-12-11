@@ -159,7 +159,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 firstGates.add(gate);
             } else if (gate instanceof TwoQubitGate) {
                 TwoQubitGate tqg = (TwoQubitGate) gate;
-                int first = tqg.getMainQubit();
+                int first = tqg.getMainQubitIndex();
                 int second = tqg.getSecondQubitIndex();
                 if (first == second + 1) {
                     firstGates.add(gate);
