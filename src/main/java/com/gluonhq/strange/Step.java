@@ -34,6 +34,7 @@ package com.gluonhq.strange;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -70,20 +71,13 @@ public class Step {
     }
 
     /**
-     * Adds the supplied Gate to the list of gates for this step
-     * @param gate the Gate to be added
-     * @throws IllegalArgumentException in case the supplied Gate operates on a qubit that is already
-     * been operated on in this step
-     */
-
-    /**
      * Add gate to the list of gates for this step
      * @param gate gate to add
      * @throws IllegalArgumentException in case the supplied Gate operates on a qubit that is already
      * been operated on in this step
      */
     public void addGate(Gate gate) throws IllegalArgumentException {
-        verifyUnique(gate);
+        verifyUnique(Objects.requireNonNull(gate));
         gates.add(gate);
     }
 
