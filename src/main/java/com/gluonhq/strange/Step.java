@@ -76,6 +76,12 @@ public class Step {
      * been operated on in this step
      */
 
+    /**
+     * Add gate to the list of gates for this step
+     * @param gate gate to add
+     * @throws IllegalArgumentException in case the supplied Gate operates on a qubit that is already
+     * been operated on in this step
+     */
     public void addGate(Gate gate) throws IllegalArgumentException {
         verifyUnique(gate);
         gates.add(gate);
@@ -92,7 +98,7 @@ public class Step {
             addGate(g);
         }
     }
-    
+
     public List<Gate> getGates() {
         return Collections.unmodifiableList(gates);
     }
