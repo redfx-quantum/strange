@@ -6,8 +6,10 @@
 *.bak
 *.rej
 *.swp
+*.iml
 build/
 .gradle/
+.idea/
 **/nbproject/private/
 dist/
 webrev/
