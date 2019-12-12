@@ -32,7 +32,9 @@
 package com.gluonhq.strange;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -69,14 +71,13 @@ public class Step {
     }
 
     /**
-     * Adds the supplied Gate to the list of gates for this step
-     * @param gate the Gate to be added
+     * Add gate to the list of gates for this step
+     * @param gate gate to add
      * @throws IllegalArgumentException in case the supplied Gate operates on a qubit that is already
      * been operated on in this step
      */
-
     public void addGate(Gate gate) throws IllegalArgumentException {
-        verifyUnique(gate);
+        verifyUnique(Objects.requireNonNull(gate));
         gates.add(gate);
     }
 
@@ -91,9 +92,9 @@ public class Step {
             addGate(g);
         }
     }
-    
+
     public List<Gate> getGates() {
-        return gates;
+        return Collections.unmodifiableList(gates);
     }
     
     public void setComplexStep(int idx) {
@@ -132,7 +133,7 @@ public class Step {
 
     private void verifyUnique (Gate gate) {
         for (Gate g: gates) {
-            long overlap = g.getAffectedQubitIndex().stream().filter(gate.getAffectedQubitIndex()::contains).count();
+            long overlap = g.getAffectedQubitIndexes().stream().filter(gate.getAffectedQubitIndexes()::contains).count();
             if (overlap > 0) throw new IllegalArgumentException("Adding gate that affects a qubit already involved in this step");
         }
     }
