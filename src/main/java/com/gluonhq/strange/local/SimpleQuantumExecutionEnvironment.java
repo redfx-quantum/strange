@@ -74,7 +74,11 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 int pt = 1 << pw;
                 int div = i/pt;
                 int md = div % 2;
-                probs[i] = probs[i].mul( md == 0? initalpha[j]: Math.sqrt(1-initalpha[j]*initalpha[j]) );
+                if (md == 0) {
+                    probs[i] = probs[i].mul(initalpha[j]);
+                } else {
+                    probs[i] = probs[i].mul(Math.sqrt(1-initalpha[j]*initalpha[j]));
+                }
             }
         }
         List<Step> steps = p.getSteps();
