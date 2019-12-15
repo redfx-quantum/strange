@@ -31,7 +31,7 @@
  */
 package com.gluonhq.strange;
 
-public class Complex {
+public final class Complex {
     
     public static final Complex ZERO = new Complex(0.d, 0.d);
     public static final Complex ONE = new Complex(1.d, 0.d);
