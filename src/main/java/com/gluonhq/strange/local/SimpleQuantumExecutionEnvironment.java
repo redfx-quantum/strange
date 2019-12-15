@@ -159,8 +159,8 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 firstGates.add(gate);
             } else if (gate instanceof TwoQubitGate) {
                 TwoQubitGate tqg = (TwoQubitGate) gate;
-                int first = tqg.getMainQubit();
-                int second = tqg.getSecondQubit();
+                int first = tqg.getMainQubitIndex();
+                int second = tqg.getSecondQubitIndex();
                 if (first == second + 1) {
                     firstGates.add(gate);
                 } else {
@@ -242,7 +242,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             final int cnt = idx;
             Optional<Gate> myGateOpt = gates.stream().filter(
                    // gate -> gate.getAffectedQubitIndex().contains(cnt)
-                    gate -> gate.getHighestAffectedQubit() == cnt
+                    gate -> gate.getHighestAffectedQubitIndex() == cnt
             )
                     .findFirst();
             if (myGateOpt.isPresent()) {

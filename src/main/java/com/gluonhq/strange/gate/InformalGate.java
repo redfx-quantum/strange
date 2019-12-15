@@ -19,7 +19,7 @@ public abstract class InformalGate implements Gate {
     }
 
     @Override
-    public void setMainQubit(int idx) {
+    public void setMainQubitIndex(int idx) {
 
     }
 
@@ -34,12 +34,12 @@ public abstract class InformalGate implements Gate {
     }
 
     @Override
-    public int getHighestAffectedQubit() {
+    public int getHighestAffectedQubitIndex() {
         return Collections.max(affected);
     }
 
     @Override
-    public List<Integer> getAffectedQubitIndex() {
+    public List<Integer> getAffectedQubitIndexes() {
         return affected;
     }
 

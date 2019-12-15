@@ -46,8 +46,7 @@ import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
 public class Classic {
     
     public static int randomBit() {
-        Program program = new Program(1);
-        program.addStep(new Step(new Hadamard(0)));
+        Program program = new Program(1, new Step(new Hadamard(0)));
         QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
         Result result = qee.runProgram(program);
         Qubit[] qubits = result.getQubits();
