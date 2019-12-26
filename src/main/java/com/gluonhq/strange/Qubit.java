@@ -49,7 +49,7 @@ public class Qubit {
     private double prob;
 
     /**
-     * Creates a qubit. The qubit will be in the |0> state
+     * Creates a qubit. The qubit will be in the |0&gt; state
      */
     public Qubit() {
         this.alpha = Complex.ONE;
@@ -58,8 +58,8 @@ public class Qubit {
 
     /**
      * Creates a qubit with an initial value for alpha.
-     * The initial state of the qubit is ralpha |0> + (1-ralpha^2)^(1/2) |1>
-     * @param ralpha the real part of the alpha coefficient in alfa |0> + beta |1>
+     * The initial state of the qubit is ralpha |0&gt; + (1-ralpha^2)^(1/2) |1>
+     * @param ralpha the real part of the alpha coefficient in alfa |0&gt; + beta |1&gt;
      */
     public Qubit (double ralpha) {
         this.alpha = new Complex(ralpha,0);
