@@ -6,11 +6,14 @@
 *.bak
 *.rej
 *.swp
+*.iml
 build/
 .gradle/
+.idea/
 **/nbproject/private/
 dist/
 webrev/
 webrev.zip
 gradle.properties
 apps/samples/Ensemble8/lib/
+target/

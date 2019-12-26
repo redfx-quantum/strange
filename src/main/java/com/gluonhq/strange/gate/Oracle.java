@@ -34,7 +34,7 @@ public class Oracle implements Gate {
     }
 
     @Override
-    public void setMainQubit(int idx) {
+    public void setMainQubitIndex(int idx) {
         this.mainQubit = 0;
     }
 
@@ -53,13 +53,13 @@ public class Oracle implements Gate {
     }
 
     @Override
-    public List<Integer> getAffectedQubitIndex() {
+    public List<Integer> getAffectedQubitIndexes() {
         return this.affected;
     }
 
     @Override
-    public int getHighestAffectedQubit() {
-        return Collections.max(getAffectedQubitIndex());
+    public int getHighestAffectedQubitIndex() {
+        return Collections.max(getAffectedQubitIndexes());
     }
 
     @Override

@@ -57,7 +57,7 @@ public abstract class SingleQubitGate implements Gate {
     }
     
     @Override
-    public void setMainQubit(int idx) {
+    public void setMainQubitIndex(int idx) {
         this.idx = idx;
     }
     
@@ -67,12 +67,12 @@ public abstract class SingleQubitGate implements Gate {
     }
 
     @Override
-    public List<Integer> getAffectedQubitIndex() {
+    public List<Integer> getAffectedQubitIndexes() {
         return Collections.singletonList(idx);
     }
 
     @Override
-    public int getHighestAffectedQubit() {
+    public int getHighestAffectedQubitIndex() {
         return idx;
     }
     
