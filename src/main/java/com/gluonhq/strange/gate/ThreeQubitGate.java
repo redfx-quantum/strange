@@ -57,7 +57,7 @@ public abstract class ThreeQubitGate implements Gate {
     }
 
     @Override
-    public void setMainQubit(int idx) {
+    public void setMainQubitIndex(int idx) {
         this.first = idx;
     }
     
@@ -88,13 +88,13 @@ public abstract class ThreeQubitGate implements Gate {
     }
         
     @Override
-    public List<Integer> getAffectedQubitIndex() {
+    public List<Integer> getAffectedQubitIndexes() {
         return Arrays.asList(first, second, third);
     }
 
     @Override
-    public int getHighestAffectedQubit() {
-        return Collections.max(getAffectedQubitIndex());
+    public int getHighestAffectedQubitIndex() {
+        return Collections.max(getAffectedQubitIndexes());
     }
 
     @Override

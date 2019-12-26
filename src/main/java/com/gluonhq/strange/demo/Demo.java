@@ -32,6 +32,7 @@
 package com.gluonhq.strange.demo;
 
 import com.gluonhq.strange.Complex;
+import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
@@ -46,11 +47,12 @@ public class Demo {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Hello, demo");
         Program p = new Program(4);
-        Step s = new Step();
-        s.addGate(new Y(0));
-        s.addGate(new X(1));
-        s.addGate(new Z(3));
-        p.addStep(s);
+        Gate yGate = new Y(0);
+        Gate xGate = new X(1);
+        Gate zGate = new Z(3);
+        Step step = new Step();
+        step.addGates(yGate, xGate, zGate);
+        p.addStep(step);
         SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
         Result res = sqee.runProgram(p);
         Qubit[] qubits = res.getQubits();

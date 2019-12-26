@@ -35,15 +35,15 @@ import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Hadamard;
 import com.gluonhq.strange.gate.Identity;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SyntaxTests {
 
     @Test
     public void simpleIGate() {
         Program p = new Program(1);
-        Step s = new Step();
-        s.addGate(new Identity(0));
+        Step s = new Step(new Identity(0));
         boolean gotException = false;
         try {
             s.addGate(new Hadamard(0));
