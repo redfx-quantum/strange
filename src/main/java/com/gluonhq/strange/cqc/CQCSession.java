@@ -112,7 +112,7 @@ public class CQCSession {
         System.err.println("Send command to apply gate");
         sendCommandHeader((short) qid, cmdByte, option);
         if (gate instanceof Cnot) {
-            sendExtraQubitHeader((short) ((Cnot) gate).getSecondQubit());
+            sendExtraQubitHeader((short) ((Cnot) gate).getSecondQubitIndex());
         }
         System.err.println("wait for TP_DONE");
         ResponseMessage done = readMessage();
