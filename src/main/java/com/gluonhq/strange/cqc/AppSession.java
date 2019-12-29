@@ -32,15 +32,26 @@
 package com.gluonhq.strange.cqc;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class AppSession {
 
     private Socket socket;
     private OutputStream os;
+    PipedOutputStream pos = new PipedOutputStream();
+    PipedInputStream pis;
+
 
     public AppSession() {
+    }
+
+    public AppSession(int port) throws IOException {
+        openServerSocket(port);
     }
 
     public OutputStream connect(String host, int port) throws IOException {
@@ -50,6 +61,52 @@ public class AppSession {
         this.socket = socket;
         this.os = socket.getOutputStream();
         return this.os;
+    }
+
+    public void close () throws IOException {
+        this.os.close();
+        this.socket.close();
+    }
+
+
+    public byte readByte() throws  IOException{
+        return (byte) pis.read();
+    }
+
+    private void openServerSocket(int port) throws IOException {
+        pis = new PipedInputStream(pos);
+
+        ServerSocket serverSocket = new ServerSocket(port);
+        Thread serverThread = new Thread(){
+            @Override public void run() {
+                try {
+                    boolean go = true;
+                    while (go) {
+                        Socket child = serverSocket.accept();
+                        System.err.println("Got a child socket");
+                        processChildSocket(child);
+                    }
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+        };
+        serverThread.start();
+    }
+
+    private void processChildSocket(Socket socket) {
+
+                try {
+                    InputStream is = socket.getInputStream();
+                    int l = is.read();
+                    while (l > -1) {
+                        pos.write(l);
+                        l = is.read();
+                    }
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+
     }
 
 }

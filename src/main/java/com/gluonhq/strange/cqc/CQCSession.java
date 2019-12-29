@@ -47,13 +47,20 @@ public class CQCSession {
     private OutputStream os;
     private InputStream is;
     private final short appId;
+    private final String name;
 
     public CQCSession() {
-        appId = getNextAppId();
+        this ("anonymous");
     }
 
-    public CQCSession(short id) {
+    public CQCSession(String name) {
+        appId = getNextAppId();
+        this.name = name;
+    }
+
+    public CQCSession(String name, short id) {
         appId = id;
+        this.name = name;
     }
 
     public void connect(String host, int port) throws IOException {
@@ -72,11 +79,8 @@ public class CQCSession {
         sendCqcHeader(Protocol.CQC_TP_COMMAND, 4);
         byte option = Protocol.CQC_OPT_NOTIFY | Protocol.CQC_OPT_BLOCK;
         sendCommandHeader((short) 0, Protocol.CQC_CMD_NEW, option);
-        System.err.println("readmessage");
         ResponseMessage msg = readMessage();
-        System.err.println("readmessage again, expect TP_DONE");
         ResponseMessage done = readMessage();
-        System.err.println("that was a message of type "+done.getType());
         return msg.getQubitId();
     }
 
@@ -86,9 +90,16 @@ public class CQCSession {
         byte option = Protocol.CQC_OPT_NOTIFY | Protocol.CQC_OPT_BLOCK;
         sendCommandHeader((short) 0, Protocol.CQC_CMD_EPR, option);
         sendCommunicationHeader((short)0, port, 127*256*256*256+1);
-        System.err.println("readmessage");
         ResponseMessage msg = readMessage();
-        System.err.println("readmessage again, expect TP_DONE");
+        ResponseMessage done = readMessage();
+        return msg;
+    }
+
+    public ResponseMessage receiveEPR() throws IOException {
+        sendCqcHeader(Protocol.CQC_TP_COMMAND, 4);
+        byte option = Protocol.CQC_OPT_NOTIFY | Protocol.CQC_OPT_BLOCK;
+        sendCommandHeader((short) 0, Protocol.CQC_CMD_EPR_RECV, option);
+        ResponseMessage msg = readMessage();
         ResponseMessage done = readMessage();
         System.err.println("that was a message of type "+done.getType());
         return msg;
@@ -139,7 +150,9 @@ public class CQCSession {
             System.err.println("IS NULL!!!\n");
             is = socket.getInputStream();
         }
+        System.err.println("Reading message for "+name);
         ResponseMessage answer = new ResponseMessage(is);
+        System.err.println("Done reading message for "+name);
         return answer;
     }
 
@@ -184,8 +197,6 @@ public class CQCSession {
         dos.writeShort(extraQubit);
         dos.flush();
     }
-
-
 
     private void sendCQCAssignHeader(int refId) throws IOException {
         DataOutputStream dos = new DataOutputStream(os);
