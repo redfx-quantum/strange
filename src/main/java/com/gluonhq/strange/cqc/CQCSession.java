@@ -95,16 +95,16 @@ public class CQCSession {
         return msg;
     }
 
-    public ResponseMessage sendQubit(int qid, short port) throws IOException {
+    public void sendQubit(int qid, short port) throws IOException {
         sendCqcHeader(Protocol.CQC_TP_COMMAND, 12);
         byte option = Protocol.CQC_OPT_NOTIFY | Protocol.CQC_OPT_BLOCK;
         sendCommandHeader((short) qid, Protocol.CQC_CMD_SEND, option);
         sendCommunicationHeader((short)0, port, 127*256*256*256+1);
-        ResponseMessage msg = readMessage();
-        System.err.println("SEND Qubit, msg = "+msg);
         ResponseMessage done = readMessage();
+        if (Protocol.CQC_TP_DONE != done.getType()) {
+            throw new IOException("Send should return done!");
+        }
         System.err.println("SEND Qubit, donemsg = "+done);
-        return msg;
     }
 
     // TODO return an EPR (create that class first)
@@ -177,6 +177,14 @@ public class CQCSession {
         ResponseMessage answer = new ResponseMessage(is);
         System.err.println("Done reading message for "+name);
         return answer;
+    }
+
+    public void releaseQubit(int qid) throws IOException {
+        sendCqcHeader(Protocol.CQC_TP_COMMAND, 4);
+        byte option = Protocol.CQC_OPT_NOTIFY | Protocol.CQC_OPT_BLOCK;
+        sendCommandHeader((short) qid, Protocol.CQC_CMD_RELEASE, option);
+        ResponseMessage answer = new ResponseMessage(is);
+        System.err.println("Done reading message for releasequbit "+name);
     }
 
     static short appIdCounter = 0;

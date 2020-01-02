@@ -95,6 +95,10 @@ public class ResponseMessage {
             } else if (cmd == Protocol.CQC_TP_MEASOUT) {
                 this.measurement = dis.readByte();
                 System.err.println("got measurement: "+this.measurement);
+            } else if (cmd == Protocol.CQC_TP_RECV) {
+                short qid = dis.readShort();
+                this.qubitId = qid;
+                System.err.println("received qubit id "+qubitId);
             }
             else {
                 System.err.println("ignore payload len = "+len);
