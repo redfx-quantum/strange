@@ -84,6 +84,29 @@ public class CQCSession {
         return msg.getQubitId();
     }
 
+    public ResponseMessage receiveQubit() throws IOException{
+        sendCqcHeader(Protocol.CQC_TP_COMMAND, 4);
+        byte option = Protocol.CQC_OPT_NOTIFY | Protocol.CQC_OPT_BLOCK;
+        sendCommandHeader((short) 0, Protocol.CQC_CMD_RECV, option);
+        ResponseMessage msg = readMessage();
+        System.err.println("RCV Qubit, msg = "+msg);
+        ResponseMessage done = readMessage();
+        System.err.println("RCV Qubit, donemsg = "+done);
+        return msg;
+    }
+
+    public ResponseMessage sendQubit(int qid, short port) throws IOException {
+        sendCqcHeader(Protocol.CQC_TP_COMMAND, 12);
+        byte option = Protocol.CQC_OPT_NOTIFY | Protocol.CQC_OPT_BLOCK;
+        sendCommandHeader((short) qid, Protocol.CQC_CMD_SEND, option);
+        sendCommunicationHeader((short)0, port, 127*256*256*256+1);
+        ResponseMessage msg = readMessage();
+        System.err.println("SEND Qubit, msg = "+msg);
+        ResponseMessage done = readMessage();
+        System.err.println("SEND Qubit, donemsg = "+done);
+        return msg;
+    }
+
     // TODO return an EPR (create that class first)
     public ResponseMessage createEPR(String name, short port) throws IOException {
         sendCqcHeader(Protocol.CQC_TP_COMMAND, 12);

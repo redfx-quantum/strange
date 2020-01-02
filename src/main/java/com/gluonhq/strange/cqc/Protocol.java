@@ -44,6 +44,8 @@ public class Protocol {
 
     public static final byte CQC_CMD_NEW = 0x1;
     public static final byte CQC_CMD_MEASURE = 0x2;
+    public static final byte CQC_CMD_SEND = 0x5;
+    public static final byte CQC_CMD_RECV = 0x6;
     public static final byte CQC_CMD_EPR = 0x7;
     public static final byte CQC_CMD_EPR_RECV = 0x8;
     public static final byte CQC_CMD_X = 0xA;
