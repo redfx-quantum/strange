@@ -78,18 +78,14 @@ public class ResponseMessage {
                 throw new IOException("wrong protocol from server response");
             }
             byte cmd = dis.readByte();
-            System.err.println("CMD = "+cmd);
             this.type = cmd;
             short appId = dis.readShort();
             int len = dis.readInt();
-            System.err.println("len = "+len);
             if (cmd == Protocol.CQC_TP_NEW_OK) {
                 short qid = dis.readShort();
-                System.err.println("qid = "+qid);
                 this.qubitId = qid;
             } else if (cmd == Protocol.CQC_TP_EPR_OK) {
                 short qid = dis.readShort();
-                System.err.println("qid = "+qid);
                 this.qubitId = qid;
                 parseEntangledHeader(dis, len -2);
             } else if (cmd == Protocol.CQC_TP_MEASOUT) {

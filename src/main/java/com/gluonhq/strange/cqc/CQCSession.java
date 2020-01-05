@@ -84,15 +84,13 @@ public class CQCSession {
         return msg.getQubitId();
     }
 
-    public ResponseMessage receiveQubit() throws IOException{
+    public int receiveQubit() throws IOException{
         sendCqcHeader(Protocol.CQC_TP_COMMAND, 4);
         byte option = Protocol.CQC_OPT_NOTIFY | Protocol.CQC_OPT_BLOCK;
         sendCommandHeader((short) 0, Protocol.CQC_CMD_RECV, option);
         ResponseMessage msg = readMessage();
-        System.err.println("RCV Qubit, msg = "+msg);
         ResponseMessage done = readMessage();
-        System.err.println("RCV Qubit, donemsg = "+done);
-        return msg;
+        return msg.getQubitId();
     }
 
     public void sendQubit(int qid, short port) throws IOException {
@@ -104,7 +102,6 @@ public class CQCSession {
         if (Protocol.CQC_TP_DONE != done.getType()) {
             throw new IOException("Send should return done!");
         }
-        System.err.println("SEND Qubit, donemsg = "+done);
     }
 
     // TODO return an EPR (create that class first)
@@ -124,7 +121,6 @@ public class CQCSession {
         sendCommandHeader((short) 0, Protocol.CQC_CMD_EPR_RECV, option);
         ResponseMessage msg = readMessage();
         ResponseMessage done = readMessage();
-        System.err.println("that was a message of type "+done.getType());
         return msg;
     }
 
@@ -162,9 +158,7 @@ public class CQCSession {
         byte option = Protocol.CQC_OPT_BLOCK;
         sendCommandHeader((short) qid, Protocol.CQC_CMD_MEASURE, option);
         sendCQCAssignHeader(qid);
-        System.err.println("send measure command, read response");
         ResponseMessage done = readMessage();
-        System.err.println("got measure response");
         return done.getMeasurement();
     }
 
@@ -173,9 +167,7 @@ public class CQCSession {
             System.err.println("IS NULL!!!\n");
             is = socket.getInputStream();
         }
-        System.err.println("Reading message for "+name);
         ResponseMessage answer = new ResponseMessage(is);
-        System.err.println("Done reading message for "+name);
         return answer;
     }
 
