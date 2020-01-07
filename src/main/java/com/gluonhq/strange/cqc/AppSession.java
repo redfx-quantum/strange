@@ -63,13 +63,13 @@ public class AppSession {
         return this.os;
     }
 
-    public void close () throws IOException {
+    public void close() throws IOException {
         this.os.close();
         this.socket.close();
     }
 
 
-    public byte readByte() throws  IOException{
+    public byte readByte() throws IOException {
         return (byte) pis.read();
     }
 
@@ -77,8 +77,9 @@ public class AppSession {
         pis = new PipedInputStream(pos);
 
         ServerSocket serverSocket = new ServerSocket(port);
-        Thread serverThread = new Thread(){
-            @Override public void run() {
+        Thread serverThread = new Thread() {
+            @Override
+            public void run() {
                 try {
                     boolean go = true;
                     while (go) {
@@ -96,16 +97,16 @@ public class AppSession {
 
     private void processChildSocket(Socket socket) {
 
-                try {
-                    InputStream is = socket.getInputStream();
-                    int l = is.read();
-                    while (l > -1) {
-                        pos.write(l);
-                        l = is.read();
-                    }
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                }
+        try {
+            InputStream is = socket.getInputStream();
+            int l = is.read();
+            while (l > -1) {
+                pos.write(l);
+                l = is.read();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
 
     }
 

@@ -34,7 +34,6 @@ package com.gluonhq.strange.cqc;
 import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.gate.*;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,8 +43,8 @@ import java.net.Socket;
 public class CQCSession {
 
     private Socket socket;
-    private OutputStream os;
-    private InputStream is;
+    private OutputStream cqcOutputStream;
+    private InputStream cqcInputStream;
     private final short appId;
     private final String name;
 
@@ -64,11 +63,15 @@ public class CQCSession {
     }
 
     public void connect(String host, int port) throws IOException {
-        System.err.println("Connecting to "+host+":"+port);
-        Socket socket = new Socket(host, port);
+        connect(host, port, -1);
+    }
+
+    public void connect(String host, int cqcPort, int appPort) throws IOException {
+        System.err.println("Connecting to "+host+":"+cqcPort);
+        Socket socket = new Socket(host, cqcPort);
         System.err.println("socket created: "+socket);
         this.socket = socket;
-        this.os = socket.getOutputStream();
+        this.cqcOutputStream = socket.getOutputStream();
     }
 
     public void sendHello() throws IOException {
@@ -163,11 +166,11 @@ public class CQCSession {
     }
 
     public ResponseMessage readMessage() throws IOException {
-        if (is == null) {
+        if (cqcInputStream == null) {
             System.err.println("IS NULL!!!\n");
-            is = socket.getInputStream();
+            cqcInputStream = socket.getInputStream();
         }
-        ResponseMessage answer = new ResponseMessage(is);
+        ResponseMessage answer = new ResponseMessage(cqcInputStream);
         return answer;
     }
 
@@ -175,7 +178,7 @@ public class CQCSession {
         sendCqcHeader(Protocol.CQC_TP_COMMAND, 4);
         byte option = Protocol.CQC_OPT_NOTIFY | Protocol.CQC_OPT_BLOCK;
         sendCommandHeader((short) qid, Protocol.CQC_CMD_RELEASE, option);
-        ResponseMessage answer = new ResponseMessage(is);
+        ResponseMessage answer = new ResponseMessage(cqcInputStream);
         System.err.println("Done reading message for releasequbit "+name);
     }
 
@@ -191,7 +194,7 @@ public class CQCSession {
     private void sendCqcHeader(byte type, int len) throws IOException {
         int totalLength = len + 8;
 
-        DataOutputStream dos = new DataOutputStream(os);
+        DataOutputStream dos = new DataOutputStream(cqcOutputStream);
         dos.writeByte(Protocol.VERSION);
         dos.writeByte(type);
         dos.writeShort(appId);
@@ -200,7 +203,7 @@ public class CQCSession {
     }
 
     private void sendCommandHeader(short qubit_id, byte command, byte option) throws IOException {
-        DataOutputStream dos = new DataOutputStream(os);
+        DataOutputStream dos = new DataOutputStream(cqcOutputStream);
         dos.writeShort(qubit_id); // qubit_id
         dos.writeByte(command);
         dos.writeByte(option);
@@ -208,7 +211,7 @@ public class CQCSession {
     }
 
     private void sendCommunicationHeader(short appId, short port, int host) throws IOException {
-        DataOutputStream dos = new DataOutputStream(os);
+        DataOutputStream dos = new DataOutputStream(cqcOutputStream);
         dos.writeShort(appId);
         dos.writeShort(port);
         dos.writeInt(host);
@@ -216,13 +219,13 @@ public class CQCSession {
     }
 
     private void sendExtraQubitHeader(short extraQubit) throws IOException {
-        DataOutputStream dos = new DataOutputStream(os);
+        DataOutputStream dos = new DataOutputStream(cqcOutputStream);
         dos.writeShort(extraQubit);
         dos.flush();
     }
 
     private void sendCQCAssignHeader(int refId) throws IOException {
-        DataOutputStream dos = new DataOutputStream(os);
+        DataOutputStream dos = new DataOutputStream(cqcOutputStream);
         dos.writeInt(refId);
         dos.flush();
     }
