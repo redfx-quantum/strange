@@ -58,7 +58,7 @@ public class Qubit {
 
     /**
      * Creates a qubit with an initial value for alpha.
-     * The initial state of the qubit is ralpha |0&gt; + (1-ralpha^2)^(1/2) |1>
+     * The initial state of the qubit is ralpha |0&gt; + (1-ralpha^2)^(1/2) |1&gt;
      * @param ralpha the real part of the alpha coefficient in alfa |0&gt; + beta |1&gt;
      */
     public Qubit (double ralpha) {

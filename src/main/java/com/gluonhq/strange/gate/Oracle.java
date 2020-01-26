@@ -25,7 +25,8 @@ public class Oracle implements Gate {
      * Create an Oracle based on the provided matrix.
      * Elements in this matrix may be <code>null</code> in which case they will be
      * replaced by <code>Complex.ZERO</code>
-     * @param matrix
+     * @param matrix the matrix describing this Oracle. If elements in this matrix are <code>null</code>, they
+     *               will be replaced with <code>Complex.ZERO</code>.
      */
     public Oracle(Complex[][] matrix) {
         this.matrix = matrix;
