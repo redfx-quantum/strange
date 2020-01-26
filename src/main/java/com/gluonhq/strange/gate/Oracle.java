@@ -21,12 +21,20 @@ public class Oracle implements Gate {
         this.mainQubit = i;
     }
 
+    /**
+     * Create an Oracle based on the provided matrix.
+     * Elements in this matrix may be <code>null</code> in which case they will be
+     * replaced by <code>Complex.ZERO</code>
+     * @param matrix the matrix describing this Oracle. If elements in this matrix are <code>null</code>, they
+     *               will be replaced with <code>Complex.ZERO</code>.
+     */
     public Oracle(Complex[][] matrix) {
         this.matrix = matrix;
-        for (int i = 1; i < matrix.length;i++) {
+        sanitizeMatrix();
+        span = (int)(Math.log(matrix.length)/Math.log(2));
+        for (int i = 0; i < span;i++) {
             setAdditionalQubit(i,i);
         }
-        span = (int)(Math.log(matrix.length)/Math.log(2));
     }
 
     public void setCaption(String c) {
@@ -80,5 +88,18 @@ public class Oracle implements Gate {
     @Override
     public Complex[][] getMatrix() {
         return matrix;
+    }
+
+    // replace null with Complex.ZERO
+    private void sanitizeMatrix() {
+        int rows = matrix.length;
+        for (int i = 0;i < rows; i++) {
+            Complex[] row = matrix[i];
+            for (int j = 0; j < row.length; j++) {
+                if (matrix[i][j] == null) {
+                    matrix[i][j] = Complex.ZERO;
+                }
+            }
+        }
     }
 }
