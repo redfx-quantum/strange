@@ -37,16 +37,11 @@ import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Oracle;
-import com.gluonhq.strange.gate.X;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleTests extends BaseGateTests {
-
-    @Test
-    public void empty() {
-    }
 
     @Test
     public void createOracleMatrix() {
