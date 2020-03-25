@@ -52,4 +52,11 @@ public class SyntaxTests {
         }
         assertTrue(gotException);
     }
+
+    @Test
+    public void testNamedStep() {
+        Step s0 = new Step("Hello!");
+        Step s1 = new Step("foo", new Identity(0));
+        Step s2 = new Step(new Identity(0), new Identity(1));
+    }
 }

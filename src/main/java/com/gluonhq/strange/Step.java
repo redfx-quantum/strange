@@ -48,7 +48,7 @@ public class Step {
     
     private final ArrayList<Gate> gates = new ArrayList<>();
     private int index;
-    private String name = "unknown";
+    private final String name;
 
     private Program program;
     
@@ -57,7 +57,12 @@ public class Step {
 
     private boolean informal = false;
 
-    public Step( Gate... moreGates ) {
+    public Step(Gate... moreGates ) {
+        this("unknown", moreGates);
+    }
+
+    public Step(String name, Gate... moreGates ) {
+        this.name = name;
         addGates(moreGates);
     }
 
