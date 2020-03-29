@@ -265,6 +265,8 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         return a;
     }
 
+    // replaced by the similar function on Complex
+    @Deprecated
     public Complex[][] tensor(Complex[][] a, Complex[][] b) {
         int d1 = a.length;
         int d2 = b.length;
