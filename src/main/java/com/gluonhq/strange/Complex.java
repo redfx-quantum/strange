@@ -89,6 +89,47 @@ public final class Complex {
         return (this.r*this.r + this.i*this.i);
     }
     
+    /**
+     * Calculate the tensor product of matrix a and matrix b
+     * @param a
+     * @param b
+     * @return 
+     */
+    public static Complex[][] tensor(Complex[][] a, Complex[][] b) {
+        int d1 = a.length;
+        int d2 = b.length;
+        Complex[][] result = new Complex[d1 * d2][d1 * d2];
+        for (int rowa = 0; rowa < d1; rowa++) {
+            for (int cola = 0; cola < d1; cola++) {
+                for (int rowb = 0; rowb < d2; rowb++) {
+                    for (int colb = 0; colb < d2; colb++) {
+                        result[d2 * rowa + rowb][d2 * cola + colb] = a[rowa][cola].mul( b[rowb][colb]);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static Complex[][] mmul(Complex[][] a, Complex[][]b) {
+        int arow = a.length;
+        int acol = a[0].length;
+        int brow = b.length;
+        int bcol = b[0].length;
+        if (acol != brow) throw new RuntimeException("#cols a "+acol+" != #rows b "+brow);
+        Complex[][] answer = new Complex[arow][bcol];
+        for (int i = 0; i < arow; i++) {
+            for (int j = 0; j < bcol; j++) {
+                Complex el = Complex.ZERO;
+                for (int k = 0; k < acol;k++) {
+                    el = el.add(a[i][k].mul(b[k][j]));
+                }
+                answer[i][j] = el;
+            }
+        }
+        return answer;
+    }
+
     @Override 
     public String toString() {
         return "("+this.r+", "+this.i+")";

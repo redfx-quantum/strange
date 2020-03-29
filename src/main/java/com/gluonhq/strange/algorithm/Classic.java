@@ -31,13 +31,19 @@
  */
 package com.gluonhq.strange.algorithm;
 
+import com.gluonhq.strange.Complex;
+import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.QuantumExecutionEnvironment;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Hadamard;
+import com.gluonhq.strange.gate.Oracle;
+import com.gluonhq.strange.gate.ProbabilitiesGate;
 import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  *
@@ -54,4 +60,101 @@ public class Classic {
         return answer;
     }
     
+    /**
+     * Apply Grover's search algorithm to find the element from the supplied
+     * list that would evaluate the provided function to 1
+     * @param <T> the type of the element 
+     * @param list the list of all elements that need to be searched into
+     * @param function the function that, when evaluated, returns 0 for all
+     * elements except for the element that this method returns, which evaluation
+     * leads to 1.
+     * @return the single element from the provided list that, when evaluated
+     * by the function, returns 1.
+     */
+    public static<T> T search(List<T> list, Function<T, Integer> function) {
+        int size = list.size();
+        int n = (int) Math.ceil((Math.log(size)/Math.log(2)));
+        int N = 1 << n;
+        double cnt = Math.PI*Math.sqrt(N)/4;
+
+        Oracle oracle = createGroverOracle(n, list, function);
+                QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
+
+        Program p = new Program(n);
+        Step s0 = new Step();
+        for (int i = 0; i < n; i++) {
+            s0.addGate(new Hadamard(i));
+        }
+        p.addStep(s0);
+        oracle.setCaption("O");
+        Complex[][] dif = createDiffMatrix(n);
+        Oracle difOracle = new Oracle(dif);
+        difOracle.setCaption("D");
+        for (int i = 1; i < cnt; i++) {
+            Step s1 = new Step("Oracle "+i);
+            s1.addGate(oracle);
+            Step s2 = new Step("Diffusion "+i);
+            s2.addGate(difOracle);
+            Step s3 = new Step("Prob "+i);
+            s3.addGate(new ProbabilitiesGate(0));
+            p.addStep(s1);
+            p.addStep(s2);
+            p.addStep(s3);
+        }
+        System.out.println(" n = "+n+", steps = "+cnt);
+
+        Result res = qee.runProgram(p);
+        Complex[] probability = res.getProbability();
+        int winner = 0;
+        double wv = 0;
+        for (int i = 0 ; i < probability.length; i++) {
+            double a = probability[i].abssqr();
+            if (a > wv) {
+                wv = a;
+                winner = i;
+            }
+        }
+        System.err.println("winner = "+winner+" with prob "+wv);
+        return list.get(winner);
+    }
+
+    private static<T> Oracle createGroverOracle(int n, List<T> list, Function<T, Integer> function) {
+        int N = 1 << n;
+        Complex[][] matrix = new Complex[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                matrix[i][j] = (i!=j) ? Complex.ZERO : 
+                        function.apply(list.get(i)) == 0 ? 
+                        Complex.ONE : Complex.ONE.mul(-1);
+            }
+        }
+        return new Oracle(matrix);
+    }
+
+    private static Complex[][] createDiffMatrix(int n) {
+        int N = 1<<n;
+        Gate g = new Hadamard(0);
+        Complex[][] matrix = g.getMatrix();
+        Complex[][] h2 = matrix;
+        for (int i = 1; i < n; i++) {
+            h2 = Complex.tensor(h2, matrix);
+        }
+        Complex[][] I2 = new Complex[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j <N;j++) {
+                if (i!=j) {
+                    I2[i][j] = Complex.ZERO;
+                } else {
+                    I2[i][j] = Complex.ONE;
+                }
+            }
+        }
+        I2[0][0] = Complex.ONE.mul(-1);
+        int nd = n<<1;
+
+        Complex[][] inter1 = Complex.mmul(h2,I2);
+        Complex[][] dif = Complex.mmul(inter1, h2);
+        return dif;
+    }
+
 }
