@@ -65,7 +65,7 @@ public class ThreeQubitGateTests extends BaseGateTests {
                    
     @Test
     public void ToffoliGate1() {
-        // |100> -> |100>
+        // |001> -> |001>
         Program p = new Program(3,
             new Step(new X(2)),
             new Step(new Toffoli(2,1,0))
@@ -80,7 +80,7 @@ public class ThreeQubitGateTests extends BaseGateTests {
     
     @Test
     public void ToffoliGate2() {
-        // |110> -> |111>
+        // |011> -> |111>
         Program p = new Program(3,
            new Step(new X(2),new X(1)),
            new Step(new Toffoli(2,1,0)));
@@ -94,7 +94,7 @@ public class ThreeQubitGateTests extends BaseGateTests {
     
     @Test
     public void ToffoliGate3() {
-        // |111> -> |110>
+        // |111> -> |011>
         Program p = new Program(3,
             new Step(new X(2),new X(1),new X(0)),
             new Step(new Toffoli(2,1,0))
@@ -105,5 +105,108 @@ public class ThreeQubitGateTests extends BaseGateTests {
         assertEquals(0, qubits[0].measure());
         assertEquals(1, qubits[1].measure());
         assertEquals(1, qubits[2].measure());
+    }
+
+    @Test
+    public void ToffoliGate4() {
+        // |100> -> |100>
+        Program p = new Program(3,
+            new Step(new X(0)),
+            new Step(new Toffoli(2,1,0))
+        );
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(3, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(0, qubits[2].measure());
+    }
+
+    @Test
+    public void ToffoliGateR0() {
+        // |000> -> |000>
+        Program p = new Program(3, new Step(new Toffoli(0,1,2)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(3, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(0, qubits[2].measure());
+    }
+
+    @Test
+    public void ToffoliGateR1() {
+        // |001> -> |001>
+        Program p = new Program(3,
+            new Step(new X(2)),
+            new Step(new Toffoli(0,1,2))
+        );
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(3, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
+    }
+
+    @Test
+    public void ToffoliGateR2() {
+        // |110> -> |111>
+        Program p = new Program(3,
+           new Step(new X(0),new X(1)),
+           new Step(new Toffoli(0, 1, 2)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(3, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
+    }
+
+    @Test
+    public void ToffoliGateR3() {
+        // |011> -> |111>
+        Program p = new Program(4,
+           new Step(new X(2),new X(3)),
+           new Step(new Toffoli(3, 2, 1)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(4, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
+        assertEquals(1, qubits[3].measure());
+    }
+
+    @Test
+    public void ToffoliGateR4() {
+        System.err.println("R4");
+        // |0011> -> |1011>
+        Program p = new Program(4,
+           new Step(new X(2),new X(3)),
+           new Step(new Toffoli(3, 2, 0)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(4, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
+        assertEquals(1, qubits[3].measure());
+    }
+
+    @Test
+    public void ToffoliGateS2() {
+        System.err.println("S2");
+        // |1010> -> |1011>
+        Program p = new Program(4,
+           new Step(new X(0),new X(2)),
+           new Step(new Toffoli(0, 2, 3)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(4, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
+        assertEquals(1, qubits[3].measure());
     }
 }

@@ -192,10 +192,52 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 int first = tqg.getMainQubit();
                 int second = tqg.getSecondQubit();
                 int third = tqg.getThirdQubit();
+                int sFirst = first;
+                int sSecond = second;
+                int sThird = third;
                 if ((first == second + 1) && (second == third + 1)) {
                     firstGates.add(gate);
                 } else {
-                    throw new RuntimeException("ThreeQubit Gate should have qubits in order 1-2-3");
+                    int p0idx = 0;
+                    int maxs = Math.max(second, third);
+                    if (first < maxs) {
+                        PermutationGate pg = new PermutationGate(first, maxs, nqubit);
+                        Step prePermutation = new Step(pg);
+                        Step postPermutation = new Step(pg);
+                        answer.add(p0idx, prePermutation);
+                        answer.add(answer.size()-p0idx, postPermutation);
+                        p0idx++;
+                        postPermutation.setComplexStep(s.getIndex());
+                        s.setComplexStep(-1);
+                        sFirst = maxs;
+                        if (second > third) {
+                            sSecond = first;
+                        } else {
+                            sThird = first;
+                        }
+                    }
+                    if (sSecond != sFirst -1) {
+                        PermutationGate pg = new PermutationGate(sFirst - 1, sSecond, nqubit);
+                        Step prePermutation = new Step(pg);
+                        Step postPermutation = new Step(pg);
+                        answer.add(p0idx, prePermutation);
+                        answer.add(answer.size()-p0idx, postPermutation);
+                        p0idx++;
+                        postPermutation.setComplexStep(s.getIndex());
+                        s.setComplexStep(-1);
+                        sSecond = sFirst -1;
+                    }
+                    if (sThird != sFirst -2) {
+                        PermutationGate pg = new PermutationGate(sFirst - 2, sThird, nqubit);
+                        Step prePermutation = new Step(pg);
+                        Step postPermutation = new Step(pg);
+                        answer.add(p0idx, prePermutation);
+                        answer.add(answer.size()-p0idx, postPermutation);
+                        p0idx++;
+                        postPermutation.setComplexStep(s.getIndex());
+                        s.setComplexStep(-1);
+                        sThird = sFirst -2;
+                    }
                 }
             }
             else {
@@ -237,7 +279,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                         gate -> gate.getHighestAffectedQubitIndex() == cnt )
                     .findFirst()
                     .orElse(new Identity(idx));
-
             if (myGate instanceof SingleQubitGate) {
                 SingleQubitGate sqg = (SingleQubitGate)myGate;
                 a = tensor(a, sqg.getMatrix());
@@ -282,7 +323,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         }
         return result;
     }
-        
+
     private double[] calculateQubitStatesFromVector(Complex[] vectorresult) {
         int nq = (int) Math.round(Math.log(vectorresult.length) / Math.log(2));
         double[] answer = new double[nq];
