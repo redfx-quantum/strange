@@ -31,6 +31,7 @@
  */
 package com.gluonhq.strange.local;
 
+import com.gluonhq.strange.BlockGate;
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
@@ -149,7 +150,9 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 s.setInformalStep(true);
                 return answer;
             }
-            if (gate instanceof SingleQubitGate) {
+            if (gate instanceof BlockGate) {
+                firstGates.add(gate);
+            } else if (gate instanceof SingleQubitGate) {
                 firstGates.add(gate);
             } else if (gate instanceof TwoQubitGate) {
                 TwoQubitGate tqg = (TwoQubitGate) gate;
@@ -268,42 +271,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
     
     private Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits) {
-        Complex[][] a = new Complex[1][1];
-        a[0][0] = Complex.ONE;
-        int idx = nQubits-1;
-        while (idx >= 0) {
-            final int cnt = idx;
-            Gate myGate = gates.stream()
-                    .filter(
-                   // gate -> gate.getAffectedQubitIndex().contains(cnt)
-                        gate -> gate.getHighestAffectedQubitIndex() == cnt )
-                    .findFirst()
-                    .orElse(new Identity(idx));
-            if (myGate instanceof SingleQubitGate) {
-                SingleQubitGate sqg = (SingleQubitGate)myGate;
-                a = tensor(a, sqg.getMatrix());
-            }
-            if (myGate instanceof TwoQubitGate) {
-                TwoQubitGate tqg = (TwoQubitGate)myGate;
-                a = tensor(a, tqg.getMatrix());
-                idx--;
-            }
-            if (myGate instanceof ThreeQubitGate) {
-                ThreeQubitGate tqg = (ThreeQubitGate)myGate;
-                a = tensor(a, tqg.getMatrix());
-                idx = idx-2;
-            }
-            if (myGate instanceof PermutationGate) {
-                a = tensor(a, myGate.getMatrix());
-                idx = 0;
-            }
-            if (myGate instanceof Oracle) {
-                a = myGate.getMatrix();
-                idx = 0;
-            }
-            idx--;
-        }
-        return a;
+        return Computations.calculateStepMatrix(gates, nQubits);
     }
 
     // replaced by the similar function on Complex
