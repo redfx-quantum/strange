@@ -143,4 +143,8 @@ public class Step {
         }
     }
 
+    @Override public String toString() {
+        return "Step with gates "+this.gates;
+    }
+
 }
