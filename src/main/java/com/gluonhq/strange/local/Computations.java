@@ -92,7 +92,7 @@ public class Computations {
             }
             idx--;
         }
-        printMatrix(a);
+      //  printMatrix(a);
         return a;
     }
     
