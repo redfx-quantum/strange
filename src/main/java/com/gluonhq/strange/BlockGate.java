@@ -35,6 +35,8 @@ import com.gluonhq.strange.local.Computations;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -63,7 +65,7 @@ public class BlockGate implements Gate {
 
     @Override
     public int getMainQubitIndex() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return idx;
     }
 
     @Override
@@ -73,7 +75,7 @@ public class BlockGate implements Gate {
 
     @Override
     public List<Integer> getAffectedQubitIndexes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return IntStream.range(idx, idx+block.getNQubits()).boxed().collect(Collectors.toList());
     }
 
     @Override
@@ -84,17 +86,17 @@ public class BlockGate implements Gate {
 
     @Override
     public String getCaption() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "B";
     }
 
     @Override
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "BlockGate";
     }
 
     @Override
     public String getGroup() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "BlockGroup";
     }
 
     @Override
