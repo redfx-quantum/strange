@@ -49,18 +49,18 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class BlockTests extends BaseGateTests {
 
-  //  @Test
+    @Test
     public void empty() {
     }
 
- //   @Test
+    @Test
     public void createBlock() {
         Block block = new Block(1);
         block.addGate(Gate.identity(0));
         BlockGate gate = new BlockGate(block, 0);
     }
 
-   // @Test
+    @Test
     public void addWrongIndex() {
         Block block = new Block(2);
         block.addGate(Gate.x(0));
@@ -73,7 +73,7 @@ public class BlockTests extends BaseGateTests {
         block.addGate(Gate.x(1));
     }
 
-  //  @Test
+    @Test
     public void createBlockInProgram() {
         Block block = new Block(1);
         block.addGate(Gate.identity(0));
@@ -96,4 +96,33 @@ public class BlockTests extends BaseGateTests {
         Qubit[] qubits = result.getQubits();
         assertEquals(1, qubits[0].measure());
     }
+        
+    @Test
+    public void createXBlockInProgramAddPos2() {
+        Block block = new Block(1);
+        block.addGate(Gate.x(0));
+        BlockGate gate = new BlockGate(block, 1);
+        Program p = new Program(2);
+        p.addStep(new Step(gate));
+        Result result = runProgram(p);
+        Qubit[] qubits = result.getQubits();
+        assertEquals(1, qubits[1].measure());
+        assertEquals(0, qubits[0].measure());
+    }
+
+    @Test
+    public void createXXBlockInProgramAddPos2() {
+        Block block = new Block(1);
+        block.addGate(Gate.x(0));
+        BlockGate gate = new BlockGate(block, 1);
+        BlockGate gate2 = new BlockGate(block, 0);
+        BlockGate gate3 = new BlockGate(block, 1);
+        Program p = new Program(2);
+        p.addSteps(new Step(gate), new Step(gate2), new Step(gate3));
+        Result result = runProgram(p);
+        Qubit[] qubits = result.getQubits();
+        assertEquals(0, qubits[1].measure());
+        assertEquals(1, qubits[0].measure());
+    }
+
 }
