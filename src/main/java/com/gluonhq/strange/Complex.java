@@ -130,6 +130,12 @@ public final class Complex {
         return answer;
     }
 
+    public static void printArray(Complex[] ca) {
+        System.err.println("complex["+ca.length+"]: ");
+        for (Complex c: ca){
+            System.err.println("-> "+c);
+        }
+    }
     @Override 
     public String toString() {
         return "("+this.r+", "+this.i+")";

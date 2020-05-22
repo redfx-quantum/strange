@@ -103,7 +103,6 @@ public class Step {
     }
     
     public void setComplexStep(int idx) {
-        System.err.println("Set complex step to "+idx+" for "+this);
         this.complexStep = idx;
     }
     
