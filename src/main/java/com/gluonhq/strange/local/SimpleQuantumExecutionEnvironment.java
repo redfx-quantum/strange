@@ -150,9 +150,9 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         }
         System.err.println("APPLY STEP "+step);
         System.err.println("MATRIX = ");
-        printMatrix(a);
+      //  printMatrix(a);
         System.err.println("PRE PROBS = ");
-        printProbs(vector);
+       // printProbs(vector);
         for (int i = 0; i < vector.length; i++) {
             result[i] = Complex.ZERO;
             for (int j = 0; j < vector.length; j++) {

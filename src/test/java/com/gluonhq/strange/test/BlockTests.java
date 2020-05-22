@@ -158,8 +158,8 @@ public class BlockTests extends BaseGateTests {
     
     @Test
     public void compareBlock() {
-        for (int a = 1; a < 2; a++) {
-            for (int b = 0; b < 1; b++) {
+        for (int a = 0; a < 4; a++) {
+            for (int b = 0; b < 4; b++) {
                 Step prep = new Step();
                 if (a % 2 == 1) {
                     prep.addGate(new X(1));
@@ -167,27 +167,26 @@ public class BlockTests extends BaseGateTests {
                 if (b % 2 == 1) {
                     prep.addGate(new X(2));
                 }
-
                 if (a / 2 == 1) {
                     prep.addGate(new X(4));
                 }
                 if (b / 2 == 1) {
                     prep.addGate(new X(5));
                 }
-                Program p = new Program(4);
+                Program p = new Program(7);
                 Step s0 = new Step(new Toffoli(1, 2, 3));
                 Step s1 = new Step(new Cnot(1, 2));
-          //      Step s2 = new Step(new Toffoli(0, 2, 3));
-                p.addSteps(prep, s0);//, s1);//, s2);
+                Step s2 = new Step(new Toffoli(0, 2, 3));
+                p.addSteps(prep, s0, s1, s2);
                 Result normal = runProgram(p);
                 Qubit[] normalQ = normal.getQubits();
                 System.err.println("CREATE BLOCK NOW");
                 Block carry = new Block("carry", 4);
                 carry.addStep(new Step(new Toffoli(1, 2, 3)));
                 carry.addStep(new Step(new Cnot(1, 2)));
-           //     carry.addStep(new Step(new Toffoli(0, 2, 3)));
+                carry.addStep(new Step(new Toffoli(0, 2, 3)));
 
-                Program bp = new Program(4);
+                Program bp = new Program(7);
                 Step bs0 = new Step(new BlockGate(carry, 0));
                 bp.addSteps(prep, bs0);
                 Result blockResult = runProgram(bp);
@@ -206,17 +205,16 @@ public class BlockTests extends BaseGateTests {
         for (int a = 1; a < 2; a++) {
             for (int b = 0; b < 1; b++) {
                 Step prep = new Step();
-             //   if (a % 2 == 1) {
+                if (a % 2 == 1) {
                     prep.addGate(new X(1));
-             //   }
-//                if (b % 2 == 1) {
-//                    prep.addGate(new X(2));
-//                }
+                }
+                if (b % 2 == 1) {
+                    prep.addGate(new X(2));
+                }
 
-
-                Program p = new Program(3);
+                Program p = new Program(4);
              
-                Step s0 = new Step(new Toffoli(2,1,0));
+                Step s0 = new Step(new Toffoli(1,2,3));
                 Step s1 = new Step(new Cnot(1, 2));
                 p.addSteps(prep, s0, s1);
                 Result normal = runProgram(p);
@@ -224,13 +222,14 @@ public class BlockTests extends BaseGateTests {
                 System.err.println("q0 = "+normalQ[0].measure());
                 System.err.println("q1 = "+normalQ[1].measure());
                 System.err.println("q2 = "+normalQ[2].measure());
-                System.err.println("CREATE BLOCK NOW");
-                Block carry = new Block("carry", 3);
-                carry.addStep(new Step(new Toffoli(2, 1, 0)));
+                
+                System.err.println("\nCREATE BLOCK NOW");
+                Block carry = new Block("carry", 4);
+                carry.addStep(new Step(new Toffoli(1,2,3)));
                 carry.addStep(new Step(new Cnot(1, 2)));
 
 
-                Program bp = new Program(3);
+                Program bp = new Program(4);
                 Step bs0 = new Step(new BlockGate(carry, 0));
                 bp.addSteps(prep, bs0);
                 Result blockResult = runProgram(bp);
