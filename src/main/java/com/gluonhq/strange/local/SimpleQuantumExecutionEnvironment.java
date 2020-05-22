@@ -128,6 +128,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         }
     }
 
+
     private List<Step> decomposeSteps(List<Step> steps) {
         return steps;
     }
@@ -153,6 +154,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     
     private Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits) {
         return Computations.calculateStepMatrix(gates, nQubits);
+
     }
 
     // replaced by the similar function on Complex
