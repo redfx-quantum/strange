@@ -101,8 +101,16 @@ public class BlockGate implements Gate {
 
     @Override
     public Complex[][] getMatrix() {
-        Complex[][] answer = Computations.calculateStepMatrix(block.getGates(), block.getNQubits());
+        Complex[][] answer = block.getMatrix();
         return answer;
+    }
+    
+    public int getSize() {
+        return block.getNQubits();
+    }
+    
+    @Override public String toString() {
+        return "Gate for block "+block;
     }
 
     

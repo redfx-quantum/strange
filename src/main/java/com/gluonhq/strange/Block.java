@@ -31,7 +31,9 @@
  */
 package com.gluonhq.strange;
 
+import com.gluonhq.strange.local.Computations;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,21 +42,37 @@ import java.util.List;
  */
 public class Block {
 
-    List<Gate> gates = new ArrayList<>();
+//    List<Gate> gates = new ArrayList<>();
+    List<Step> steps = new ArrayList<>();
     private final int nqubits;
+    private Complex[][] matrix = null;
+    private final String name;
 
     public Block(int size) {
+        this ("anonymous", size);
+    }
+    public Block(String name, int size) {
         this.nqubits = size;
+        this.name = name;
     }
     
-    public void addGate(Gate gate) {
-        validateGate(gate);
-        gates.add(gate);
+    public void addStep(Step step) {
+        this.steps.add(step);
+        matrix = null;
     }
     
-    public List<Gate> getGates() {
-        return this.gates;
+    public List<Step> getSteps() {
+        return this.steps;
     }
+//    
+//    public void addGate(Gate gate) {
+//        validateGate(gate);
+//        gates.add(gate);
+//    }
+//    
+//    public List<Gate> getGates() {
+//        return this.gates;
+//    }
     
     public int getNQubits() {
         return this.nqubits;
@@ -66,5 +84,31 @@ public class Block {
             throw new IllegalArgumentException("Can't add a gate with qubit index larger than block size");
         });
     }
+
+    Complex[][] getMatrix() {
+        if (matrix == null) {
+            System.err.println("Need to construct matrix for "+this);
+            List<Step> simpleSteps = new ArrayList<>();
+            for (Step step : steps) {
+                simpleSteps.addAll(Computations.decomposeStep(step, nqubits));
+            }
+            Collections.reverse(simpleSteps);
+            for (Step step: simpleSteps) {
+                Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits);
+                System.err.println("dimension of m = "+m.length);
+                if (matrix == null) {
+                    matrix = m;
+                } else {
+                    matrix = Complex.mmul(matrix, m);
+                }
+                System.err.println("dimension of matrix = "+matrix.length);
+            }
+            System.err.println("Did construct matrix.");
+        }
+        return matrix;
+    }
     
+    @Override public String toString() {
+        return "Block named "+name+" at "+super.toString();
+    }
 }
