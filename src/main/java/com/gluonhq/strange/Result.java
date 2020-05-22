@@ -55,8 +55,6 @@ public class Result {
     public Result(Qubit[] q, Complex[] p) {
         this.qubits = q;
         this.probability = p;
-        System.err.println("Created result");
-        Thread.dumpStack();
     }
     
     public Qubit[] getQubits() {
@@ -68,7 +66,6 @@ public class Result {
     }
 
     private Qubit[] calculateQubits() {
-        System.err.println("calcQubits");
         Qubit[] answer = new Qubit[nqubits];
         if (nqubits == 0) {
             return answer;
@@ -87,8 +84,6 @@ public class Result {
     
     public void setIntermediateProbability(int step, Complex[] p) {
         this.intermediates[step] = p;
-        System.err.println("SIP for step "+step + " to ");
-      //  Complex.printArray(p);
         if ((step == nsteps -1) || (nsteps == 0)) { // in case we have no steps, this is the final result
             this.probability = p;
         }
@@ -131,10 +126,8 @@ public class Result {
         double[] probamp = new double[ressize];
         double probtot = 0;
         // we don't need all probabilities, but we might use this later
-        System.err.println("RESSIZE = "+ressize);
         for (int i = 0; i < ressize; i++) {
             probamp[i] = this.probability[i].abssqr();
-       //     System.err.println("pa = "+probamp[i]);
         }
         int sel = 0;
         probtot = probamp[0];

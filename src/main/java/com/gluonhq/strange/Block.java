@@ -42,7 +42,6 @@ import java.util.List;
  */
 public class Block {
 
-//    List<Gate> gates = new ArrayList<>();
     List<Step> steps = new ArrayList<>();
     private final int nqubits;
     private Complex[][] matrix = null;
@@ -64,15 +63,6 @@ public class Block {
     public List<Step> getSteps() {
         return this.steps;
     }
-//    
-//    public void addGate(Gate gate) {
-//        validateGate(gate);
-//        gates.add(gate);
-//    }
-//    
-//    public List<Gate> getGates() {
-//        return this.gates;
-//    }
     
     public int getNQubits() {
         return this.nqubits;
@@ -87,7 +77,6 @@ public class Block {
 
     Complex[][] getMatrix() {
         if (matrix == null) {
-            System.err.println("Need to construct matrix for "+this);
             List<Step> simpleSteps = new ArrayList<>();
             for (Step step : steps) {
                 simpleSteps.addAll(Computations.decomposeStep(step, nqubits));
@@ -95,15 +84,12 @@ public class Block {
             Collections.reverse(simpleSteps);
             for (Step step: simpleSteps) {
                 Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits);
-                System.err.println("dimension of m = "+m.length);
                 if (matrix == null) {
                     matrix = m;
                 } else {
                     matrix = Complex.mmul(matrix, m);
                 }
-                System.err.println("dimension of matrix = "+matrix.length);
             }
-            System.err.println("Did construct matrix.");
         }
         return matrix;
     }

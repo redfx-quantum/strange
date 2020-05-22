@@ -123,7 +123,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
 
     private void printProbs(Complex[] p) {
-        System.err.println("\n");
         for (int i = 0; i < p.length; i++) {
             System.err.println("Probabiliy["+i+"]: "+p[i]);
         }
@@ -134,7 +133,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
     
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
-        System.err.println("SQEE, apply step, step = "+step);
         List<Gate> gates = step.getGates();
         if (!gates.isEmpty() && gates.get(0) instanceof ProbabilitiesGate ) {
             return vector;
@@ -142,17 +140,8 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         Complex[][] a = calculateStepMatrix(gates, qubits.length);
         Complex[] result = new Complex[vector.length];
         if (a.length != result.length) {
-            System.err.println("a.length = "+a.length);
-            System.err.println("STEP = "+step);
-            System.err.println("Gates = "+gates);
-            System.err.println("ql = "+qubits.length);
             throw new RuntimeException ("Wrong length of matrix or probability vector");
         }
-        System.err.println("APPLY STEP "+step);
-        System.err.println("MATRIX = ");
-      //  printMatrix(a);
-        System.err.println("PRE PROBS = ");
-       // printProbs(vector);
         for (int i = 0; i < vector.length; i++) {
             result[i] = Complex.ZERO;
             for (int j = 0; j < vector.length; j++) {

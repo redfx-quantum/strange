@@ -56,17 +56,14 @@ public class Computations {
         Complex[][] a = new Complex[1][1];
         a[0][0] = Complex.ONE;
         int idx = nQubits-1;
-        System.err.println("calculatestepmatrix for gates = "+gates);
         while (idx >= 0) {
             final int cnt = idx;
-            System.err.println("cnt = "+cnt);
             Gate myGate = gates.stream()
                     .filter(
                    // gate -> gate.getAffectedQubitIndex().contains(cnt)
                         gate -> gate.getHighestAffectedQubitIndex() == cnt )
                     .findFirst()
                     .orElse(new Identity(idx));
-            System.err.println("Gate ? "+myGate);
             if (myGate instanceof BlockGate) {
                 BlockGate sqg = (BlockGate)myGate;
                 a = tensor(a, sqg.getMatrix());

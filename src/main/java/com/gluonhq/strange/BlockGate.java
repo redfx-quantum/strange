@@ -80,7 +80,6 @@ public class BlockGate implements Gate {
 
     @Override
     public int getHighestAffectedQubitIndex() {
-        System.err.println("BG, idx = "+idx+" and nq = "+block.getNQubits());
         return block.getNQubits()+idx-1;
     }
 
