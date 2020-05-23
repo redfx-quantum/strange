@@ -144,5 +144,12 @@ public class FourierTest extends BaseGateTests {
         Qubit[] qubits = res.getQubits();
         assertEquals(0, qubits[0].measure()); 
     }
-
+    
+    @Test
+    public void InvFourierProgram() {
+        Program p = new Program(1, new Step(new Fourier(1, 0)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(0, qubits[0].measure()); 
+    }
 }
