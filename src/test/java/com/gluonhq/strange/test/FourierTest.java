@@ -63,20 +63,9 @@ public class FourierTest extends BaseGateTests {
     @Test
     public void createFourierOne() {
         Fourier f = new Fourier(1,0);
-        f.getMatrix();
-        Complex[][] a = f.getMatrix();
-        assertEquals(a.length, 1);
-        Complex val = a[0][0];
-        assertEquals(val.i, 0);
-        assertEquals(val.r, 1);
-    }
-
-    @Test
-    public void createFourierTwo() {
-        Fourier f = new Fourier(2,0);
         double den = Math.sqrt(2);
         Complex[][] a = f.getMatrix();
-        assertEquals(a.length, 2);
+        assertEquals(2, a.length);
         Complex val = a[0][0];
         assertEquals(val.i, 0);
         assertEquals(val.r, 1/den);
@@ -90,10 +79,10 @@ public class FourierTest extends BaseGateTests {
         assertEquals(val.i,0, D);
         assertEquals(val.r,-1/den, D);
     }
-  
+
     @Test
-    public void createFourierFour() {
-        Fourier f = new Fourier(4,0);
+    public void createFourierTwo() {
+        Fourier f = new Fourier(2,0);
         f.getMatrix();
         Complex[][] a = f.getMatrix();
         assertEquals(a.length, 4);
@@ -148,7 +137,7 @@ public class FourierTest extends BaseGateTests {
     }
     
     
-  //  @Test
+    @Test
     public void FourierProgram() {
         Program p = new Program(1, new Step(new Fourier(1, 0)));
         Result res = runProgram(p);

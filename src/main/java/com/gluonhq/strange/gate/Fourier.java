@@ -38,16 +38,18 @@ import com.gluonhq.strange.Complex;
 public class Fourier extends BlockGate {
 
     private Complex[][] matrix = null;
+    private int dim;
     private int size;
     
     /**
      * Create a Fourier gate with the given size (dimensions), starting at idx
-     * @param size number of qubits affected by this gate
+     * @param dim number of qubits affected by this gate
      * @param idx the index of the first qubit in the circuit affected by this gate
      */
-    public Fourier(int size, int idx) {
-        super(new Block("Fourier", size), idx);
-        this.size = size;
+    public Fourier(int dim, int idx) {
+        super(new Block("Fourier", 1 << dim), idx);
+        this.dim = dim;
+        this.size = 1 <<dim;
     }
     
     
