@@ -35,10 +35,7 @@ import com.gluonhq.strange.Block;
 import com.gluonhq.strange.BlockGate;
 import com.gluonhq.strange.Complex;
 
-public class InvFourier extends BlockGate {
-
-    private Complex[][] matrix = null;
-    private int size;
+public class InvFourier extends Fourier {
     
     /**
      * Create a Fourier gate with the given size (dimensions), starting at idx
@@ -46,8 +43,8 @@ public class InvFourier extends BlockGate {
      * @param idx the index of the first qubit in the circuit affected by this gate
      */
     public InvFourier(int size, int idx) {
-        super(new Block("Fourier", size), idx);
-        this.size = size;
+        super(size, idx);
+      //  super(new Block("Fourier", size), idx);
     }
     
     
@@ -60,8 +57,6 @@ public class InvFourier extends BlockGate {
             for (int i = 0; i < size; i++) {
                 for (int j = i; j < size; j++) {
                     double alpha = omega *i *j;
-                    System.err.println("i = "+i+" and j = "+j+" and alpha = "+alpha);
-                    System.err.println("sin = "+Math.sin(alpha)+" and cos = "+Math.cos(alpha));
                     matrix[i][j] = new Complex(Math.cos(alpha)/den, -1*Math.sin(alpha)/den);
                 }
                 for (int k = 0; k < i; k++) {

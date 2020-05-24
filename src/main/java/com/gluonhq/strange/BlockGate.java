@@ -46,7 +46,7 @@ import java.util.stream.IntStream;
 public class BlockGate implements Gate {
 
     private final Block block;
-    private final int idx;
+    protected final int idx;
     
     /**
      * Create a block 

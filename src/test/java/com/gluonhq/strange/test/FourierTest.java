@@ -42,6 +42,7 @@ import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Cnot;
 import com.gluonhq.strange.gate.Fourier;
 import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.gate.InvFourier;
 import com.gluonhq.strange.gate.Toffoli;
 import com.gluonhq.strange.gate.X;
 
@@ -141,15 +142,22 @@ public class FourierTest extends BaseGateTests {
     public void FourierProgram() {
         Program p = new Program(1, new Step(new Fourier(1, 0)));
         Result res = runProgram(p);
-        Qubit[] qubits = res.getQubits();
-        assertEquals(0, qubits[0].measure()); 
+        Complex[] probability = res.getProbability();
+        assertEquals (2, probability.length);
+        assertEquals(.5, probability[0].abssqr(),D);
+        assertEquals(.5, probability[1].abssqr(),D  );
     }
     
     @Test
     public void InvFourierProgram() {
-        Program p = new Program(1, new Step(new Fourier(1, 0)));
+        Step prep = new Step(new X(1));
+        Program p = new Program(2,
+                prep,
+                new Step(new Fourier(2, 0)),
+                new Step(new InvFourier(2,0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(0, qubits[0].measure()); 
+        assertEquals(1, qubits[1].measure()); 
     }
 }

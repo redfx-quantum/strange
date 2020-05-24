@@ -141,7 +141,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         Complex[][] a = calculateStepMatrix(gates, qubits.length);
         Complex[] result = new Complex[vector.length];
         if (a.length != result.length) {
-            throw new RuntimeException ("Wrong length of matrix or probability vector");
+            throw new RuntimeException ("Wrong length of matrix or probability vector: expected "+result.length+" but got "+a.length);
         }
         for (int i = 0; i < vector.length; i++) {
             result[i] = Complex.ZERO;

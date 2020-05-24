@@ -34,12 +34,15 @@ package com.gluonhq.strange.gate;
 import com.gluonhq.strange.Block;
 import com.gluonhq.strange.BlockGate;
 import com.gluonhq.strange.Complex;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Fourier extends BlockGate {
 
-    private Complex[][] matrix = null;
-    private int dim;
-    private int size;
+    protected Complex[][] matrix = null;
+    protected int dim;
+    protected int size;
     
     /**
      * Create a Fourier gate with the given size (dimensions), starting at idx
@@ -62,8 +65,6 @@ public class Fourier extends BlockGate {
             for (int i = 0; i < size; i++) {
                 for (int j = i; j < size; j++) {
                     double alpha = omega *i *j;
-                    System.err.println("i = "+i+" and j = "+j+" and alpha = "+alpha);
-                    System.err.println("sin = "+Math.sin(alpha)+" and cos = "+Math.cos(alpha));
                     matrix[i][j] = new Complex(Math.cos(alpha)/den, Math.sin(alpha)/den);
                 }
                 for (int k = 0; k < i; k++) {
@@ -72,5 +73,15 @@ public class Fourier extends BlockGate {
             }
         }
         return matrix;
+    }
+
+    @Override
+    public List<Integer> getAffectedQubitIndexes() {
+        return IntStream.range(idx, idx+dim).boxed().collect(Collectors.toList());
+    }
+
+    @Override
+    public int getHighestAffectedQubitIndex() {
+        return dim+idx-1;
     }
 }
