@@ -31,19 +31,13 @@
  */
 package com.gluonhq.strange.test;
 
-import com.gluonhq.strange.Block;
-import com.gluonhq.strange.BlockGate;
 import com.gluonhq.strange.Complex;
-import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
-import com.gluonhq.strange.gate.Cnot;
 import com.gluonhq.strange.gate.Fourier;
-import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.InvFourier;
-import com.gluonhq.strange.gate.Toffoli;
 import com.gluonhq.strange.gate.X;
 
 import org.junit.jupiter.api.Test;
@@ -57,9 +51,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FourierTest extends BaseGateTests {
 
     static final double D = 0.000000001d;
-    @Test
-    public void empty() {
-    }
 
     @Test
     public void createFourierOne() {
@@ -139,7 +130,7 @@ public class FourierTest extends BaseGateTests {
     
     
     @Test
-    public void FourierProgram() {
+    public void fourierProgram() {
         Program p = new Program(1, new Step(new Fourier(1, 0)));
         Result res = runProgram(p);
         Complex[] probability = res.getProbability();
@@ -149,7 +140,7 @@ public class FourierTest extends BaseGateTests {
     }
     
     @Test
-    public void InvFourierProgram() {
+    public void invFourierProgram() {
         Step prep = new Step(new X(1));
         Program p = new Program(2,
                 prep,

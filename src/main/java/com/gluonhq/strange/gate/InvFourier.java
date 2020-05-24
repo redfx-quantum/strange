@@ -31,8 +31,6 @@
  */
 package com.gluonhq.strange.gate;
 
-import com.gluonhq.strange.Block;
-import com.gluonhq.strange.BlockGate;
 import com.gluonhq.strange.Complex;
 
 public class InvFourier extends Fourier {
