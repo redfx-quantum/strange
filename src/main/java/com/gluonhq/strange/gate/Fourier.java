@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Gluon Software
+ * Copyright (c) 2018, 2019, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,88 +29,59 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange;
+package com.gluonhq.strange.gate;
 
-import com.gluonhq.strange.local.Computations;
-import java.util.ArrayList;
-
+import com.gluonhq.strange.Block;
+import com.gluonhq.strange.BlockGate;
+import com.gluonhq.strange.Complex;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- *
- * A Gate describes an operation on one or more qubits.
- * @author johan
- */
-public class BlockGate implements Gate {
+public class Fourier extends BlockGate {
 
-    private final Block block;
-    protected final int idx;
+    protected Complex[][] matrix = null;
+    protected int dim;
+    protected int size;
     
     /**
-     * Create a block 
-     * @param block
-     * @param idx
+     * Create a Fourier gate with the given size (dimensions), starting at idx
+     * @param dim number of qubits affected by this gate
+     * @param idx the index of the first qubit in the circuit affected by this gate
      */
-    public BlockGate (Block block, int idx) {
-        this.block = block;
-        this.idx = idx;
+    public Fourier(int dim, int idx) {
+        super(new Block("Fourier", 1 << dim), idx);
+        this.dim = dim;
+        this.size = 1 <<dim;
     }
     
+    
     @Override
-    public void setMainQubitIndex(int idx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getMainQubitIndex() {
-        return idx;
-    }
-
-    @Override
-    public void setAdditionalQubit(int idx, int cnt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Complex[][] getMatrix() {
+        if (matrix == null) {
+            double omega = Math.PI*2/size;
+            double den = Math.sqrt(size);
+            matrix = new Complex[size][size];
+            for (int i = 0; i < size; i++) {
+                for (int j = i; j < size; j++) {
+                    double alpha = omega *i *j;
+                    matrix[i][j] = new Complex(Math.cos(alpha)/den, Math.sin(alpha)/den);
+                }
+                for (int k = 0; k < i; k++) {
+                    matrix[i][k] = matrix[k][i];
+                }
+            }
+        }
+        return matrix;
     }
 
     @Override
     public List<Integer> getAffectedQubitIndexes() {
-        return IntStream.range(idx, idx+block.getNQubits()).boxed().collect(Collectors.toList());
+        return IntStream.range(idx, idx+dim).boxed().collect(Collectors.toList());
     }
 
     @Override
     public int getHighestAffectedQubitIndex() {
-        return block.getNQubits()+idx-1;
+        return dim+idx-1;
     }
-
-    @Override
-    public String getCaption() {
-        return "B";
-    }
-
-    @Override
-    public String getName() {
-        return "BlockGate";
-    }
-
-    @Override
-    public String getGroup() {
-        return "BlockGroup";
-    }
-
-    @Override
-    public Complex[][] getMatrix() {
-        Complex[][] answer = block.getMatrix();
-        return answer;
-    }
-    
-    public int getSize() {
-        return block.getNQubits();
-    }
-    
-    @Override public String toString() {
-        return "Gate for block "+block;
-    }
-
-    
 }
