@@ -138,7 +138,27 @@ public class FourierTest extends BaseGateTests {
         assertEquals(.5, probability[0].abssqr(),D);
         assertEquals(.5, probability[1].abssqr(),D  );
     }
-    
+          
+    @Test
+    public void fourierPartProgram() {
+        Program p = new Program(2, new Step(new Fourier(1, 0)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        assertEquals(4, probability.length);
+        assertEquals(.5, probability[0].abssqr(),D);
+        assertEquals(.5, probability[1].abssqr(),D  );
+    }
+
+    @Test
+    public void fourierPartTwoProgram() {
+        Program p = new Program(2, new Step(new Fourier(1, 0)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        assertEquals(4, probability.length);
+        assertEquals(.5, probability[0].abssqr(),D);
+        assertEquals(.5, probability[1].abssqr(),D  );
+    }
+
     @Test
     public void invFourierProgram() {
         Step prep = new Step(new X(1));
@@ -151,4 +171,31 @@ public class FourierTest extends BaseGateTests {
         assertEquals(0, qubits[0].measure()); 
         assertEquals(1, qubits[1].measure()); 
     }
+
+    @Test
+    public void invFourierPartProgram() {
+        Step prep = new Step(new X(1));
+        Program p = new Program(3,
+                prep,
+                new Step(new Fourier(2, 0)),
+                new Step(new InvFourier(2,0)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(0, qubits[0].measure()); 
+        assertEquals(1, qubits[1].measure()); 
+    }
+
+    @Test
+    public void fourierAdditionProgram() {
+        Step prep = new Step(new X(1));
+        Program p = new Program(3,
+                prep,
+                new Step(new Fourier(1, 1)),
+                new Step(new InvFourier(1,1)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(0, qubits[0].measure()); 
+        assertEquals(1, qubits[1].measure()); 
+    }
+
 }
