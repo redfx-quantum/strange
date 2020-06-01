@@ -265,9 +265,9 @@ public class FourierTest extends BaseGateTests {
         Program p = new Program(4,
                 prep,
                 new Step(new Fourier(2, 0)),
-                new Step (new Cr(1,2, 2, 1)),
-                new Step (new Cr(0,2, 2, 2)),
                 new Step (new Cr(0,3, 2, 1)),
+                new Step (new Cr(0,2, 2, 2)),
+                new Step (new Cr(1,2, 2, 1)),
                 new Step(new InvFourier(2,0)));
         Result res = runProgram(p);
         Complex[] probability = res.getProbability();
@@ -278,7 +278,27 @@ public class FourierTest extends BaseGateTests {
         assertEquals(1, qubits[2].measure());
         assertEquals(0, qubits[3].measure());
     }
-
+//     1010 -> 0010
+    @Test
+    public void fourierAdditionProgram1010() {
+        Step prep = new Step(new X(1), new X(3));
+        Program p = new Program(4,
+                prep,
+                new Step(new Fourier(2, 0)),
+                new Step (new Cr(0,3, 2, 1)),
+                new Step (new Cr(0,2, 2, 2)),
+                new Step (new Cr(1,2, 2, 1)),
+                new Step(new InvFourier(2,0)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        Complex.printArray(probability);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(0, qubits[2].measure());
+        assertEquals(1, qubits[3].measure());
+    }
+    
     // 0011 -> 1111
     @Test
     public void fourierAdditionProgram0011() {

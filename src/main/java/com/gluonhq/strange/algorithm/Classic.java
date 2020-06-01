@@ -38,9 +38,13 @@ import com.gluonhq.strange.QuantumExecutionEnvironment;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
+import com.gluonhq.strange.gate.Cr;
+import com.gluonhq.strange.gate.Fourier;
 import com.gluonhq.strange.gate.Hadamard;
+import com.gluonhq.strange.gate.InvFourier;
 import com.gluonhq.strange.gate.Oracle;
 import com.gluonhq.strange.gate.ProbabilitiesGate;
+import com.gluonhq.strange.gate.X;
 import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
 import java.util.List;
 import java.util.function.Function;
@@ -57,6 +61,59 @@ public class Classic {
         Result result = qee.runProgram(program);
         Qubit[] qubits = result.getQubits();
         int answer = qubits[0].measure();
+        return answer;
+    }
+    
+    /**
+     * Use a quantum addition algorithm to compute the sum of a and b
+     * @param a first term
+     * @param b second term
+     * @return the sum of a and b
+     */
+    public static int qsum(int a, int b) {
+        int y = a > b ? a : b;
+        int x = a > b ? b : a;
+        int m = y < 2? 1 : 1 + (int) Math.ceil(Math.log(y)/Math.log(2));
+        int n = x < 2? 1 : 1 + (int) Math.ceil(Math.log(x)/Math.log(2));
+        Program program = new Program(m + n);
+        QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
+        Step prep = new Step();
+        int y0 = y;
+        for (int i = 0; i < m; i++) {
+            int p = 1 << (m-i-1);
+            if (y0 >= p) {
+                prep.addGate(new X(m-i-1));
+                y0 = y0-p;
+            }
+        }
+        int x0 = x;
+        for (int i = 0; i < n; i++) {
+            int p = 1 << (n-i-1);
+            if (x0 >= p) {
+                prep.addGate(new X(m+n-i-1));
+                x0 = x0-p;
+            }   
+        }
+        program.addStep(prep);
+        program.addStep(new Step(new Fourier(m, 0)));
+        for (int i = 0; i < m; i++) {
+           for (int j = 0; j < m-i ; j++) {
+                int cr0 = 2 *m-j-i-1;
+                if (cr0 < m + n) {
+                    Step s = new Step(new Cr(i, cr0,2,1+j));
+                    program.addStep(s);
+                }
+            }
+        }
+        program.addStep(new Step(new InvFourier(m, 0)));
+        Result res = qee.runProgram(program);
+        Qubit[] qubits = res.getQubits();
+        int answer = 0;
+        for (int i = 0; i < m; i++) {
+            if (qubits[i].measure() == 1) {
+                answer = answer + (1<<i);
+            }
+        }
         return answer;
     }
     

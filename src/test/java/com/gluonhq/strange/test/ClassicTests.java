@@ -31,7 +31,7 @@
  */
 package com.gluonhq.strange.test;
 import com.gluonhq.strange.algorithm.Classic;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -50,9 +50,44 @@ public class ClassicTests {
             if (b == 0) z++;
             if (b == 1) o++;
         }
-        System.out.println("AFTER RUN, z= "+z);
         assertTrue (z > 10);
         assertTrue (o > 10);
     }
     
+    @Test
+    public void s00() {
+        int sum = Classic.qsum(0, 0);
+        assertEquals(0, sum);
+    }
+
+    @Test
+    public void s01() {
+        int sum = Classic.qsum(0,1);
+        assertEquals(1, sum);
+    }
+    
+       
+    @Test
+    public void s10() {
+        int sum = Classic.qsum(1,0);
+        assertEquals(1, sum);
+    }
+    
+    @Test
+    public void s12() {
+        int sum = Classic.qsum(1,2);
+        assertEquals(3, sum);
+    }
+    
+    @Test
+    public void s22() {
+        int sum = Classic.qsum(2,2);
+        assertEquals(0, sum);
+    }
+        
+    @Test
+    public void s413() {
+        int sum = Classic.qsum(4,13);
+        assertEquals(17, sum);
+    }
 }
