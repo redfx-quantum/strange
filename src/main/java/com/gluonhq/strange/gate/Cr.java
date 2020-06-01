@@ -32,7 +32,6 @@
 package com.gluonhq.strange.gate;
 
 import com.gluonhq.strange.Complex;
-import java.lang.Math;
 
 /**
  *
@@ -40,13 +39,12 @@ import java.lang.Math;
  */
 public class Cr extends TwoQubitGate {
     
-    Complex[][] matrix =  new Complex[][]{
+    private Complex[][] matrix =  new Complex[][]{
         {Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO},
         {Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
         {Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO},
         {Complex.ZERO,Complex.ZERO,Complex.ZERO,Complex.ONE.mul(-1)}
     };
-    private double expv;
     private int pow = -1;
     
     public Cr() {    
@@ -54,7 +52,6 @@ public class Cr extends TwoQubitGate {
     
     public Cr (int a, int b, double exp) {
         super(a,b);
-        this.expv = exp;
         matrix =  new Complex[][]{
                 {Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO},
         {Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
