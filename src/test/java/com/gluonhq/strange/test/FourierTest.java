@@ -36,6 +36,7 @@ import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
+import com.gluonhq.strange.gate.Cr;
 import com.gluonhq.strange.gate.Fourier;
 import com.gluonhq.strange.gate.InvFourier;
 import com.gluonhq.strange.gate.X;
@@ -138,7 +139,27 @@ public class FourierTest extends BaseGateTests {
         assertEquals(.5, probability[0].abssqr(),D);
         assertEquals(.5, probability[1].abssqr(),D  );
     }
-    
+          
+    @Test
+    public void fourierPartProgram() {
+        Program p = new Program(2, new Step(new Fourier(1, 0)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        assertEquals(4, probability.length);
+        assertEquals(.5, probability[0].abssqr(),D);
+        assertEquals(.5, probability[1].abssqr(),D  );
+    }
+
+    @Test
+    public void fourierPartTwoProgram() {
+        Program p = new Program(2, new Step(new Fourier(1, 0)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        assertEquals(4, probability.length);
+        assertEquals(.5, probability[0].abssqr(),D);
+        assertEquals(.5, probability[1].abssqr(),D  );
+    }
+
     @Test
     public void invFourierProgram() {
         Step prep = new Step(new X(1));
@@ -148,7 +169,154 @@ public class FourierTest extends BaseGateTests {
                 new Step(new InvFourier(2,0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
-        assertEquals(0, qubits[0].measure()); 
-        assertEquals(1, qubits[1].measure()); 
+        assertEquals(0, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+    }
+
+    @Test
+    public void invFourierPartProgram() {
+        Step prep = new Step(new X(1));
+        Program p = new Program(3,
+                prep,
+                new Step(new Fourier(2, 0)),
+                new Step(new InvFourier(2,0)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(0, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+    }
+
+    // additions with 1 + 1 qubit
+    // result in q0
+    @Test
+    public void fourierAdditionProgram00() {
+        Program p = new Program(2,
+                new Step(new Fourier(1, 0)),
+                new Step (new Cr(0, 1, 2, 1)),
+                new Step(new InvFourier(1,0)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+    }
+
+    @Test
+    public void fourierAdditionProgram01() {
+        Step prep = new Step(new X(1));
+        Program p = new Program(2,
+                prep,
+                new Step(new Fourier(1, 0)),
+                new Step (new Cr(0, 1, 2, 1)),
+                new Step(new InvFourier(1,0)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(1, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+    }
+
+    @Test
+    public void fourierAdditionProgram10() {
+        Step prep = new Step(new X(0));
+        Program p = new Program(2,
+                prep,
+                new Step(new Fourier(1, 0)),
+                new Step (new Cr(0, 1, 2, 1)),
+                new Step(new InvFourier(1,0)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(1, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+    }
+
+    @Test
+    public void fourierAdditionProgram11() {
+        Step prep = new Step(new X(0), new X(1));
+        Program p = new Program(2,
+                prep,
+                new Step(new Fourier(1, 0)),
+                new Step (new Cr(0, 1, 2, 1)),
+                new Step(new InvFourier(1,0)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(0, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+    }
+
+    @Test
+    public void fourierAdditionProgram0000() {
+        Program p = new Program(4,
+                new Step(new Fourier(2, 0)),
+                new Step (new Cr(1, 3, 2, 1)),
+                new Step (new Cr(1, 2, 2, 2)),
+                new Step (new Cr(0, 2, 2, 1)),
+                new Step(new InvFourier(2,0)));
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(0, qubits[2].measure());
+        assertEquals(0, qubits[3].measure());
+    }
+
+//     0101 -> 0110
+    @Test
+    public void fourierAdditionProgram0101() {
+        Step prep = new Step(new X(0), new X(2));
+        Program p = new Program(4,
+                prep,
+                new Step(new Fourier(2, 0)),
+                new Step (new Cr(0,3, 2, 1)),
+                new Step (new Cr(0,2, 2, 2)),
+                new Step (new Cr(1,2, 2, 1)),
+                new Step(new InvFourier(2,0)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        Complex.printArray(probability);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(0, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
+        assertEquals(0, qubits[3].measure());
+    }
+//     1010 -> 0010
+    @Test
+    public void fourierAdditionProgram1010() {
+        Step prep = new Step(new X(1), new X(3));
+        Program p = new Program(4,
+                prep,
+                new Step(new Fourier(2, 0)),
+                new Step (new Cr(0,3, 2, 1)),
+                new Step (new Cr(0,2, 2, 2)),
+                new Step (new Cr(1,2, 2, 1)),
+                new Step(new InvFourier(2,0)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        Complex.printArray(probability);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(0, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(0, qubits[2].measure());
+        assertEquals(1, qubits[3].measure());
+    }
+    
+    // 0011 -> 1111
+    @Test
+    public void fourierAdditionProgram0011() {
+        Step prep = new Step(new X(2), new X(3));
+        Program p = new Program(4,
+                prep,
+                new Step(new Fourier(2, 0)),
+                new Step (new Cr(1,2, 2, 1)),
+                new Step (new Cr(0,2, 2, 2)),
+                new Step (new Cr(0,3, 2, 1)),
+                new Step(new InvFourier(2,0)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        Complex.printArray(probability);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(1, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
+        assertEquals(1, qubits[3].measure());
     }
 }

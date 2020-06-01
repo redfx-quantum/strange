@@ -31,57 +31,36 @@
  */
 package com.gluonhq.strange.gate;
 
-import com.gluonhq.strange.Block;
-import com.gluonhq.strange.BlockGate;
 import com.gluonhq.strange.Complex;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-public class Fourier extends BlockGate {
-
-    protected Complex[][] matrix = null;
-    protected int dim;
-    protected int size;
+/**
+ *
+ * @author johan
+ */
+public class R extends SingleQubitGate {
     
-    /**
-     * Create a Fourier gate with the given size (dimensions), starting at idx
-     * @param dim number of qubits affected by this gate
-     * @param idx the index of the first qubit in the circuit affected by this gate
-     */
-    public Fourier(int dim, int idx) {
-        super(new Block("Fourier", dim), idx);
-        this.dim = dim;
-        this.size = 1 <<dim;
+    final Complex[][] matrix;
+    private final double expv;
+    private int pow = -1;
+    
+    public R (double exp, int idx) {
+        super(idx);
+        this.expv = exp;
+        matrix =  new Complex[][]{{Complex.ONE,Complex.ZERO}, {Complex.ZERO,new Complex(Math.cos(exp), Math.sin(exp))}};
     }
     
-    
+    public R(int base, int pow, int idx) {
+        this(Math.PI*2/Math.pow(base, pow), idx);
+        this.pow = pow;
+    }
+
     @Override
     public Complex[][] getMatrix() {
-        if (matrix == null) {
-            double omega = Math.PI*2/size;
-            double den = Math.sqrt(size);
-            matrix = new Complex[size][size];
-            for (int i = 0; i < size; i++) {
-                for (int j = i; j < size; j++) {
-                    double alpha = omega *i *j;
-                    matrix[i][j] = new Complex(Math.cos(alpha)/den, Math.sin(alpha)/den);
-                }
-                for (int k = 0; k < i; k++) {
-                    matrix[i][k] = matrix[k][i];
-                }
-            }
-        }
         return matrix;
     }
 
-    @Override
-    public List<Integer> getAffectedQubitIndexes() {
-        return IntStream.range(idx, idx+dim).boxed().collect(Collectors.toList());
+    @Override public String getCaption() { 
+        return "R" + ((pow> -1)? Integer.toString(pow): "th");
     }
-
-    @Override
-    public int getHighestAffectedQubitIndex() {
-        return dim+idx-1;
-    }
+    
 }
