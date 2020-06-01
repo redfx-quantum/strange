@@ -68,7 +68,6 @@ public class Computations {
                 BlockGate sqg = (BlockGate)myGate;
                 a = tensor(a, sqg.getMatrix());
                 idx = idx - sqg.getSize()+1;
-                System.err.println("BLOCKGATE, idx = "+idx+", size = "+sqg.getSize());
             }
             if (myGate instanceof SingleQubitGate) {
                 SingleQubitGate sqg = (SingleQubitGate)myGate;
