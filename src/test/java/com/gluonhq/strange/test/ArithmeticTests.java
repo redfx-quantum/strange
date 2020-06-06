@@ -39,6 +39,7 @@ import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Add;
 import com.gluonhq.strange.gate.Fourier;
+import com.gluonhq.strange.gate.Swap;
 import com.gluonhq.strange.gate.X;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,7 +69,7 @@ public class ArithmeticTests extends BaseGateTests {
     
     
     @Test
-    public void add01() {
+    public void add10() {
         Program p = new Program(2);
         Step prep = new Step();
         prep.addGate(new X(0));
@@ -84,7 +85,7 @@ public class ArithmeticTests extends BaseGateTests {
     
         
     @Test
-    public void add10() {
+    public void add01() {
         Program p = new Program(2);
         Step prep = new Step();
         prep.addGate(new X(1));
@@ -116,7 +117,7 @@ public class ArithmeticTests extends BaseGateTests {
 
                 
     @Test
-    public void add34() {
+    public void add61() {
         Program p = new Program(6);
         Step prep = new Step();
         prep.addGates(new X(1), new X(2), new X(3));
@@ -133,4 +134,72 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(0, q[4].measure());
         assertEquals(0, q[5].measure());  
     }
+    
+    @Test
+    public void multiply5x3() { // 5 x 3 mod 8 = 7
+        Program p = new Program(6);
+        Step prep = new Step();
+        prep.addGates(new X(3), new X(4)); // 5 in second register
+        p.addStep(prep);
+        for (int i = 0; i < 5; i++) {
+            Add add = new Add(0, 2, 3, 5);
+            p.addStep(new Step(add));
+        }
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(6, q.length);
+        assertEquals(1, q[0].measure()); // result in q2,q1,q0
+        assertEquals(1, q[1].measure());  
+        assertEquals(1, q[2].measure());
+        assertEquals(1, q[3].measure()); 
+        assertEquals(1, q[4].measure());
+        assertEquals(0, q[5].measure());  
+    }
+      
+    @Test
+    public void multiply5x7() { // 5 x 7 mod 8 = 3
+        Program p = new Program(6);
+        Step prep = new Step();
+        prep.addGates(new X(3), new X(4), new X(5));
+        p.addStep(prep);
+        for (int i = 0; i < 5; i++) {
+            Add add = new Add(0, 2, 3, 5);
+            p.addStep(new Step(add));
+        }
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(6, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());  
+        assertEquals(0, q[2].measure());
+        assertEquals(1, q[3].measure()); 
+        assertEquals(1, q[4].measure());
+        assertEquals(1, q[5].measure());  
+    }
+    
+     
+    @Test
+    public void multiply5x3andswap() { // 5 x 3 mod 8 = 7
+        Program p = new Program(6);
+        Step prep = new Step();
+        prep.addGates(new X(3), new X(4)); // 5 in second register
+        p.addStep(prep);
+        for (int i = 0; i < 5; i++) {
+            Add add = new Add(0, 2, 3, 5);
+            p.addStep(new Step(add));
+        }
+        p.addStep(new Step( new Swap(0,3)));
+        p.addStep(new Step( new Swap(1,4)));
+        p.addStep(new Step( new Swap(2,5)));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(6, q.length);
+        assertEquals(1, q[0].measure()); // result in q2,q1,q0
+        assertEquals(1, q[1].measure());  
+        assertEquals(0, q[2].measure());
+        assertEquals(1, q[3].measure()); 
+        assertEquals(1, q[4].measure());
+        assertEquals(1, q[5].measure());  
+    }
+      
 }
