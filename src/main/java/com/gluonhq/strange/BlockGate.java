@@ -45,8 +45,11 @@ import java.util.stream.IntStream;
  */
 public class BlockGate implements Gate {
 
-    private final Block block;
-    protected final int idx;
+    private Block block;
+    protected int idx;
+    
+    protected BlockGate() {
+    }
     
     /**
      * Create a block 
@@ -55,6 +58,14 @@ public class BlockGate implements Gate {
      */
     public BlockGate (Block block, int idx) {
         this.block = block;
+        this.idx = idx;
+    }
+    
+    protected final void setBlock(Block b) {
+        this.block = b;
+    }
+    
+    protected final void setIndex(int idx) {
         this.idx = idx;
     }
     
