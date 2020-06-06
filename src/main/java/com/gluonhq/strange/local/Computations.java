@@ -127,6 +127,7 @@ public class Computations {
                 TwoQubitGate tqg = (TwoQubitGate) gate;
                 int first = tqg.getMainQubitIndex();
                 int second = tqg.getSecondQubitIndex();
+                System.err.println("TQG, first = "+first+" and second = "+second);
                 if (first == second + 1) {
                     firstGates.add(gate);
                 } else {
