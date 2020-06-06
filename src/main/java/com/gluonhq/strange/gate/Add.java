@@ -46,6 +46,17 @@ public class Add extends BlockGate {
 
     final Block block;
     
+    /**
+     * Add the qubit in the x register and the y register, result is in x
+     * @param x0 start idx x register
+     * @param x1 end idx x register
+     * @param y0 start idx y register
+     * @param y1 end idx y register
+     * x_0 ----- y_0 + x_0
+     * x_1 ----- y+1 + x_1
+     * y_0 ----- y_0
+     * y_1 ----- y_1
+     */
     public Add(int x0, int x1, int y0, int y1) {
         super();
         this.block = createBlock(x0, x1, y0, y1);
