@@ -31,6 +31,8 @@
  */
 package com.gluonhq.strange;
 
+import java.io.PrintStream;
+
 public final class Complex {
     
     public static final Complex ZERO = new Complex(0.d, 0.d);
@@ -41,7 +43,8 @@ public final class Complex {
 
     public static final Complex HC = new Complex(HV, 0.d);
     public static final Complex HCN = new Complex(-HV, 0.d);
-    
+
+
     public final double r;
     public final double i;
     
@@ -129,13 +132,49 @@ public final class Complex {
         }
         return answer;
     }
+    
+    static Complex[][] conjugateTranspose(Complex[][] src) {
+        int d0 = src.length;
+        int d1 = src[0].length;
+        Complex[][] answer = new Complex[d1][d0];
+        for (int i = 0; i < d0; i++) {
+            for (int j = 0; j < d1; j++) {
+                Complex c = src[i][j];
+                answer[j][i] = new Complex(c.r, -1*c.i);
+            }
+        }
+        return answer;
+    }
+    
 
     public static void printArray(Complex[] ca) {
-        System.err.println("complex["+ca.length+"]: ");
+        printArray(ca, System.err);
+    }
+    
+    public static void printArray(Complex[] ca, PrintStream ps) {
+        ps.println("complex["+ca.length+"]: ");
         for (Complex c: ca){
-            System.err.println("-> "+c);
+            ps.println("-> "+c);
         }
     }
+    
+    public static void printMatrix(Complex[][] cm) {
+        printMatrix(cm, System.err);
+    }
+    
+    public static void printMatrix(Complex[][] cm, PrintStream ps) {
+        ps.println("complex["+cm.length+"]: ");
+        for (int idx = 0; idx < cm.length; idx++){
+            String row = "row "+idx;
+            for (int jdx = 0; jdx < cm.length; jdx++) {
+                Complex c = cm[idx][jdx];
+                row = row + ":" + c.toString();
+            }
+            ps.println("-> "+row);
+            idx++;
+        }
+    }
+    
     @Override 
     public String toString() {
         return "("+this.r+", "+this.i+")";

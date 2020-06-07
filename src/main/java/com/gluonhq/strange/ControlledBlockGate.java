@@ -31,6 +31,7 @@
  */
 package com.gluonhq.strange;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -40,97 +41,95 @@ import java.util.stream.IntStream;
  * A Gate describes an operation on one or more qubits.
  * @author johan
  */
-public class BlockGate<T> implements Gate {
+public class ControlledBlockGate<T> extends BlockGate {
 
-    private Block block;
-    protected int idx;
-    private boolean inverse = false;
+    private int control;
     
-    protected BlockGate() {
+    protected ControlledBlockGate() {
+    }
+    
+    public ControlledBlockGate(BlockGate bg, int idx, int control) {
+        this (bg.getBlock(), idx, control);
     }
     
     /**
      * Create a block 
      * @param block
      * @param idx
+     * @param control the control qubit
      */
-    public BlockGate (Block block, int idx) {
-        this.block = block;
-        this.idx = idx;
-    }
-    
-    protected final void setBlock(Block b) {
-        this.block = b;
-    }
-    
-    protected final Block getBlock() {
-        return this.block;
-    }
-    
-    protected final void setIndex(int idx) {
-        this.idx = idx;
-    }
-    
-    @Override
-    public void setMainQubitIndex(int idx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ControlledBlockGate (Block block, int idx, int control) {
+        super(block, idx);
+        this.control = control;
+        assert(idx == control+1);
     }
 
     @Override
     public int getMainQubitIndex() {
-        return idx;
-    }
-
-    @Override
-    public void setAdditionalQubit(int idx, int cnt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return control;
     }
 
     @Override
     public List<Integer> getAffectedQubitIndexes() {
-        return IntStream.range(idx, idx+block.getNQubits()).boxed().collect(Collectors.toList());
+        ArrayList answer = new ArrayList(super.getAffectedQubitIndexes());
+        answer.add(control);
+        return answer;
     }
 
     @Override
     public int getHighestAffectedQubitIndex() {
-        return block.getNQubits()+idx-1;
+        return super.getHighestAffectedQubitIndex();
     }
 
     @Override
     public String getCaption() {
-        return "B";
+        return "CB";
     }
 
     @Override
     public String getName() {
-        return "BlockGate";
+        return "CBlockGate";
     }
 
     @Override
     public String getGroup() {
-        return "BlockGroup";
+        return "CBlockGroup";
     }
 
     @Override
     public Complex[][] getMatrix() {
-        Complex[][] answer = block.getMatrix();
-        if (inverse) {
-            answer = Complex.conjugateTranspose(answer);
+        Complex[][] part = super.getMatrix();
+        int dim = part.length;
+        Complex[][] answer = new Complex[dim+2][dim+2];
+        for (int i = 0; i < dim; i++) {
+            answer[i][0] = Complex.ZERO;
+            answer[i][1] = Complex.ZERO;
+            answer[0][i] = Complex.ZERO;
+            answer[1][i] = Complex.ZERO;
+            for (int j = 0; j < dim; j++) {
+                answer[i+2][j+2] = part[i][j];
+            }
         }
+        answer[0][dim] = Complex.ZERO;
+        answer[0][dim+1] = Complex.ZERO;
+        answer[1][dim] = Complex.ZERO;
+        answer[1][dim+1] = Complex.ZERO;
+        answer[dim][0] = Complex.ZERO;
+        answer[dim+1][0] = Complex.ZERO;
+        answer[dim][1] = Complex.ZERO;
+        answer[dim+1][1] = Complex.ZERO;
+        answer[0][0] = Complex.ONE;
+        answer[1][1] = Complex.ONE;
+        Complex.printMatrix(answer);
         return answer;
     }
     
-    public T inverse() {
-        this.inverse = !inverse;
-        return (T)this;
-    }
-    
     public int getSize() {
-        return block.getNQubits();
+        return super.getSize()+1;
     }
     
     @Override public String toString() {
-        return "Gate for block "+block;
+        return "CGate for "+super.toString();
     }
 
     
