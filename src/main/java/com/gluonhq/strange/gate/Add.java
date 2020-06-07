@@ -42,7 +42,7 @@ import java.util.List;
  *
  * @author johan
  */
-public class Add extends BlockGate {
+public class Add extends BlockGate<Add> {
 
     final Block block;
     
