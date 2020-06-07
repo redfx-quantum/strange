@@ -41,6 +41,7 @@ import com.gluonhq.strange.gate.Add;
 import com.gluonhq.strange.gate.Fourier;
 import com.gluonhq.strange.gate.Swap;
 import com.gluonhq.strange.gate.X;
+import com.gluonhq.strange.local.Computations;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -177,7 +178,6 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(1, q[5].measure());  
     }
     
-     
     @Test
     public void multiply5x3andswap() { // 5 x 3 mod 8 = 7
         Program p = new Program(6);
@@ -200,6 +200,12 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(1, q[3].measure()); 
         assertEquals(1, q[4].measure());
         assertEquals(1, q[5].measure());  
+    }
+    
+    @Test
+    public void getInverseModulus() {
+        int answer = Computations.getInverseModulus(56, 69);
+        assertEquals(53, answer);
     }
       
 }

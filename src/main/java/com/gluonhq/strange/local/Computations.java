@@ -229,5 +229,24 @@ public class Computations {
             System.out.println("m["+i+"]: "+sb);
         }
     }
+    
+    public static int getInverseModulus(int a, int b) {
+        int r0 = a;
+        int r1 = b;
+        int r2 = 0;
+        int s0 = 1;
+        int s1 = 0;
+        int s2 = 0;
+        while (r1 != 1) {
+            int q = r0/r1;
+            r2 = r0%r1;
+            s2 = s0 - q*s1;
+            r0 = r1;
+            r1 = r2;
+            s0 = s1;
+            s1 = s2;
+        }
+        return s1 > 0 ? s1 : s1+b;
+    }
 
 }
