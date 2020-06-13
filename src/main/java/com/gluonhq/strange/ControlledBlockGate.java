@@ -48,6 +48,12 @@ public class ControlledBlockGate<T> extends BlockGate {
     protected ControlledBlockGate() {
     }
     
+    /**
+     * Create a controlled blockgate
+     * @param bg the block gate
+     * @param idx the start-index of the block gate
+     * @param control the index of the control qubit
+     */
     public ControlledBlockGate(BlockGate bg, int idx, int control) {
         this (bg.getBlock(), idx, control);
     }

@@ -240,7 +240,7 @@ public class ArithmeticTests extends BaseGateTests {
     }
     
     @Test
-    public void controlledAdd() {
+    public void controlledAdd001() {
         Program p = new Program(3);
         Step s = new Step();
         Add add = new Add(1,1,2,2);
@@ -250,11 +250,34 @@ public class ArithmeticTests extends BaseGateTests {
         Step prep = new Step();
         prep.addGates(new X(0));
         p.addStep(prep);
+        Step cg = new Step(cbg);
+        p.addStep(cg);
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
         assertEquals(3, q.length);
         assertEquals(1, q[0].measure());
         assertEquals(0, q[1].measure());
         assertEquals(0, q[2].measure());
+    }
+    
+ //   @Test
+    public void controlledAdd101() {
+        Program p = new Program(3);
+        Step s = new Step();
+        Add add = new Add(1,1,2,2);
+        ControlledBlockGate cbg = new ControlledBlockGate(add, 1,0);
+        Complex[][] m = cbg.getMatrix();
+        Complex.printMatrix(m, System.err);
+        Step prep = new Step();
+        prep.addGates(new X(0), new X(2));
+        p.addStep(prep);
+        Step cg = new Step(cbg);
+        p.addStep(cg);
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(3, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
     }
 }
