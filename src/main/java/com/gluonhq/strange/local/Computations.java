@@ -231,6 +231,7 @@ public class Computations {
     }
     
     public static int getInverseModulus(int a, int b) {
+        System.err.println("invmodus asked for a = "+a+" and b = "+b);
         int r0 = a;
         int r1 = b;
         int r2 = 0;
@@ -247,6 +248,16 @@ public class Computations {
             s1 = s2;
         }
         return s1 > 0 ? s1 : s1+b;
+    }
+    
+    public static Complex[][] createIdentity(int dim) {
+        Complex[][] matrix = new Complex[dim][dim];
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                matrix[i][j] = (i == j) ? Complex.ONE : Complex.ZERO;
+            }
+        }
+        return matrix;
     }
 
 }

@@ -171,7 +171,7 @@ public final class Complex {
                 row = row + ":" + c.toString();
             }
             ps.println("-> "+row);
-            idx++;
+         //   idx++;
         }
     }
     
