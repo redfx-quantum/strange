@@ -127,7 +127,10 @@ public class Computations {
                 TwoQubitGate tqg = (TwoQubitGate) gate;
                 int first = tqg.getMainQubitIndex();
                 int second = tqg.getSecondQubitIndex();
-                System.err.println("TQG, first = "+first+" and second = "+second);
+                if ((first >= nqubit) || (second >= nqubit)) {
+                    throw new IllegalArgumentException ("Step "+s+" uses a gate with invalid index "+first+" or "+second);
+                }
+                System.err.println("TQG: "+tqg+", first = "+first+" and second = "+second+", nq = "+nqubit);
                 if (first == second + 1) {
                     firstGates.add(gate);
                 } else {

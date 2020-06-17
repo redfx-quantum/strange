@@ -69,8 +69,7 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(0, q[0].measure());
         assertEquals(0, q[1].measure());   
     }
-    
-    
+       
     @Test
     public void add10() {
         Program p = new Program(2);
@@ -115,8 +114,7 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(0, q[0].measure());
         assertEquals(1, q[1].measure());   
     }
-
-                
+               
     @Test
     public void add61() {
         Program p = new Program(6);
@@ -280,7 +278,7 @@ public class ArithmeticTests extends BaseGateTests {
         Step s = new Step(new Mul(0,0,1));
         p.addStep(prep);
         p.addStep(s);
-          Result result = runProgram(p);
+        Result result = runProgram(p);
         Qubit[] q = result.getQubits();
         assertEquals(2, q.length);
         assertEquals(0, q[0].measure());
@@ -352,8 +350,7 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(0, q[1].measure());
         assertEquals(0, q[2].measure());
     }
-     
-      
+          
     @Test // q_0 = q_1(0) + q_0 (0) = 0
     public void controlledAdd100() {
         Program p = new Program(3);
@@ -438,7 +435,7 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(1, q[2].measure());
     }
     
-   // @Test // q_0 = q_1(1) + q_0 (1) = 0
+    @Test // 
     public void expmul() {
         int length = 2;
         int a = 3;
@@ -459,7 +456,7 @@ public class ArithmeticTests extends BaseGateTests {
                 p.addStep(new Step(swap));
             }
         }
-                Result result = runProgram(p);
+        Result result = runProgram(p);
         Qubit[] q = result.getQubits();
         assertEquals(6, q.length);
         System.err.println("results: ");
@@ -469,9 +466,9 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(0, q[0].measure());
         assertEquals(0, q[1].measure());
         assertEquals(0, q[2].measure());
-        assertEquals(1, q[3].measure());
+        assertEquals(0, q[3].measure());
         assertEquals(0, q[4].measure());
-        assertEquals(0, q[5].measure());
+        assertEquals(1, q[5].measure());
     }
     
 }

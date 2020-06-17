@@ -105,30 +105,16 @@ public class ControlledBlockGate<T> extends BlockGate {
 
     @Override
     public Complex[][] getMatrix() {
+        System.err.println("GetMatrix called for CBG");
         Complex[][] part = super.getMatrix();
         int dim = part.length;
         Complex[][] answer = Computations.createIdentity(2 * dim);
-       // Complex[][] answer = new Complex[dim+2][dim+2];
         for (int i = 0; i < dim; i++) {
-//            answer[i][0] = Complex.ZERO;
-//            answer[i][1] = Complex.ZERO;
-//            answer[0][i] = Complex.ZERO;
-//            answer[1][i] = Complex.ZERO;
             for (int j = 0; j < dim; j++) {
                 answer[i+dim][j+dim] = part[i][j];
             }
         }
-//        answer[0][dim] = Complex.ZERO;
-//        answer[0][dim+1] = Complex.ZERO;
-//        answer[1][dim] = Complex.ZERO;
-//        answer[1][dim+1] = Complex.ZERO;
-//        answer[dim][0] = Complex.ZERO;
-//        answer[dim+1][0] = Complex.ZERO;
-//        answer[dim][1] = Complex.ZERO;
-//        answer[dim+1][1] = Complex.ZERO;
-//        answer[0][0] = Complex.ONE;
-//        answer[1][1] = Complex.ONE;
-System.err.println("CBG matrix: ");
+        System.err.println("CBG matrix: ");
         Complex.printMatrix(answer);
         return answer;
     }
