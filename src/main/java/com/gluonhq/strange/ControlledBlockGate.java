@@ -117,7 +117,7 @@ public class ControlledBlockGate<T> extends BlockGate {
         int gap = control - idx;
         List<PermutationGate> perm = new LinkedList<>();
         int bs = block.getNQubits();
-        System.err.println("gap = "+gap+" and bs = "+bs);
+        System.err.println("control = "+control+", idx = "+idx+", gap = "+gap+" and bs = "+bs);
         if (control > idx) {
             if (gap <  bs) {
                 throw new IllegalArgumentException("Can't have control at "+control+" for gate with size "+bs+" starting at "+idx);
@@ -126,6 +126,7 @@ public class ControlledBlockGate<T> extends BlockGate {
                 low = idx;
                 high = control;
                 size = high - low + 1;
+                System.err.println("PG, control = "+control+", gap = "+gap+", bs = "+bs);
                 PermutationGate pg = new PermutationGate(control, control- gap + bs, size );
                 perm.add(pg);
             }
@@ -133,7 +134,7 @@ public class ControlledBlockGate<T> extends BlockGate {
             low = control;
             high = idx + bs -1;
             size = high - low + 1;
-            for (int i = 0; i < bs; i++) {
+            for (int i = 0; i < size-1; i++) {
                 PermutationGate pg = new PermutationGate(i, i+1, size );
                 perm.add(pg);
             }
@@ -154,10 +155,16 @@ public class ControlledBlockGate<T> extends BlockGate {
         if (gap > bs) {
             System.err.println("answer was ");
             Complex.printMatrix(answer);
-            answer = Complex.tensor(Computations.createIdentity(2 * (gap - bs)), answer);
+            answer = Complex.tensor(Computations.createIdentity(1 << (gap - bs)), answer);
             System.err.println("with iden tensor");
             Complex.printMatrix(answer);
-
+        }
+        if ((gap <0) && (-1*gap > bs)) {
+            System.err.println("answer was ");
+            Complex.printMatrix(answer);
+            answer = Complex.tensor(Computations.createIdentity(1 << (-1*gap - bs)), answer);
+            System.err.println("with iden tensor");
+            Complex.printMatrix(answer);
         }
         
         for (PermutationGate pg : perm) {
