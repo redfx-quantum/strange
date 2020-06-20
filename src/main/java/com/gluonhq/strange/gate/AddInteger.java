@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Johan Vos
+ * Copyright (c) 2018, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,66 +33,50 @@ package com.gluonhq.strange.gate;
 
 import com.gluonhq.strange.Block;
 import com.gluonhq.strange.BlockGate;
-import com.gluonhq.strange.Complex;
-import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Step;
-import com.gluonhq.strange.local.Computations;
-import java.util.List;
 
 /**
  *
  * @author johan
  */
-public class Mul extends BlockGate<Mul> {
+public class AddInteger extends BlockGate<AddInteger> {
 
     final Block block;
     
     /**
-     * Multiply the qubit in the x register with an integer mul
+     * Add the qubit in the x register and the y register, result is in x
      * @param x0 start idx x register
      * @param x1 end idx x register
-     * @param y0 start idx y register
-     * @param y1 end idx y register
+     * @param num the integer to be added, (y_m.. y_0)
      * x_0 ----- y_0 + x_0
      * x_1 ----- y+1 + x_1
-     * y_0 ----- 0
-     * y_1 ----- 0
      */
-    public Mul(int x0, int x1, int mul) {
+    public AddInteger(int x0, int x1, int num) {
         super();
-        this.block = createBlock(x0, x1,mul);
+        this.block = createBlock(x0, x1, num);
         setBlock(block);
        
     }
     
-    public Block createBlock(int y0, int y1, int mul) {
-        int x0 = 0;
-        int x1 = y1-y0;
-        int size = 1 + x1-x0;
-        int dim = 1 << size;
-        Block answer = new Block(2 * size);
-        System.err.println("first blocks, add with "+x0+", "+x1+", size = "+size);
-        System.err.println("dim = "+dim+", mul = "+mul);
-
-        for (int i = 0; i < mul; i++) {
-            Add add = new Add(x0, x1, x1+1, x1 + size);
-            answer.addStep(new Step(add));
+    public Block createBlock(int x0, int x1, int num) {
+        int m = x1-x0+1;
+        Block answer = new Block(m);
+        answer.addStep(new Step(new Fourier(m, 0)));
+        for (int i = 0; i < m; i++) {
+           for (int j = 0; j < m-i ; j++) {
+                int cr0 = m-j-i-1; System.err.println("addnum, createblock num = "+num+", cr = "+cr0);
+                if ((num >> cr0 & 1 ) == 1) {
+                    System.err.println("YES add step");
+                    Step s = new Step(new R(2,1+j,i));
+                    answer.addStep(s);
+                }
+            }
         }
-
-        for (int i = x0; i < x1+1; i++) {
-            System.err.println("swap "+i+" with "+(i+size));
-            answer.addStep(new Step (new Swap(i, i + size)));
-        }
-
-        int invsteps = Computations.getInverseModulus(mul,dim);
-        System.err.println("invsteps = "+invsteps);
-        for (int i = 0; i < invsteps; i++) {
-            Add add = new Add(x0, x1, x1+1, x1 + size).inverse();
-            answer.addStep(new Step(add));
-        }
-
+        answer.addStep(new Step(new InvFourier(m, 0)));
         return answer;
     }
-  
+    
+    
+
     
 }
