@@ -57,76 +57,404 @@ public class ArithmeticTests2 extends BaseGateTests {
 
     static final double D = 0.000000001d;
     
-   // @Test
-    public void addmod() {
+    @Test
+    public void addmod0() {
         int n = 2;
         int N = 3;
         int dim = 2 * (n+1)+1;
         Program p = new Program(dim);
         Step prep = new Step();
-       // prep.addGates(new X(0), new X(2));
+        prep.addGates(new X(0));
         p.addStep(prep);
         Add add = new Add(0,2,3,5);
         p.addStep(new Step(add));
-        AddInteger min = new AddInteger(0,2,N).inverse();
-        p.addStep(new Step(min));
-        p.addStep(new Step(new Cnot(0,dim-1)));
-        
-        AddInteger addN = new AddInteger(0,2,N);
-
-        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
-
         
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
         assertEquals(7, q.length);
-        assertEquals(0, q[0].measure());
-        assertEquals(0, q[1].measure());
-        assertEquals(0, q[2].measure());
-        assertEquals(1, q[6].measure());
-    }
-     
-  //  @Test
-    public void controlledAdd001() {
-        Program p = new Program(3);
-        Step s = new Step();
-        Add add = new Add(1,1,2,2);
-        ControlledBlockGate cbg = new ControlledBlockGate(add, 1,0);
-        Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
-        Step prep = new Step();
-        prep.addGates(new X(0));
-        p.addStep(prep);
-        Step cg = new Step(cbg);
-        p.addStep(cg);
-        Result result = runProgram(p);
-        Qubit[] q = result.getQubits();
-        assertEquals(4, q.length);
         assertEquals(1, q[0].measure());
         assertEquals(0, q[1].measure());
         assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
     }
-    
-            
-    @Test // q_0 = q_1(0) + q_0 (0) = 0
-    public void controlledAdd100() {
-        Program p = new Program(3);
-        Step s = new Step();
-        Add add = new Add(0,0,1,1);
-        ControlledBlockGate cbg = new ControlledBlockGate(add, 0,2);
-        Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
+
+    @Test
+    public void addmod1() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
         Step prep = new Step();
-        prep.addGates(new X(2));
+        prep.addGates(new X(0));
         p.addStep(prep);
-        Step cg = new Step(cbg);
-        p.addStep(cg);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
-        assertEquals(3, q.length);
+        assertEquals(7, q.length);
         assertEquals(0, q[0].measure());
-        assertEquals(0, q[1].measure());
+        assertEquals(1, q[1].measure());
         assertEquals(1, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(1, q[6].measure());
     }
-         
+
+    @Test
+    public void addmod2() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(0));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+        AddInteger addN = new AddInteger(0,2,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
+        p.addStep(new Step(cbg));
+
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(1, q[6].measure());
+    }
+
+    @Test
+    public void addmod3() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(0));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+        AddInteger addN = new AddInteger(0,2,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
+        p.addStep(new Step(cbg));
+        
+        
+        Add add2 = new Add(0,2,3,5).inverse();
+        p.addStep(new Step(add2));
+        p.addStep(new Step(new X(dim-1)));
+
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
+    }
+
+    @Test
+    public void addmod4() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(0));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+        AddInteger addN = new AddInteger(0,2,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
+        p.addStep(new Step(cbg));
+        
+        
+        Add add2 = new Add(0,2,3,5).inverse();
+        p.addStep(new Step(add2));
+        p.addStep(new Step(new X(dim-1)));
+        
+        Block block = new Block(1);
+        block.addStep(new Step(new X(0)));
+        ControlledBlockGate cbg2 = new ControlledBlockGate(block, dim-1, 2);
+        p.addStep(new Step(cbg2));
+        
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
+    }
+
+    @Test
+    public void addmod5() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(0));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+        AddInteger addN = new AddInteger(0,2,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
+        p.addStep(new Step(cbg));
+        
+        
+        Add add2 = new Add(0,2,3,5).inverse();
+        p.addStep(new Step(add2));
+        p.addStep(new Step(new X(dim-1)));
+        
+        Block block = new Block(1);
+        block.addStep(new Step(new X(0)));
+        ControlledBlockGate cbg2 = new ControlledBlockGate(block, dim-1, 2);
+        p.addStep(new Step(cbg2));
+        
+        Add add3 = new Add(0,2,3,5);
+        p.addStep (new Step(add3));
+
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
+    }
+
+    @Test
+    public void addmod1plus1mod3() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(0), new X(3));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+        AddInteger addN = new AddInteger(0,2,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
+        p.addStep(new Step(cbg));
+        
+        
+        Add add2 = new Add(0,2,3,5).inverse();
+        p.addStep(new Step(add2));
+        p.addStep(new Step(new X(dim-1)));
+        
+        Block block = new Block(1);
+        block.addStep(new Step(new X(0)));
+        ControlledBlockGate cbg2 = new ControlledBlockGate(block, dim-1, 2);
+        p.addStep(new Step(cbg2));
+        
+        Add add3 = new Add(0,2,3,5);
+        p.addStep (new Step(add3));
+
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(0, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(1, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
+    }
+
+    @Test
+    public void addmod2p2mod3() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(1), new X(4));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+        AddInteger addN = new AddInteger(0,2,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
+        p.addStep(new Step(cbg));
+        
+        
+        Add add2 = new Add(0,2,3,5).inverse();
+        p.addStep(new Step(add2));
+        p.addStep(new Step(new X(dim-1)));
+        
+        Block block = new Block(1);
+        block.addStep(new Step(new X(0)));
+        ControlledBlockGate cbg2 = new ControlledBlockGate(block, dim-1, 2);
+        p.addStep(new Step(cbg2));
+        
+        Add add3 = new Add(0,2,3,5);
+        p.addStep (new Step(add3));
+
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
+    }
+
+    @Test
+    public void addmod2p2mod3step1() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(1), new X(4));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+        AddInteger addN = new AddInteger(0,2,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
+        p.addStep(new Step(cbg));
+
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
+    }
+    
+    @Test
+    public void addmod2p2mod3step2() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(1), new X(4));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+        AddInteger addN = new AddInteger(0,2,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
+        p.addStep(new Step(cbg));
+        
+        
+        Add add2 = new Add(0,2,3,5).inverse();
+        p.addStep(new Step(add2));
+        p.addStep(new Step(new X(dim-1)));
+        
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(1, q[6].measure());
+    }
+    
+    
+    @Test
+    public void addmod2p2mod3step3() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(1), new X(4));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+        AddInteger addN = new AddInteger(0,2,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
+        p.addStep(new Step(cbg));
+        
+        
+        Add add2 = new Add(0,2,3,5).inverse();
+        p.addStep(new Step(add2));
+        p.addStep(new Step(new X(dim-1)));
+        
+        Block block = new Block(1);
+        block.addStep(new Step(new X(0)));
+        ControlledBlockGate cbg2 = new ControlledBlockGate(block, dim-1, 2);
+        p.addStep(new Step(cbg2));
+
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
+    }
 }
