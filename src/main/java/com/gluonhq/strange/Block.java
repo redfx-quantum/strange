@@ -47,9 +47,14 @@ public class Block {
     private Complex[][] matrix = null;
     private final String name;
 
+    /**
+     * Create a block spanning size qubits
+     * @param size the number of (adjacent) qubits in this block
+     */
     public Block(int size) {
         this ("anonymous", size);
     }
+    
     public Block(String name, int size) {
         this.nqubits = size;
         this.name = name;

@@ -42,7 +42,7 @@ import java.util.stream.IntStream;
  */
 public class BlockGate<T> implements Gate {
 
-    private Block block;
+    protected Block block;
     protected int idx;
     private boolean inverse = false;
     

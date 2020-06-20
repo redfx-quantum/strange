@@ -98,9 +98,10 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         }
         for (Step step: simpleSteps) {
             if (!step.getGates().isEmpty()) {
+            System.err.println("RUN STEP "+step+", cnt = "+cnt);
                 cnt++;
                 probs = applyStep(step, probs, qubit);
-                // printProbs(probs);
+                 printProbs(probs);
                 int idx = step.getComplexStep();
                 if (idx > -1) {
                     result.setIntermediateProbability(idx, probs);
@@ -141,6 +142,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         Complex[][] a = calculateStepMatrix(gates, qubits.length);
         Complex[] result = new Complex[vector.length];
         if (a.length != result.length) {
+            System.err.println("fatal issue calculating step for gates "+gates);
             throw new RuntimeException ("Wrong length of matrix or probability vector: expected "+result.length+" but got "+a.length);
         }
         for (int i = 0; i < vector.length; i++) {

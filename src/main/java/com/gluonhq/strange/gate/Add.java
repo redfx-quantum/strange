@@ -68,12 +68,10 @@ public class Add extends BlockGate<Add> {
         Block answer = new Block(y1-x0+1);
         int m = x1-x0+1;
         int n = y1 - y0 + 1;
-        System.err.println("create adder, m = "+m+" and n = "+n);
         answer.addStep(new Step(new Fourier(m, 0)));
         for (int i = 0; i < m; i++) {
-           for (int j = 0; j < m-i ; j++) {
+            for (int j = 0; j < m-i ; j++) {
                 int cr0 = 2 *m-j-i-1;
-                System.err.println("in loop, i = "+i+" and j = "+j+" and cr0 = "+cr0);
                 if (cr0 < m + n) {
                     Step s = new Step(new Cr(i, cr0,2,1+j));
                     answer.addStep(s);

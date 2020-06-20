@@ -64,10 +64,12 @@ public class Computations {
                         gate -> gate.getHighestAffectedQubitIndex() == cnt )
                     .findFirst()
                     .orElse(new Identity(idx));
+            System.err.println("stepmatrix, cnt = "+cnt+", idx = "+idx);
             if (myGate instanceof BlockGate) {
                 BlockGate sqg = (BlockGate)myGate;
                 a = tensor(a, sqg.getMatrix());
                 idx = idx - sqg.getSize()+1;
+                System.err.println("now, idx = "+idx);
             }
             if (myGate instanceof SingleQubitGate) {
                 SingleQubitGate sqg = (SingleQubitGate)myGate;

@@ -39,6 +39,7 @@ import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Add;
+import com.gluonhq.strange.gate.AddInteger;
 import com.gluonhq.strange.gate.Fourier;
 import com.gluonhq.strange.gate.Mul;
 import com.gluonhq.strange.gate.Swap;
@@ -135,6 +136,93 @@ public class ArithmeticTests extends BaseGateTests {
     }
     
     @Test
+    public void add0num0() {
+        Program p = new Program(1);
+        Step prep = new Step();
+        p.addStep(prep);
+        AddInteger add = new AddInteger(0,0,0);
+        p.addStep(new Step(add));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(1, q.length);
+        assertEquals(0, q[0].measure());
+    }
+           
+    @Test
+    public void add0num1() {
+        Program p = new Program(1);
+        Step prep = new Step();
+        p.addStep(prep);
+        AddInteger add = new AddInteger(0,0,1);
+        p.addStep(new Step(add));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(1, q.length);
+        assertEquals(1, q[0].measure());  
+    }
+    
+    @Test
+    public void add1num0() {
+        Program p = new Program(1);
+        Step prep = new Step();
+        prep.addGate(new X(0));
+        p.addStep(prep);
+        AddInteger add = new AddInteger(0,0,0);
+        p.addStep(new Step(add));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(1, q.length);
+        assertEquals(1, q[0].measure());  
+    }
+
+    @Test
+    public void add1num1() {
+        Program p = new Program(1);
+        Step prep = new Step();
+        prep.addGates(new X(0));
+        p.addStep(prep);
+        AddInteger add = new AddInteger(0,0,1);
+        p.addStep(new Step(add));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(1, q.length);
+        assertEquals(0, q[0].measure());
+    }
+         
+    @Test
+    public void add5num2() {
+        Program p = new Program(3);
+        Step prep = new Step();
+        prep.addGates(new X(0), new X(2));
+        p.addStep(prep);
+        AddInteger add = new AddInteger(0,2,2);
+        p.addStep(new Step(add));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(3, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+    }
+                 
+    @Test
+    public void add5num4() {
+        Program p = new Program(3);
+        Step prep = new Step();
+        prep.addGates(new X(0), new X(2));
+        p.addStep(prep);
+        AddInteger add = new AddInteger(0,2,4);
+        p.addStep(new Step(add));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(3, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+    }
+         
+         
+ //   @Test
     public void adjoint() {
            Program p = new Program(6);
         Step prep = new Step();
@@ -176,7 +264,7 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(0, q[5].measure());  
     }
       
-   @Test
+    @Test
     public void multiply5x7() { // 5 x 7 mod 8 = 3
         Program p = new Program(6);
         Step prep = new Step();
@@ -334,7 +422,7 @@ public class ArithmeticTests extends BaseGateTests {
     public void controlledAdd001() {
         Program p = new Program(3);
         Step s = new Step();
-        Add add = new Add(1,1,2,2);
+        Add add = new Add(0,0,1,1);
         ControlledBlockGate cbg = new ControlledBlockGate(add, 1,0);
         Complex[][] m = cbg.getMatrix();
         Complex.printMatrix(m, System.err);
@@ -355,8 +443,8 @@ public class ArithmeticTests extends BaseGateTests {
     public void controlledAdd100() {
         Program p = new Program(3);
         Step s = new Step();
-        Add add = new Add(1,1,2,2);
-        ControlledBlockGate cbg = new ControlledBlockGate(add, 1,0);
+        Add add = new Add(0,0,1,1);
+        ControlledBlockGate cbg = new ControlledBlockGate(add, 0,2);
         Complex[][] m = cbg.getMatrix();
         Complex.printMatrix(m, System.err);
         Step prep = new Step();
@@ -397,8 +485,8 @@ public class ArithmeticTests extends BaseGateTests {
     public void controlledAdd110() {
         Program p = new Program(3);
         Step s = new Step();
-        Add add = new Add(1,1,2,2);
-        ControlledBlockGate cbg = new ControlledBlockGate(add, 1,0);
+        Add add = new Add(0,0,1,1);
+        ControlledBlockGate cbg = new ControlledBlockGate(add, 0,2);
         Complex[][] m = cbg.getMatrix();
         Complex.printMatrix(m, System.err);
         Step prep = new Step();
@@ -418,8 +506,8 @@ public class ArithmeticTests extends BaseGateTests {
     public void controlledAdd111() {
         Program p = new Program(3);
         Step s = new Step();
-        Add add = new Add(1,1,2,2);
-        ControlledBlockGate cbg = new ControlledBlockGate(add, 1,0);
+        Add add = new Add(0,0,1,1);
+        ControlledBlockGate cbg = new ControlledBlockGate(add, 0,2);
         Complex[][] m = cbg.getMatrix();
         Complex.printMatrix(m, System.err);
         Step prep = new Step();

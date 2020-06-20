@@ -50,6 +50,12 @@ public class Cr extends TwoQubitGate {
     public Cr() {    
     }
     
+    /**
+     * Control-R gate
+     * @param a target qubit
+     * @param b control qubit
+     * @param exp exp
+     */
     public Cr (int a, int b, double exp) {
         super(a,b);
         matrix =  new Complex[][]{
