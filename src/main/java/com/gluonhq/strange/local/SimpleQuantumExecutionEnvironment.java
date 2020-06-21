@@ -58,6 +58,9 @@ import java.util.function.Consumer;
  */
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
     
+    void dbg (String s) {
+        System.err.println("[DBG] " + System.currentTimeMillis()%100000+": "+s);
+    }
     @Override
     public Result runProgram(Program p) {
         int nQubits = p.getNumberQubits();
@@ -96,18 +99,20 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         if (simpleSteps.isEmpty()) {
             result.setIntermediateProbability(0, probs);
         }
+        dbg("START RUN");
         for (Step step: simpleSteps) {
             if (!step.getGates().isEmpty()) {
             System.err.println("RUN STEP "+step+", cnt = "+cnt);
                 cnt++;
                 probs = applyStep(step, probs, qubit);
-                 printProbs(probs);
+          //       printProbs(probs);
                 int idx = step.getComplexStep();
                 if (idx > -1) {
                     result.setIntermediateProbability(idx, probs);
                 }
             }
         }
+        dbg("DONE RUN");
         double[] qp = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < nQubits; i++) {
             qubit[i].setProbability(qp[i]);
@@ -135,11 +140,15 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
     
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
+        dbg("start applystep");
+        long s0 = System.currentTimeMillis();
         List<Gate> gates = step.getGates();
         if (!gates.isEmpty() && gates.get(0) instanceof ProbabilitiesGate ) {
             return vector;
         }
+        dbg("start calcstepmatrix");
         Complex[][] a = calculateStepMatrix(gates, qubits.length);
+        dbg("done calcstepmatrix");
         Complex[] result = new Complex[vector.length];
         if (a.length != result.length) {
             System.err.println("fatal issue calculating step for gates "+gates);
@@ -151,6 +160,9 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 result[i] = result[i].add(a[i][j].mul(vector[j]));
             }
         }
+        long s1 = System.currentTimeMillis();
+        dbg("done applystep took "+ (s1-s0));
+
         return result;
     }
     

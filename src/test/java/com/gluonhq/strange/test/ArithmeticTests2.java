@@ -489,7 +489,7 @@ public class ArithmeticTests2 extends BaseGateTests {
     public void multiplyMod5x3andswapandclean() { // 5 x 3 mod 6 = 3
         Program p = new Program(9);
         Step prep = new Step();
-        int mul = 5;
+        int mul = 1;
         int N = 6;
         prep.addGates(new X(4), new X(5)); // 3 in high register
         p.addStep(prep);
@@ -518,7 +518,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(1, q[5].measure());
         assertEquals(0, q[6].measure());  
         assertEquals(0, q[7].measure());  
-        assertEquals(0, q[9].measure());  
+        assertEquals(0, q[8].measure());  
     }
     
     public static void main(String[] args) {

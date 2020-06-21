@@ -53,6 +53,7 @@ import java.util.List;
 public class Computations {
     
     public static Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits) {
+        long l0 = System.currentTimeMillis();
         Complex[][] a = new Complex[1][1];
         a[0][0] = Complex.ONE;
         int idx = nQubits-1;
@@ -96,6 +97,8 @@ public class Computations {
             idx--;
         }
       //  printMatrix(a);
+        long l1 = System.currentTimeMillis();
+        System.err.println("calculateStepMatrix for "+gates+" and "+nQubits+" took "+ (l1 -l0) +" ms");
         return a;
     }
     

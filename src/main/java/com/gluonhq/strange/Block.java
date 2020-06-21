@@ -80,7 +80,11 @@ public class Block {
         });
     }
 
+    static long totmatrixtime = 0;
+    
     Complex[][] getMatrix() {
+        System.err.println("Need to get MATRIX for "+this);
+    long l0 = System.currentTimeMillis();
         if (matrix == null) {
             List<Step> simpleSteps = new ArrayList<>();
             for (Step step : steps) {
@@ -95,7 +99,13 @@ public class Block {
                     matrix = Complex.mmul(matrix, m);
                 }
             }
+        } else {
+            System.err.println("MATRIX CACHED!");
         }
+        long l1 = System.currentTimeMillis();
+        totmatrixtime = totmatrixtime+ (l1 - l0);
+        System.err.println("mymatrixtime for "+this+" = "+(l1 -l0));
+        System.err.println("totmatrixtime for "+this+" = "+totmatrixtime);
         return matrix;
     }
     
