@@ -69,7 +69,7 @@ public class AddModulus extends BlockGate<AddModulus> {
     }
     
     public Block createBlock(int x0, int x1, int y0, int y1, int N) {
-        Block answer = new Block(y1-x0+2);
+        Block answer = new Block("AddModulus", y1-x0+2);
         int n = x1-x0;
         int dim = 2 * (n+1)+1;
 
@@ -94,7 +94,7 @@ public class AddModulus extends BlockGate<AddModulus> {
 
         Add add3 = new Add(x0,x1,y0,y1);
         answer.addStep (new Step(add3));
-
+       
         return answer;
     }
     

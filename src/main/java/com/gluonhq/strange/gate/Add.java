@@ -33,10 +33,8 @@ package com.gluonhq.strange.gate;
 
 import com.gluonhq.strange.Block;
 import com.gluonhq.strange.BlockGate;
-import com.gluonhq.strange.Complex;
-import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Step;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  *
@@ -44,7 +42,8 @@ import java.util.List;
  */
 public class Add extends BlockGate<Add> {
 
-    final Block block;
+    Block block;
+    static HashMap<Integer, Block> cache = new HashMap<>();
     
     /**
      * Add the qubit in the x register and the y register, result is in x
@@ -59,13 +58,22 @@ public class Add extends BlockGate<Add> {
      */
     public Add(int x0, int x1, int y0, int y1) {
         super();
-        this.block = createBlock(x0, x1, y0, y1);
+        int hash = 1000000 * x0 + 10000*x1+ 100*y0 + y1;
+        System.err.println("hash for "+x0+", " + x1+", "+y0+", "+y1+" = "+hash);
+        this.block = cache.get(hash);
+        if (this.block == null) {
+            System.err.println("not cached");
+            this.block = createBlock(x0, x1, y0, y1);
+            cache.put(hash, block);
+        } else {
+            System.err.println("ADD block cached!");
+        }
         setBlock(block);
        
     }
     
     public Block createBlock(int x0, int x1, int y0, int y1) {
-        Block answer = new Block(y1-x0+1);
+        Block answer = new Block("Add", y1-x0+1);
         int m = x1-x0+1;
         int n = y1 - y0 + 1;
         answer.addStep(new Step(new Fourier(m, 0)));
