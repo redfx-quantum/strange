@@ -51,6 +51,10 @@ import java.util.List;
  * @author johan
  */
 public class Computations {
+        
+    static void dbg (String s) {
+        System.err.println("[DBG] " + System.currentTimeMillis()%100000+": "+s);
+    }
     
     public static Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits) {
         long l0 = System.currentTimeMillis();
@@ -67,8 +71,11 @@ public class Computations {
                     .orElse(new Identity(idx));
             System.err.println("stepmatrix, cnt = "+cnt+", idx = "+idx);
             if (myGate instanceof BlockGate) {
+                dbg("calculateStepMatrix for blockgate "+myGate);
                 BlockGate sqg = (BlockGate)myGate;
                 a = tensor(a, sqg.getMatrix());
+                dbg("calculateStepMatrix for blockgate calculated "+myGate);
+
                 idx = idx - sqg.getSize()+1;
                 System.err.println("now, idx = "+idx);
             }

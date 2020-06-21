@@ -38,6 +38,8 @@ import com.gluonhq.strange.ControlledBlockGate;
 import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Step;
+import static com.gluonhq.strange.gate.Add.cache;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -46,7 +48,9 @@ import java.util.List;
  */
 public class AddModulus extends BlockGate<AddModulus> {
 
-    final Block block;
+    Block block;
+    static HashMap<Integer, Block> cache = new HashMap<>();
+
     
     /**
      * Add the qubit in the x register and the y register mod N, result is in x
@@ -64,7 +68,16 @@ public class AddModulus extends BlockGate<AddModulus> {
     public AddModulus(int x0, int x1, int y0, int y1, int N) {
         super();
         assert(y0 == x1+1);
-        this.block = createBlock(x0, x1, y0, y1, N);
+         int hash = 1000000 * x0 + 10000*x1+ 100*y0 + y1 + N;
+        System.err.println("hash for "+x0+", " + x1+", "+y0+", "+y1+" = "+hash);
+        this.block = cache.get(hash);
+        if (this.block == null) {
+            System.err.println("not cached");
+            this.block = createBlock(x0, x1, y0, y1, N);
+            cache.put(hash, block);
+        } else {
+            System.err.println("ADD block cached!");
+        }
         setBlock(block);
     }
     

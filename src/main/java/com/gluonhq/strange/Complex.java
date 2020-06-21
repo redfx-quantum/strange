@@ -31,6 +31,7 @@
  */
 package com.gluonhq.strange;
 
+import com.gluonhq.strange.gate.PermutationGate;
 import java.io.PrintStream;
 
 public final class Complex {
@@ -149,6 +150,34 @@ public final class Complex {
         return answer;
     }
     
+
+    public static Complex[][] permutate0(Complex[][] matrix, PermutationGate pg) {
+        Complex[][] p = pg.getMatrix();
+        int dim = p.length;
+        Complex[][] answer = new Complex[dim][dim];
+        for (int i = 0; i < dim; i++) {
+            int idx = 0;
+            while (p[i][idx].equals(Complex.ZERO)) idx++;
+            for (int j = 0; j < dim; j ++) {
+                answer[i][j] = matrix[idx][j];
+            }
+        }
+        return answer;
+    }
+    
+    public static Complex[][] permutate(Complex[][] matrix, PermutationGate pg) {
+        Complex[][] p = pg.getMatrix();
+        int dim = p.length;
+        Complex[][] answer = new Complex[dim][dim];
+        for (int i = 0; i < dim; i++) {
+            int idx = 0;
+            while (p[idx][i].equals(Complex.ZERO)) idx++;
+            for (int j = 0; j < dim; j ++) {
+                answer[j][i] = matrix[j][idx];
+            }
+        }
+        return answer;
+    }
 
     public static void printArray(Complex[] ca) {
         printArray(ca, System.err);

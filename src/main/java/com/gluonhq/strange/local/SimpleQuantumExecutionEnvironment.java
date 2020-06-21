@@ -99,7 +99,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         if (simpleSteps.isEmpty()) {
             result.setIntermediateProbability(0, probs);
         }
-        dbg("START RUN");
+        dbg("START RUN, number of steps = "+simpleSteps.size());
         for (Step step: simpleSteps) {
             if (!step.getGates().isEmpty()) {
             System.err.println("RUN STEP "+step+", cnt = "+cnt);

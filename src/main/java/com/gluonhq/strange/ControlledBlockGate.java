@@ -49,6 +49,7 @@ public class ControlledBlockGate<T> extends BlockGate {
     private int control;
     private int size;
     private int high = -1;
+    private Complex[][] matrix = null;
     
     protected ControlledBlockGate() {
     }
@@ -111,71 +112,77 @@ public class ControlledBlockGate<T> extends BlockGate {
 
     @Override
     public Complex[][] getMatrix() {
-        int low = 0;
-        this.high = control;
-        this.size = super.getSize()+1;
-        int gap = control - idx;
-        List<PermutationGate> perm = new LinkedList<>();
-        int bs = block.getNQubits();
-        System.err.println("control = "+control+", idx = "+idx+", gap = "+gap+" and bs = "+bs);
-        if (control > idx) {
-            if (gap <  bs) {
-                throw new IllegalArgumentException("Can't have control at "+control+" for gate with size "+bs+" starting at "+idx);
-            }
-            if (gap >  bs) {
-                low = idx;
-                high = control;
+        System.err.println("GetMatrix asked for "+this);
+        if (matrix == null) {
+            System.err.println("Matrix is null, calculate now");
+            int low = 0;
+            this.high = control;
+            this.size = super.getSize() + 1;
+            int gap = control - idx;
+            List<PermutationGate> perm = new LinkedList<>();
+            int bs = block.getNQubits();
+            System.err.println("control = " + control + ", idx = " + idx + ", gap = " + gap + " and bs = " + bs);
+            if (control > idx) {
+                if (gap < bs) {
+                    throw new IllegalArgumentException("Can't have control at " + control + " for gate with size " + bs + " starting at " + idx);
+                }
+                if (gap > bs) {
+                    low = idx;
+                    high = control;
+                    size = high - low + 1;
+                    System.err.println("PG, control = " + control + ", gap = " + gap + ", bs = " + bs);
+                    PermutationGate pg = new PermutationGate(control, control - gap + bs, size);
+                    perm.add(pg);
+                }
+            } else {
+                low = control;
+                high = idx + bs - 1;
                 size = high - low + 1;
-                System.err.println("PG, control = "+control+", gap = "+gap+", bs = "+bs);
-                PermutationGate pg = new PermutationGate(control, control- gap + bs, size );
-                perm.add(pg);
+                for (int i = 0; i < size - 1; i++) {
+                    PermutationGate pg = new PermutationGate(i, i + 1, size);
+                    perm.add(pg);
+                }
             }
+            System.err.println("GetMatrix called for CBG");
+            //Complex[][] part = super.getMatrix();
+            Complex[][] part = block.getMatrix();
+            System.err.println("PART matrix? ");
+            //  Complex.printMatrix(part);
+        //    System.err.println("include this now ");
+            int dim = part.length;
+            matrix = Computations.createIdentity(2 * dim);
+            for (int i = 0; i < dim; i++) {
+                for (int j = 0; j < dim; j++) {
+                    matrix[i + dim][j + dim] = part[i][j];
+                }
+            }
+            if (gap > bs) {
+             //   System.err.println("answer was ");
+                //   Complex.printMatrix(answer);
+                matrix = Complex.tensor(Computations.createIdentity(1 << (gap - bs)), matrix);
+            //    System.err.println("with iden tensor");
+                //   Complex.printMatrix(answer);
+            }
+            if ((gap < 0) && (-1 * gap > bs)) {
+             //   System.err.println("answer was ");
+                //   Complex.printMatrix(answer);
+                matrix = Complex.tensor(Computations.createIdentity(1 << (-1 * gap - bs)), matrix);
+            //    System.err.println("with iden tensor");
+                //  Complex.printMatrix(answer);
+            }
+
+            for (PermutationGate pg : perm) {
+                matrix = Complex.mmul(pg.getMatrix(), matrix);
+                matrix = Complex.mmul(matrix, pg.getMatrix());
+            }
+           // System.err.println("CBG matrix: ");
+            //  Complex.printMatrix(answer);
         } else {
-            low = control;
-            high = idx + bs -1;
-            size = high - low + 1;
-            for (int i = 0; i < size-1; i++) {
-                PermutationGate pg = new PermutationGate(i, i+1, size );
-                perm.add(pg);
-            }
+            System.err.println("Matrix was cached");
         }
-        System.err.println("GetMatrix called for CBG");
-        //Complex[][] part = super.getMatrix();
-        Complex[][] part = block.getMatrix();
-        System.err.println("PART matrix? ");
-     //  Complex.printMatrix(part);
-        System.err.println("include this now ");
-        int dim = part.length;
-        Complex[][] answer = Computations.createIdentity(2 * dim);
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                answer[i+dim][j+dim] = part[i][j];
-            }
-        }
-        if (gap > bs) {
-            System.err.println("answer was ");
-         //   Complex.printMatrix(answer);
-            answer = Complex.tensor(Computations.createIdentity(1 << (gap - bs)), answer);
-            System.err.println("with iden tensor");
-         //   Complex.printMatrix(answer);
-        }
-        if ((gap <0) && (-1*gap > bs)) {
-            System.err.println("answer was ");
-         //   Complex.printMatrix(answer);
-            answer = Complex.tensor(Computations.createIdentity(1 << (-1*gap - bs)), answer);
-            System.err.println("with iden tensor");
-          //  Complex.printMatrix(answer);
-        }
-        
-        for (PermutationGate pg : perm) {
-            answer = Complex.mmul(pg.getMatrix(), answer);
-            answer = Complex.mmul(answer, pg.getMatrix());
-        }
-        System.err.println("CBG matrix: ");
-      //  Complex.printMatrix(answer);
-        return answer;
+        return matrix;
     }
-    
+
     public int getSize() {
         return size;
     }

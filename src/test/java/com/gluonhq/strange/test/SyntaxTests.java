@@ -31,10 +31,12 @@
  */
 package com.gluonhq.strange.test;
 
+import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Hadamard;
 import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.gate.PermutationGate;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -58,5 +60,21 @@ public class SyntaxTests {
         Step s0 = new Step("Hello!");
         Step s1 = new Step("foo", new Identity(0));
         Step s2 = new Step(new Identity(0), new Identity(1));
+    }
+    
+    @Test
+    public void permutation() {
+        int dim = 4;
+        Complex[][] a = new Complex[dim][dim];
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                a[i][j] = new Complex(i*dim+j,0);
+            }
+        }
+        PermutationGate pg = new PermutationGate(0,1,2);
+        Complex.printMatrix(pg.getMatrix());
+        Complex[][] res = Complex.permutate(a, pg);
+        Complex.printMatrix(res);
+      //  assertTrue(a[0][0].equals(res[2][0]) );
     }
 }
