@@ -87,7 +87,7 @@ public class Demo {
     public static void multiplyMod5x3andswapandclean() { // 5 x 3 mod 6 = 3
         Program p = new Program(9);
         Step prep = new Step();
-        int mul = 1;
+        int mul = 5;
         int N = 6;
         prep.addGates(new X(4), new X(5)); // 3 in high register
       //  p.addStep(prep);
@@ -95,16 +95,16 @@ public class Demo {
             AddModulus add = new AddModulus(0, 3, 4, 7, N);
             p.addStep(new Step(add));
         }
-//        p.addStep(new Step( new Swap(0,4)));
-//        p.addStep(new Step( new Swap(1,5)));
-//        p.addStep(new Step( new Swap(2,6)));
-//        p.addStep(new Step( new Swap(3,7)));
-//
-//        int invsteps = Computations.getInverseModulus(mul,N);
-//        for (int i = 0; i < invsteps; i++) {
-//            Add add = new Add(0, 3, 4, 7).inverse();
-//            p.addStep(new Step(add));
-//        }
+        p.addStep(new Step( new Swap(0,4)));
+        p.addStep(new Step( new Swap(1,5)));
+        p.addStep(new Step( new Swap(2,6)));
+        p.addStep(new Step( new Swap(3,7)));
+
+        int invsteps = Computations.getInverseModulus(mul,N);
+        for (int i = 0; i < invsteps; i++) {
+            AddModulus add = new AddModulus(0, 3, 4, 7, N).inverse();
+            p.addStep(new Step(add));
+        }
         SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
         Result result = sqee.runProgram(p);
         Qubit[] q = result.getQubits();

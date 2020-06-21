@@ -31,6 +31,7 @@
  */
 package com.gluonhq.strange;
 
+import com.gluonhq.strange.gate.PermutationGate;
 import com.gluonhq.strange.local.Computations;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,12 +93,19 @@ public class Block {
             }
             Collections.reverse(simpleSteps);
             for (Step step: simpleSteps) {
-                Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits);
-                if (matrix == null) {
-                    matrix = m;
+                System.err.println("Matrix for block "+this+" will process step "+step);
+                List<Gate> gates = step.getGates();
+                if ((matrix != null) && (gates.size() == 1) && (gates.get(0) instanceof PermutationGate)) {
+                    matrix = Complex.permutate(matrix, (PermutationGate)gates.get(0));
                 } else {
-                    matrix = Complex.mmul(matrix, m);
+                    Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits);
+                    if (matrix == null) {
+                        matrix = m;
+                    } else {
+                        matrix = Complex.mmul(matrix, m);
+                    }
                 }
+                System.err.println("Matrix for block "+this+" DID process step "+step);
             }
         } else {
             System.err.println("MATRIX CACHED!");
