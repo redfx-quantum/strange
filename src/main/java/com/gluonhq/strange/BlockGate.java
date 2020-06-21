@@ -113,10 +113,13 @@ public class BlockGate<T> implements Gate {
 
     @Override
     public Complex[][] getMatrix() {
+        long l0 = System.currentTimeMillis();
         Complex[][] answer = block.getMatrix();
         if (inverse) {
             answer = Complex.conjugateTranspose(answer);
         }
+        long l1 = System.currentTimeMillis();
+        System.err.println("BLOCKGATE, got matrix took "+ (l1 - l0) +" ms for "+this);
         return answer;
     }
     

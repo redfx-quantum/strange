@@ -143,7 +143,7 @@ public class ControlledBlockGate<T> extends BlockGate {
         //Complex[][] part = super.getMatrix();
         Complex[][] part = block.getMatrix();
         System.err.println("PART matrix? ");
-        Complex.printMatrix(part);
+     //  Complex.printMatrix(part);
         System.err.println("include this now ");
         int dim = part.length;
         Complex[][] answer = Computations.createIdentity(2 * dim);
@@ -154,17 +154,17 @@ public class ControlledBlockGate<T> extends BlockGate {
         }
         if (gap > bs) {
             System.err.println("answer was ");
-            Complex.printMatrix(answer);
+         //   Complex.printMatrix(answer);
             answer = Complex.tensor(Computations.createIdentity(1 << (gap - bs)), answer);
             System.err.println("with iden tensor");
-            Complex.printMatrix(answer);
+         //   Complex.printMatrix(answer);
         }
         if ((gap <0) && (-1*gap > bs)) {
             System.err.println("answer was ");
-            Complex.printMatrix(answer);
+         //   Complex.printMatrix(answer);
             answer = Complex.tensor(Computations.createIdentity(1 << (-1*gap - bs)), answer);
             System.err.println("with iden tensor");
-            Complex.printMatrix(answer);
+          //  Complex.printMatrix(answer);
         }
         
         for (PermutationGate pg : perm) {
@@ -172,7 +172,7 @@ public class ControlledBlockGate<T> extends BlockGate {
             answer = Complex.mmul(answer, pg.getMatrix());
         }
         System.err.println("CBG matrix: ");
-        Complex.printMatrix(answer);
+      //  Complex.printMatrix(answer);
         return answer;
     }
     

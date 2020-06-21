@@ -115,6 +115,7 @@ public final class Complex {
     }
 
     public static Complex[][] mmul(Complex[][] a, Complex[][]b) {
+        long l0 = System.currentTimeMillis();
         int arow = a.length;
         int acol = a[0].length;
         int brow = b.length;
@@ -130,6 +131,8 @@ public final class Complex {
                 answer[i][j] = el;
             }
         }
+        long l1 = System.currentTimeMillis();
+        System.err.println("mulitply matrix "+arow+", "+acol+", "+bcol+" took "+(l1 -l0));
         return answer;
     }
     
