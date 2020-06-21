@@ -39,6 +39,7 @@ import com.gluonhq.strange.Result;
 import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.*;
+import com.gluonhq.strange.local.Computations;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
@@ -69,6 +70,8 @@ public class Demo {
         PermutationGate pg = new PermutationGate(0,2,3);
         Complex[][] m = pg.getMatrix();
         printMatrix(m);
+        
+        multiplyMod5x3andswapandclean();
     }
 
     private static void printMatrix(Complex[][] a) {
@@ -79,5 +82,32 @@ public class Demo {
             }
             System.out.println("m["+i+"]: "+sb);
         }
+    }
+    
+    public static void multiplyMod5x3andswapandclean() { // 5 x 3 mod 6 = 3
+        Program p = new Program(9);
+        Step prep = new Step();
+        int mul = 5;
+        int N = 6;
+        prep.addGates(new X(4), new X(5)); // 3 in high register
+        p.addStep(prep);
+        for (int i = 0; i < mul; i++) {
+            AddModulus add = new AddModulus(0, 3, 4, 7, N);
+            p.addStep(new Step(add));
+        }
+        p.addStep(new Step( new Swap(0,4)));
+        p.addStep(new Step( new Swap(1,5)));
+        p.addStep(new Step( new Swap(2,6)));
+        p.addStep(new Step( new Swap(3,7)));
+
+        int invsteps = Computations.getInverseModulus(mul,N);
+        for (int i = 0; i < invsteps; i++) {
+            Add add = new Add(0, 3, 4, 7).inverse();
+            p.addStep(new Step(add));
+        }
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result result = sqee.runProgram(p);
+        Qubit[] q = result.getQubits();
+
     }
 }
