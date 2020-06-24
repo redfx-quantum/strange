@@ -46,8 +46,8 @@ public final class Complex {
     public static final Complex HCN = new Complex(-HV, 0.d);
 
 
-    public final double r;
-    public final double i;
+    public double r;
+    public double i;
     
     /**
      * Create a complex number with a real component only
@@ -71,6 +71,17 @@ public final class Complex {
         double nr = this.r + b.r;
         double ni = this.i + b.i;
         return new Complex(nr, ni);
+    }    
+    
+    /**
+     * Add and replace
+     * @param b
+     * @return 
+     */
+    public Complex addr(Complex b) {
+        this.r = this.r + b.r;
+        this.i = this.i + b.i;
+        return this;
     }
 
     public Complex min(Complex b) {
@@ -127,7 +138,9 @@ public final class Complex {
             for (int j = 0; j < bcol; j++) {
                 Complex el = Complex.ZERO;
                 for (int k = 0; k < acol;k++) {
-                    el = el.add(a[i][k].mul(b[k][j]));
+                    if ((a[i][k] != Complex.ZERO) &&(b[k][j] != Complex.ZERO) ) {
+                        el.addr(a[i][k].mul(b[k][j]));
+                    }
                 }
                 answer[i][j] = el;
             }
