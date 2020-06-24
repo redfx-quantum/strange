@@ -44,13 +44,13 @@ public class ComplexTest {
 
     @Test
     public void addrTest() {
-        Complex zero = Complex.ZERO;
+        Complex zero = new Complex(0,0);
         assertTrue(zero.r == 0);
 
         Complex a = new Complex(1,2);
         zero.addr(a);
         assertTrue(zero.r == 1);
-        Complex z2 = Complex.ZERO;
+        Complex z2 = new Complex(0.,0.);
         assertTrue(z2.r == 0);
     }
 

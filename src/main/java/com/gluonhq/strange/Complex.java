@@ -136,7 +136,7 @@ public final class Complex {
         Complex[][] answer = new Complex[arow][bcol];
         for (int i = 0; i < arow; i++) {
             for (int j = 0; j < bcol; j++) {
-                Complex el = Complex.ZERO;
+                Complex el = new Complex(0.,0.);
                 for (int k = 0; k < acol;k++) {
                     if ((a[i][k] != Complex.ZERO) &&(b[k][j] != Complex.ZERO) ) {
                         el.addr(a[i][k].mul(b[k][j]));
