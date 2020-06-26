@@ -73,7 +73,6 @@ public class ControlledBlockGate<T> extends BlockGate {
     public ControlledBlockGate (Block block, int idx, int control) {
         super(block, idx);
         this.control = control;
-      //  assert(idx == control-1);
     }
 
     @Override
@@ -157,18 +156,10 @@ public class ControlledBlockGate<T> extends BlockGate {
                 }
             }
             if (gap > bs) {
-             //   System.err.println("answer was ");
-                //   Complex.printMatrix(answer);
                 matrix = Complex.tensor(Computations.createIdentity(1 << (gap - bs)), matrix);
-            //    System.err.println("with iden tensor");
-                //   Complex.printMatrix(answer);
             }
-            if ((gap < 0) && (-1 * gap > bs)) {
-             //   System.err.println("answer was ");
-                //   Complex.printMatrix(answer);
-                matrix = Complex.tensor(Computations.createIdentity(1 << (-1 * gap - bs)), matrix);
-            //    System.err.println("with iden tensor");
-                //  Complex.printMatrix(answer);
+            if ((gap < 0) && (-1 * gap > 1)) {
+                matrix = Complex.tensor(Computations.createIdentity(1 << (-1 * gap -1 )), matrix);
             }
 
             for (PermutationGate pg : perm) {

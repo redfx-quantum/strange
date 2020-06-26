@@ -58,6 +58,16 @@ public class ArithmeticTests extends BaseGateTests {
     static final double D = 0.000000001d;
 
     @Test
+    public void gcd() {
+        assertEquals(2, Computations.gcd(2, 6));
+        assertEquals(2, Computations.gcd(6, 2));
+        assertEquals(1, Computations.gcd(7, 15));
+        assertEquals(1, Computations.gcd(15, 7));
+        assertEquals(3, Computations.gcd(15, 21));
+        assertEquals(3, Computations.gcd(21, 15));
+    }
+    
+    @Test
     public void add00() {
         Program p = new Program(2);
         Step prep = new Step();
@@ -559,4 +569,5 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(1, q[5].measure());
     }
     
+ 
 }
