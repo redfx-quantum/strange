@@ -265,6 +265,19 @@ public class Computations {
         return s1 > 0 ? s1 : s1+b;
     }
     
+    public static int gcd (int a, int b) {
+        int x = a > b ? a : b;
+        int y = x==a ? b :a ;
+        int z = 0;
+        while (y != 0) {
+            z = x % y;
+            x = y;
+            y = z;
+        }
+        return x;
+    }
+    
+    
     public static Complex[][] createIdentity(int dim) {
         Complex[][] matrix = new Complex[dim][dim];
         for (int i = 0; i < dim; i++) {
