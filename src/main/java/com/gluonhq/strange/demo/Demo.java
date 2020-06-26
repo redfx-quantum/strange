@@ -47,6 +47,10 @@ public class Demo {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Hello, demo");
+                multiplyMod5x3andswapandclean();
+    }
+        
+    private static void demo1() {
         Program p = new Program(4);
         Gate yGate = new Y(0);
         Gate xGate = new X(1);
@@ -71,7 +75,6 @@ public class Demo {
         Complex[][] m = pg.getMatrix();
         printMatrix(m);
         
-        multiplyMod5x3andswapandclean();
     }
 
     private static void printMatrix(Complex[][] a) {

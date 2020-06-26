@@ -84,6 +84,19 @@ public final class Complex {
         return this;
     }
 
+    /**
+     * AddMul and replace
+     * @param b
+     * @return 
+     */
+    public Complex addmulr(Complex a, Complex b) {
+        double nr = (a.r * b.r) - (a.i * b.i);
+        double ni = (a.r * b.i) + (a.i * b.r);
+        this.r = this.r + nr;
+        this.i = this.i + ni;
+        return this;
+    }
+
     public Complex min(Complex b) {
         double nr = this.r - b.r;
         double ni = this.i - b.i;
@@ -139,7 +152,8 @@ public final class Complex {
                 Complex el = new Complex(0.,0.);
                 for (int k = 0; k < acol;k++) {
                     if ((a[i][k] != Complex.ZERO) &&(b[k][j] != Complex.ZERO) ) {
-                        el.addr(a[i][k].mul(b[k][j]));
+                        el.addmulr(a[i][k], b[k][j]);
+                     //   el.addr(a[i][k].mul(b[k][j]));
                     }
                 }
                 answer[i][j] = el;
