@@ -44,6 +44,7 @@ import com.gluonhq.strange.gate.AddInteger;
 import com.gluonhq.strange.gate.Cnot;
 import com.gluonhq.strange.gate.Fourier;
 import com.gluonhq.strange.gate.Mul;
+import com.gluonhq.strange.gate.MulModulus;
 import com.gluonhq.strange.gate.Swap;
 import com.gluonhq.strange.gate.X;
 import com.gluonhq.strange.local.Computations;
@@ -56,9 +57,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class SingleTest extends BaseGateTests {
 
-    @Test // 
+  //  @Test // 
     public void expmul3p3() { // 3^3 = 27 -> mod 8 = 3
         int length = 3;
+        int N = 8;
         // q0 -> q2: x (3)
         // q3 -> q5: ancilla (0 before, 0 after)
         // q6 -> q8: result
@@ -69,7 +71,11 @@ public class SingleTest extends BaseGateTests {
         p.addStep(prep);
         p.addStep(prepAnc);
         for (int i = length - 1; i > -1; i--) {
-            int m = (int) Math.pow(a, 1 << i);
+//            int m = (int) Math.pow(a, 1 << i);
+            int m = 1;
+            for (int j = 0; j < 1 << i; j++) {
+                m = m*a %N;
+            }
             System.err.println("M = " + m);
             Mul mul = new Mul(length, 2 * length - 1, m);
             ControlledBlockGate cbg = new ControlledBlockGate(mul, length, i);
@@ -92,5 +98,43 @@ public class SingleTest extends BaseGateTests {
         assertEquals(1, q[7].measure());
         assertEquals(0, q[8].measure());
     }
+    
+    @Test
+  public void expmul3p4mod7() { // 3^4 = 81 -> mod 7 = 4
+        int length = 3; 
+        // q0 -> q2: a (3)
+        // q3 -> q5: ancilla (0 before, 0 after)
+        // q6 -> q8: result
+        int a = 3;
+        int mod = 7;
+        Program p = new Program(3 * length);
+        Step prep = new Step(new X(0), new X(1));
+        Step prepAnc = new Step(new X(2 * length));
+        p.addStep(prep);
+        p.addStep(prepAnc);
 
+        for (int i = 0; i < length; i++) {
+            int m = (int) Math.pow(a, 1 <<  i);
+            System.err.println("M = "+m);
+            MulModulus mul = new MulModulus(length, 2 * length-1, m, mod);
+            ControlledBlockGate cbg = new ControlledBlockGate(mul, length, i);
+            p.addStep(new Step(cbg));
+        }
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(9, q.length);
+        System.err.println("results: ");
+        for (int i = 0; i < 9; i++) {
+            System.err.println("m["+i+"]: "+q[i].measure());
+        }
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
+        assertEquals(1, q[7].measure());
+        assertEquals(0, q[8].measure());
+    }
 }
