@@ -93,7 +93,9 @@ public class BlockGate<T> implements Gate {
 
     @Override
     public int getHighestAffectedQubitIndex() {
-        return block.getNQubits()+idx-1;
+        int answer = block.getNQubits()+idx-1;
+        System.err.println("highest qi asked for "+this+" will return "+answer);
+        return answer;
     }
 
     @Override
@@ -133,7 +135,7 @@ public class BlockGate<T> implements Gate {
     }
     
     @Override public String toString() {
-        return "Gate for block "+block;
+        return "Gate for block "+block+", size = "+getSize();
     }
 
     

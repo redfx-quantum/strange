@@ -35,13 +35,10 @@ import com.gluonhq.strange.Block;
 import com.gluonhq.strange.BlockGate;
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.ControlledBlockGate;
-import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
-import com.gluonhq.strange.gate.Cnot;
-import com.gluonhq.strange.gate.Toffoli;
 import com.gluonhq.strange.gate.X;
 
 import org.junit.jupiter.api.Test;
@@ -136,8 +133,53 @@ public class ControlledBlockTests extends BaseGateTests {
         assertEquals(1, q[1].measure());
         assertEquals(1, q[2].measure());
     }
-        
-   @Test
+          
+    @Test
+    public void cnotblock100b2() { //100 -> 111
+        Program p = new Program(3);
+        Step prep = new Step(new X(2));
+        Block block = new Block(2);
+        block.addStep(new Step(new X(0), new X(1)));
+        BlockGate gate = new BlockGate(block, 0);
+        ControlledBlockGate cbg = new ControlledBlockGate(gate, 0, 2);
+        Complex[][] m = cbg.getMatrix();
+        Complex.printMatrix(m, System.err);
+
+        p.addStep(prep);
+        p.addStep(new Step(cbg));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(3, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+    }
+    
+    @Test
+    public void cnotblock100b2inv() { //100 -> 111
+        Program p = new Program(3);
+        Step prep = new Step(new X(0));
+        Block block = new Block(2);
+        block.addStep(new Step(new X(0), new X(1)));
+        BlockGate gate = new BlockGate(block, 0);
+        ControlledBlockGate cbg = new ControlledBlockGate(gate, 1, 0);
+        Complex[][] m = cbg.getMatrix();
+        Complex.printMatrix(m, System.err);
+
+        p.addStep(prep);
+        p.addStep(new Step(cbg));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        for (int i = 0; i < 3; i++) {
+            System.err.println("q["+i+"] = "+q[i].measure());
+        }
+        assertEquals(3, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+    }
+    
+    @Test
     public void cnotblock100() { //100 -> 101
         Program p = new Program(3);
         Step prep = new Step(new X(2));
@@ -151,11 +193,93 @@ public class ControlledBlockTests extends BaseGateTests {
         p.addStep(prep);
         p.addStep(new Step(cbg));
         Result result = runProgram(p);
+        Complex[] probability = result.getProbability();
+        Complex.printArray(probability);
         Qubit[] q = result.getQubits();
         assertEquals(3, q.length);
         assertEquals(1, q[0].measure());
         assertEquals(0, q[1].measure());
         assertEquals(1, q[2].measure());
+    }
+     
+    @Test
+    public void cnotblock101() { //101 -> 001
+        Program p = new Program(3);
+        Step prep = new Step(new X(0), new X(2));
+        Block block = new Block(1);
+        block.addStep(new Step(new X(0)));
+        BlockGate gate = new BlockGate(block, 0);
+        ControlledBlockGate cbg = new ControlledBlockGate(gate, 2, 0);
+        Complex[][] m = cbg.getMatrix();
+        Complex.printMatrix(m, System.err);
+
+        p.addStep(prep);
+        p.addStep(new Step(cbg));
+        Result result = runProgram(p);
+        Complex[] probability = result.getProbability();
+        Complex.printArray(probability);
+        Qubit[] q = result.getQubits();
+                for (int i = 0; i < 3; i++) {
+            System.err.println("q["+i+"] = "+q[i].measure());
+        }
+        assertEquals(3, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+    }
+    
+    @Test
+    public void cnotblock1010() { //1010 -> 0010
+        Program p = new Program(4);
+        Step prep = new Step(new X(1), new X(3));
+        Block block = new Block(1);
+        block.addStep(new Step(new X(0)));
+        BlockGate gate = new BlockGate(block, 0);
+        ControlledBlockGate cbg = new ControlledBlockGate(gate, 3, 1);
+        Complex[][] m = cbg.getMatrix();
+        Complex.printMatrix(m, System.err);
+
+        p.addStep(prep);
+        p.addStep(new Step(cbg));
+        Result result = runProgram(p);
+        Complex[] probability = result.getProbability();
+        Complex.printArray(probability);
+        Qubit[] q = result.getQubits();
+                for (int i = 0; i < 4; i++) {
+            System.err.println("q["+i+"] = "+q[i].measure());
+        }
+        assertEquals(4, q.length);
+        assertEquals(0, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+    }
+    
+    @Test
+    public void cnotblock1010inv() { //1010 -> 0010
+        Program p = new Program(4);
+        Step prep = new Step(new X(1), new X(3));
+        Block block = new Block(1);
+        block.addStep(new Step(new X(0)));
+        BlockGate gate = new BlockGate(block, 0);
+        ControlledBlockGate cbg = new ControlledBlockGate(gate, 1, 3);
+        Complex[][] m = cbg.getMatrix();
+        Complex.printMatrix(m, System.err);
+
+        p.addStep(prep);
+        p.addStep(new Step(cbg));
+        Result result = runProgram(p);
+        Complex[] probability = result.getProbability();
+        Complex.printArray(probability);
+        Qubit[] q = result.getQubits();
+                for (int i = 0; i < 4; i++) {
+            System.err.println("q["+i+"] = "+q[i].measure());
+        }
+        assertEquals(4, q.length);
+        assertEquals(0, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(1, q[3].measure());
     }
     
 }

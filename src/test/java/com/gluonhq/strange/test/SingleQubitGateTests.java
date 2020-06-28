@@ -31,6 +31,7 @@
  */
 package com.gluonhq.strange.test;
 
+import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;

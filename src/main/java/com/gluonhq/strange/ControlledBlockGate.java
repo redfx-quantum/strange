@@ -77,6 +77,7 @@ public class ControlledBlockGate<T> extends BlockGate {
 
     @Override
     public int getMainQubitIndex() {
+        System.err.println("GET MQI asked, return "+control);
         return control;
     }
 
@@ -130,7 +131,7 @@ public class ControlledBlockGate<T> extends BlockGate {
                     high = control;
                     size = high - low + 1;
                     System.err.println("PG, control = " + control + ", gap = " + gap + ", bs = " + bs);
-                    PermutationGate pg = new PermutationGate(control, control - gap + bs, size);
+                    PermutationGate pg = new PermutationGate(control-low, control-low - gap + bs, size);
                     perm.add(pg);
                 }
             } else {
@@ -139,14 +140,14 @@ public class ControlledBlockGate<T> extends BlockGate {
                 size = high - low + 1;
                 for (int i = 0; i < size - 1; i++) {
                     PermutationGate pg = new PermutationGate(i, i + 1, size);
-                    perm.add(pg);
+                    perm.add(0,pg);
                 }
             }
-            System.err.println("GetMatrix called for CBG");
+            System.err.println("GetMatrix called for CBG, perm = "+perm);
             //Complex[][] part = super.getMatrix();
             Complex[][] part = block.getMatrix();
             System.err.println("PART matrix? ");
-            //  Complex.printMatrix(part);
+             Complex.printMatrix(part);
         //    System.err.println("include this now ");
             int dim = part.length;
             matrix = Computations.createIdentity(2 * dim);
@@ -155,19 +156,28 @@ public class ControlledBlockGate<T> extends BlockGate {
                     matrix[i + dim][j + dim] = part[i][j];
                 }
             }
+            System.err.println("before tensor1, matrix = ");
+            Complex.printMatrix(matrix);
             if (gap > bs) {
                 matrix = Complex.tensor(Computations.createIdentity(1 << (gap - bs)), matrix);
             }
             if ((gap < 0) && (-1 * gap > 1)) {
-                matrix = Complex.tensor(Computations.createIdentity(1 << (-1 * gap -1 )), matrix);
+                matrix = Complex.tensor(matrix,Computations.createIdentity(1 << (-1 * gap -1 )));
             }
-
+            System.err.println("before perm, matrix = ");
+            Complex.printMatrix(matrix);
             for (PermutationGate pg : perm) {
+                System.err.println("PRE/POST perm : "+pg);
+                Complex.printMatrix(pg.getMatrix());
                 matrix = Complex.mmul(pg.getMatrix(), matrix);
                 matrix = Complex.mmul(matrix, pg.getMatrix());
+                System.err.println("after perm, matrix = ");
+                Complex.printMatrix(pg.getMatrix());
+
             }
-           // System.err.println("CBG matrix: ");
-            //  Complex.printMatrix(answer);
+
+            System.err.println("CBG matrix: ");
+             Complex.printMatrix(matrix);
         } else {
             System.err.println("Matrix was cached");
         }
