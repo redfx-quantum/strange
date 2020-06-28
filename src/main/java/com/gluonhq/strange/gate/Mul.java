@@ -58,6 +58,7 @@ public class Mul extends BlockGate<Mul> {
      */
     public Mul(int x0, int x1, int mul) {
         super();
+        this.idx = x0;
         this.block = createBlock(x0, x1,mul);
         setBlock(block);
        
@@ -68,7 +69,7 @@ public class Mul extends BlockGate<Mul> {
         int x1 = y1-y0;
         int size = 1 + x1-x0;
         int dim = 1 << size;
-        Block answer = new Block(2 * size);
+        Block answer = new Block("Mul", 2 * size);
         System.err.println("first blocks, add with "+x0+", "+x1+", size = "+size);
         System.err.println("dim = "+dim+", mul = "+mul);
 

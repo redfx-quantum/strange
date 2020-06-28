@@ -62,7 +62,7 @@ public class ArithmeticTests2 extends BaseGateTests {
 
     static final double D = 0.000000001d;
     
- //   @Test
+    @Test
     public void addmod0() {
         int n = 2;
         int N = 3;
@@ -86,7 +86,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(0, q[6].measure());
     }
 
-//    @Test
+    @Test
     public void addmod1() {
         int n = 2;
         int N = 3;
@@ -114,7 +114,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(1, q[6].measure());
     }
 
- //   @Test
+    @Test
     public void addmod2() {
         int n = 2;
         int N = 3;
@@ -145,7 +145,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(1, q[6].measure());
     }
 
-  //  @Test
+    @Test
     public void addmod3() {
         int n = 2;
         int N = 3;
@@ -181,7 +181,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(0, q[6].measure());
     }
 
- //   @Test
+    @Test
     public void addmod4() {
         int n = 2;
         int N = 3;
@@ -222,7 +222,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(0, q[6].measure());
     }
 
-//    @Test
+    @Test
     public void addmod5() {
         int n = 2;
         int N = 3;
@@ -266,7 +266,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(0, q[6].measure());
     }
 
- //  @Test
+   @Test
     public void addmod1plus1mod3() {
         int n = 2;
         int N = 3;
@@ -310,7 +310,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(0, q[6].measure());
     }
 
-//    @Test
+    @Test
     public void addmod2p2mod3() {
         int n = 2;
         int N = 3;
@@ -354,7 +354,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(0, q[6].measure());
     }
 
- //   @Test
+    @Test
     public void addmod2p2mod3step1() {
         int n = 2;
         int N = 3;
@@ -385,7 +385,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(0, q[6].measure());
     }
     
- //   @Test
+    @Test
     public void addmod2p2mod3step2() {
         int n = 2;
         int N = 3;
@@ -404,7 +404,6 @@ public class ArithmeticTests2 extends BaseGateTests {
         ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
         p.addStep(new Step(cbg));
         
-        
         Add add2 = new Add(0,2,3,5).inverse();
         p.addStep(new Step(add2));
         p.addStep(new Step(new X(dim-1)));
@@ -422,7 +421,7 @@ public class ArithmeticTests2 extends BaseGateTests {
     }
     
     
-  //  @Test
+    @Test
     public void addmod2p2mod3step3() {
         int n = 2;
         int N = 3;
@@ -453,6 +452,10 @@ public class ArithmeticTests2 extends BaseGateTests {
 
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
+                System.err.println("Results: ");
+        for (int i = 0; i < 7; i++) {
+            System.err.println("m["+i+"]: "+q[i].measure());
+        }
         assertEquals(7, q.length);
         assertEquals(1, q[0].measure());
         assertEquals(1, q[1].measure());
@@ -463,7 +466,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(0, q[6].measure());
     }
 
- //   @Test
+    @Test
     public void addmodgate() {
         int n = 2;
         int N = 3;
@@ -477,6 +480,10 @@ public class ArithmeticTests2 extends BaseGateTests {
         p.addStep(mod);
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
+        System.err.println("Results: ");
+        for (int i = 0; i < 7; i++) {
+            System.err.println("m["+i+"]: "+q[i].measure());
+        }
         assertEquals(7, q.length);
         assertEquals(1, q[0].measure());
         assertEquals(0, q[1].measure());
@@ -487,7 +494,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(0, q[6].measure());
     }
     
- //   @Test
+    @Test
     public void multiplyMod5x3andswapandcleans1() { // 5 x 3 mod 6 = 3
         Program p = new Program(9);
         Step prep = new Step();
@@ -513,7 +520,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(0, q[8].measure());  
     }
     
-  //  @Test
+    @Test
     public void multiplyMod5x3andswapandcleans2() { // 5 x 3 mod 6 = 3
         // |A00110000> -> 
         Program p = new Program(9);
@@ -522,7 +529,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         int N = 6;
         prep.addGates(new X(4), new X(5)); // 3 in high register
         p.addStep(prep);
-        for (int i = 0; i < mul; i++) {
+        for (int i = 0; i < 1; i++) {
             AddModulus add = new AddModulus(0, 3, 4, 7, N);
             p.addStep(new Step(add));
         }
@@ -539,6 +546,10 @@ public class ArithmeticTests2 extends BaseGateTests {
         }
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
+        System.err.println("Results: ");
+        for (int i = 0; i < 9; i++) {
+            System.err.println("m["+i+"]: "+q[i].measure());
+        }
         assertEquals(9, q.length);
         assertEquals(0, q[0].measure()); // q2,q1,q0,q3 should be clean
         assertEquals(0, q[1].measure());  
@@ -579,7 +590,7 @@ public class ArithmeticTests2 extends BaseGateTests {
         assertEquals(0, q[8].measure());  
     }
     
-    @Test
+//    @Test
     public void findPeriod7_15() { // 5 x 3 mod 6 = 3
         Program p = new Program(9);
         int mul = 7;
