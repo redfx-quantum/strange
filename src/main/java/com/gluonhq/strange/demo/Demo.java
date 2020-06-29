@@ -49,7 +49,9 @@ public class Demo {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Hello, demo");
        // memtest();
-        expmul3p4mod7();
+       zerotest();
+    //   modmultest();
+       // expmul3p4mod7();
       //  multiplyMod5x3andswapandclean();
         System.err.println("That was the demo");
     }
@@ -165,4 +167,47 @@ public class Demo {
 
     }
   
+     static public void zerotest() {
+             Program p = new Program(2);
+        Step prep = new Step();
+        prep.addGate(new X(0));
+        p.addStep(prep);
+        Add add = new Add(0,0,1,1);
+        p.addStep(new Step(add));
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result result = sqee.runProgram(p);
+        Qubit[] q = result.getQubits();
+
+     }
+     static public void modmultest() { // 3^4 = 81 -> mod 7 = 4
+        int length = 3; 
+        // q0 -> q2: a (3)
+        // q3 -> q6: ancilla (0 before, 0 after)
+        // q7: ancilla
+        // q8 -> q11: result
+        int a = 3;
+        int mod = 7;
+        Program p = new Program(9);
+        Step prepAnc = new Step(new X((length+1)));
+        p.addStep(prepAnc);
+
+        for (int i = 0; i < length; i++) {
+         //   int m = (int) Math.pow(a, 1 <<  i);
+         int m = 1;
+         for (int j =0; j < 1 <<i;j++) {
+             m = m*a%mod;
+         }
+            System.err.println("M = "+m);
+            MulModulus mul = new MulModulus(length, 2 * length, m, mod);
+            p.addStep(new Step(mul));
+        }
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result result = sqee.runProgram(p);
+        Qubit[] q = result.getQubits();
+        System.err.println("results: ");
+        for (int i = 0; i < 9; i++) {
+            System.err.println("m["+i+"]: "+q[i].measure());
+        }
+
+    }
 }

@@ -131,7 +131,11 @@ public final class Complex {
             for (int cola = 0; cola < d1; cola++) {
                 for (int rowb = 0; rowb < d2; rowb++) {
                     for (int colb = 0; colb < d2; colb++) {
-                        result[d2 * rowa + rowb][d2 * cola + colb] = a[rowa][cola].mul( b[rowb][colb]);
+                        if ((a[rowa][cola] == Complex.ZERO) || (b[rowb][colb] == Complex.ZERO)) {
+                            result[d2 * rowa + rowb][d2 * cola + colb] = Complex.ZERO;
+                        } else {
+                            result[d2 * rowa + rowb][d2 * cola + colb] = a[rowa][cola].mul( b[rowb][colb]);
+                        }
                     }
                 }
             }
