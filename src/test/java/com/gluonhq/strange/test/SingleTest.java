@@ -170,7 +170,7 @@ public class SingleTest extends BaseGateTests {
         assertEquals(0, q[11].measure());
     }
   
-  @Test
+ // @Test
   public void expmul3p4mod7s0() { // 3^4 = 81 -> mod 7 = 4
         int length = 3; 
         // q0 -> q3: x (4)
@@ -210,6 +210,43 @@ public class SingleTest extends BaseGateTests {
         assertEquals(0, q[8].measure());
     }
   
+    //  @Test
+    public void add61() {
+        Program p = new Program(6);
+        Step prep = new Step();
+        prep.addGates(new X(1), new X(2), new X(3));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(6, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());  
+        assertEquals(1, q[2].measure());
+        assertEquals(1, q[3].measure()); 
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());  
+    }
+    
+      
+      @Test
+    public void add21() {
+        Program p = new Program(4);
+        Step prep = new Step();
+        prep.addGates(new X(1), new X(2));
+        p.addStep(prep);
+        Add add = new Add(0,1,2,3);
+        p.addStep(new Step(add));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(4, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());  
+        assertEquals(1, q[2].measure());
+        assertEquals(0, q[3].measure()); 
+    }
+    
   public static void main(String[] args) {
       SingleTest st = new SingleTest();
       st.expmul3p4mod7();

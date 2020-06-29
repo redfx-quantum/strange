@@ -39,7 +39,8 @@ import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.PermutationGate;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 public class SyntaxTests {
 
     @Test
@@ -71,10 +72,15 @@ public class SyntaxTests {
                 a[i][j] = new Complex(i*dim+j,0);
             }
         }
+        assertEquals(a[0][0].r , 0 );
+        assertEquals(a[0][1].r , 1 );
+        assertEquals(a[1][0].r , 4 );
         PermutationGate pg = new PermutationGate(0,1,2);
         Complex.printMatrix(pg.getMatrix());
         Complex[][] res = Complex.permutate(a, pg);
         Complex.printMatrix(res);
-      //  assertTrue(a[0][0].equals(res[2][0]) );
+        assertEquals(a[0][0].r , 4 );
+        assertEquals(a[0][1].r , 5 );
+        assertEquals(a[1][0].r , 0 );
     }
 }

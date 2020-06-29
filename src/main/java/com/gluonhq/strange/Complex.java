@@ -210,6 +210,20 @@ static int nzCount = 0;
         return answer;
     }
     
+    public static Complex[][] permutate(PermutationGate pg, Complex[][] matrix) {
+        Complex[][] p = pg.getMatrix();
+        int dim = p.length;
+        Complex[][] answer = new Complex[dim][dim];
+        for (int i = 0; i < dim; i++) {
+            int idx = 0;
+            while (p[i][idx].equals(Complex.ZERO)) idx++;
+            for (int j = 0; j < dim; j ++) {
+                answer[i][j] = matrix[idx][j];
+            }
+        }
+       return answer;
+        }
+    
     public static Complex[][] permutate(Complex[][] matrix, PermutationGate pg) {
         Complex[][] p = pg.getMatrix();
         int dim = p.length;
@@ -221,8 +235,8 @@ static int nzCount = 0;
                 answer[j][i] = matrix[j][idx];
             }
         }
-        return answer;
-    }
+       return answer;
+   }
 
     public static void printArray(Complex[] ca) {
         printArray(ca, System.err);
