@@ -55,6 +55,8 @@ public class MulModulus extends BlockGate<MulModulus> {
      * x_1 ----- y+1 + x_1
      * y_0 ----- 0
      * y_1 ----- 0
+     * ANC ----- ANC (0) 
+     * x_1 and y_1 are overflow bits (initially 0, final 0)
      */
     public MulModulus(int x0, int x1, int mul, int mod) {
         super();
@@ -68,9 +70,8 @@ public class MulModulus extends BlockGate<MulModulus> {
         int x1 = y1-y0;
         int size = 1 + x1-x0;
      //   int dim = 1 << size;
-        Block answer = new Block(2 * size+1);
+        Block answer = new Block("MulModulus", 2 * size+1);
         System.err.println("first blocks, add with "+x0+", "+x1+", size = "+size);
-      //  System.err.println("dim = "+dim+", mul = "+mul);
 
         for (int i = 0; i < mul; i++) {
             System.err.println("CREATE ADD with "+x0+", "+x1+", "+(x1+1)+", "+(x1+size));

@@ -102,7 +102,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         dbg("START RUN, number of steps = "+simpleSteps.size());
         for (Step step: simpleSteps) {
             if (!step.getGates().isEmpty()) {
-            System.err.println("RUN STEP "+step+", cnt = "+cnt);
+            dbg("RUN STEP "+step+", cnt = "+cnt);
                 cnt++;
                 probs = applyStep(step, probs, qubit);
           //       printProbs(probs);

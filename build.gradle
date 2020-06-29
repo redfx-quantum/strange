@@ -5,6 +5,8 @@ plugins {
     id 'maven'
 }
 apply from: 'gradle/mavenPublish.gradle'
+sourceCompatibility = 11
+targetCompatibility = 11
 
 group = 'com.gluonhq'
 version = '0.0.13-SNAPSHOT'
