@@ -85,6 +85,14 @@ public class PermutationGate implements Gate {
         }
     }
     
+    public int getIndex1() {
+        return a;
+    }
+    
+    public int getIndex2() {
+        return b;
+    }
+    
     @Override
     public void setMainQubitIndex(int idx) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
