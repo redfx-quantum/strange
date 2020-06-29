@@ -62,6 +62,7 @@ public class AddModulus extends BlockGate<AddModulus> {
      * x_1 ----- y+1 + x_1
      * y_0 ----- y_0
      * y_1 ----- y_1
+     * ANC(0)--- ANC(0)
      * the qubit following y_1 should be 0 (and will be 0 after this gate)
      * qubit at x_1 should be 0 and qubit at y_1 should be 0 (overflow)
      */

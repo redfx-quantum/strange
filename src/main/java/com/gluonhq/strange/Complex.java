@@ -138,6 +138,8 @@ public final class Complex {
         }
         return result;
     }
+static int zCount = 0;
+static int nzCount = 0;
 
     public static Complex[][] mmul(Complex[][] a, Complex[][]b) {
         long l0 = System.currentTimeMillis();
@@ -145,22 +147,34 @@ public final class Complex {
         int acol = a[0].length;
         int brow = b.length;
         int bcol = b[0].length;
+        int am = 0;
         if (acol != brow) throw new RuntimeException("#cols a "+acol+" != #rows b "+brow);
         Complex[][] answer = new Complex[arow][bcol];
         for (int i = 0; i < arow; i++) {
             for (int j = 0; j < bcol; j++) {
                 Complex el = new Complex(0.,0.);
+                boolean zero = true;
                 for (int k = 0; k < acol;k++) {
                     if ((a[i][k] != Complex.ZERO) &&(b[k][j] != Complex.ZERO) ) {
+                        if ((a[i][k].r < .0001) && (b[k][j].r < 0.0001) ){
+                            //dooh 
+                            am++;
+                        }
                         el.addmulr(a[i][k], b[k][j]);
-                     //   el.addr(a[i][k].mul(b[k][j]));
+                        zero = false;
                     }
                 }
-                answer[i][j] = el;
+                if (zero) {
+                    answer[i][j] = Complex.ZERO;
+                    zCount++;
+                } else {
+                    answer[i][j] = el;
+                    nzCount ++;
+                }
             }
         }
         long l1 = System.currentTimeMillis();
-        System.err.println("mulitply matrix "+arow+", "+acol+", "+bcol+" took "+(l1 -l0));
+        System.err.println("mulitply matrix "+arow+", "+acol+", "+bcol+" took "+(l1 -l0)+" zc = "+zCount+" and nzc = "+nzCount);
         return answer;
     }
     

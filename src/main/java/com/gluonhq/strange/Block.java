@@ -93,7 +93,7 @@ public class Block {
             }
             Collections.reverse(simpleSteps);
             for (Step step: simpleSteps) {
-                System.err.println("Matrix for block "+this+" will process step "+step);
+                System.err.println(System.currentTimeMillis()%100000+" Matrix for block "+this+" will process step "+step);
                 List<Gate> gates = step.getGates();
                 if ((matrix != null) && (gates.size() == 1) && (gates.get(0) instanceof PermutationGate)) {
                     matrix = Complex.permutate(matrix, (PermutationGate)gates.get(0));
@@ -105,7 +105,7 @@ public class Block {
                         matrix = Complex.mmul(matrix, m);
                     }
                 }
-                System.err.println("Matrix for block "+this+" DID process step "+step);
+                System.err.println(System.currentTimeMillis()%100000+" Matrix for block "+this+" DID process step "+step);
             }
         } else {
             System.err.println("MATRIX CACHED!");

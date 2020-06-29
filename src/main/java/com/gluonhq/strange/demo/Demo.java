@@ -32,6 +32,7 @@
 package com.gluonhq.strange.demo;
 
 import com.gluonhq.strange.Complex;
+import com.gluonhq.strange.ControlledBlockGate;
 import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Qubit;
@@ -47,7 +48,26 @@ public class Demo {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Hello, demo");
-                multiplyMod5x3andswapandclean();
+       // memtest();
+        expmul3p4mod7();
+      //  multiplyMod5x3andswapandclean();
+        System.err.println("That was the demo");
+    }
+    
+    private static void memtest() {
+        for (int i = 0; i < 100; i++) {
+            int dim = 1 <<i;
+            System.err.println("\nTry array of "+dim);
+            Complex[][] arr = new Complex[dim][dim];
+            long fm = Runtime.getRuntime().freeMemory()/1024;
+            long tm = Runtime.getRuntime().totalMemory()/1024;
+            long mm = Runtime.getRuntime().maxMemory()/1024;
+            System.err.println("free: "+ fm+"\ntotl: "+tm+"\nused: "+(tm-fm)
+            + "\nmax: "+mm);
+            System.gc();
+            System.err.println("free: "+ fm+"\ntotl: "+tm+"\nused: "+(tm-fm)
+            + "\nmax: "+mm);
+        }
     }
         
     private static void demo1() {
@@ -113,4 +133,36 @@ public class Demo {
         Qubit[] q = result.getQubits();
 
     }
+    
+     static public void expmul3p4mod7() { // 3^4 = 81 -> mod 7 = 4
+        int length = 3; 
+        // q0 -> q2: a (3)
+        // q3 -> q6: ancilla (0 before, 0 after)
+        // q7: ancilla
+        // q8 -> q11: result
+        int a = 3;
+        int mod = 7;
+        Program p = new Program(12);
+        Step prep = new Step(new X(2));
+        Step prepAnc = new Step(new X(2 * (length+1)));
+        p.addStep(prep);
+        p.addStep(prepAnc);
+
+        for (int i = 0; i < length; i++) {
+            int m = (int) Math.pow(a, 1 <<  i);
+            System.err.println("M = "+m);
+            MulModulus mul = new MulModulus(length, 2 * length, m, mod);
+            ControlledBlockGate cbg = new ControlledBlockGate(mul, length, i);
+            p.addStep(new Step(cbg));
+        }
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result result = sqee.runProgram(p);
+        Qubit[] q = result.getQubits();
+        System.err.println("results: ");
+        for (int i = 0; i < 12; i++) {
+            System.err.println("m["+i+"]: "+q[i].measure());
+        }
+
+    }
+  
 }
