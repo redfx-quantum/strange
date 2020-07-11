@@ -74,13 +74,19 @@ public class SyntaxTests {
         }
         assertEquals(a[0][0].r , 0 );
         assertEquals(a[0][1].r , 1 );
+        assertEquals(a[0][2].r , 2 );
         assertEquals(a[1][0].r , 4 );
+        assertEquals(a[1][1].r , 5 );
+        assertEquals(a[1][2].r , 6 );
         PermutationGate pg = new PermutationGate(0,1,2);
         Complex.printMatrix(pg.getMatrix());
         Complex[][] res = Complex.permutate(a, pg);
         Complex.printMatrix(res);
-        assertEquals(a[0][0].r , 4 );
-        assertEquals(a[0][1].r , 5 );
-        assertEquals(a[1][0].r , 0 );
+        assertEquals(res[0][0].r , 0 );
+        assertEquals(res[0][1].r , 2 );
+        assertEquals(res[0][2].r , 1 );
+        assertEquals(res[1][0].r , 4 );
+        assertEquals(res[1][1].r , 6 );
+        assertEquals(res[1][2].r , 5 );
     }
 }
