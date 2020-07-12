@@ -69,15 +69,15 @@ public class AddModulus extends BlockGate<AddModulus> {
     public AddModulus(int x0, int x1, int y0, int y1, int N) {
         super();
         assert(y0 == x1+1);
-         int hash = 1000000 * x0 + 10000*x1+ 100*y0 + y1 + N;
-        System.err.println("hash for "+x0+", " + x1+", "+y0+", "+y1+" = "+hash);
+        int hash = 1000000 * x0 + 10000*x1+ 100*y0 + y1 + N;
+        System.err.println("AddModulus, hash for "+x0+", " + x1+", "+y0+", "+y1+" = "+hash);
         this.block = cache.get(hash);
         if (this.block == null) {
             System.err.println("not cached");
             this.block = createBlock(x0, x1, y0, y1, N);
             cache.put(hash, block);
         } else {
-            System.err.println("ADD block cached!");
+        //    System.err.println("ADD block cached!");
         }
         setBlock(block);
     }

@@ -66,7 +66,7 @@ public class Add extends BlockGate<Add> {
             this.block = createBlock(x0, x1, y0, y1);
             cache.put(hash, block);
         } else {
-            System.err.println("ADD block cached!");
+      //      System.err.println("ADD block cached!");
         }
         setBlock(block);
        

@@ -51,7 +51,8 @@ public class Demo {
        // memtest();
     //   zerotest();
     //   modmultest();
-        expmul3p4mod7();
+//         expmul3p4mod7();
+        expmul7p4mod15gen();
       //  multiplyMod5x3andswapandclean();
         System.err.println("That was the demo");
     }
@@ -210,4 +211,38 @@ public class Demo {
         }
 
     }
+     
+      public static void expmul7p4mod15gen() { // 3^4 = 81 -> mod 7 = 4
+        Qubit[] q = expmod(7,15,4);
+                for (int i = 0; i < q.length; i++) {
+            System.err.println("m["+i+"]: "+q[i].measure());
+        }
+    }
+    
+    private static Qubit[] expmod(int a, int mod, int length) {
+        // q0 -> q2: 4
+        // q3 -> q5: ancilla (0 before, 0 after)
+        // q6 -> q8: result
+        Program p = new Program(3 * length);
+        Step prep = new Step(new X(2)); // exp = 4
+        Step prepAnc = new Step(new X(2 * length)); 
+        p.addStep(prep);
+        p.addStep(prepAnc);
+        for (int i = length - 1; i > -1; i--) {
+           // int m = (int) Math.pow(a, 1 << i);
+            int m = 1;
+            for (int j = 0; j < 1 << i; j++) {
+                m = m*a %mod;
+            }
+            System.err.println("M = "+m);
+            MulModulus mul = new MulModulus(length, 2 * length-1, m, mod);
+            ControlledBlockGate cbg = new ControlledBlockGate(mul, length, i);
+            p.addStep(new Step(cbg));
+        }
+         SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result result = sqee.runProgram(p);
+        Qubit[] q = result.getQubits();
+        return q;
+    }
+     
 }
