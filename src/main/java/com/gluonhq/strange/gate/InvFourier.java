@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2018, Gluon Software
+ * Copyright (c) 2018, 2019, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,65 +29,39 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange.test;
-import com.gluonhq.strange.algorithm.Classic;
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
+package com.gluonhq.strange.gate;
 
-/**
- *
- * @author johan
- */
-public class ClassicTests {
+import com.gluonhq.strange.Complex;
+
+public class InvFourier extends Fourier {
     
-    @Test
-    public void random() {
-        int z = 0;
-        int o = 0;
-        for (int i = 0; i < 100; i++) {
-            int b = Classic.randomBit();
-            System.out.println("b = "+b);
-            if (b == 0) z++;
-            if (b == 1) o++;
+    /**
+     * Create a Fourier gate with the given size (dimensions), starting at idx
+     * @param size number of qubits affected by this gate
+     * @param idx the index of the first qubit in the circuit affected by this gate
+     */
+    public InvFourier(int size, int idx) {
+        super(size, idx);
+      //  super(new Block("Fourier", size), idx);
+    }
+    
+    
+    @Override
+    public Complex[][] getMatrix() {
+        if (matrix == null) {
+            double omega = Math.PI*2/size;
+            double den = Math.sqrt(size);
+            matrix = new Complex[size][size];
+            for (int i = 0; i < size; i++) {
+                for (int j = i; j < size; j++) {
+                    double alpha = omega *i *j;
+                    matrix[i][j] = new Complex(Math.cos(alpha)/den, -1*Math.sin(alpha)/den);
+                }
+                for (int k = 0; k < i; k++) {
+                    matrix[i][k] = matrix[k][i];
+                }
+            }
         }
-        assertTrue (z > 10);
-        assertTrue (o > 10);
-    }
-    
-    @Test
-    public void s00() {
-        int sum = Classic.qsum(0, 0);
-        assertEquals(0, sum);
-    }
-
-    @Test
-    public void s01() {
-        int sum = Classic.qsum(0,1);
-        assertEquals(1, sum);
-    }
-    
-       
-    @Test
-    public void s10() {
-        int sum = Classic.qsum(1,0);
-        assertEquals(1, sum);
-    }
-    
-    @Test
-    public void s12() {
-        int sum = Classic.qsum(1,2);
-        assertEquals(3, sum);
-    }
-    
-    @Test
-    public void s22() {
-        int sum = Classic.qsum(2,2);
-        assertEquals(0, sum);
-    }
-        
-    @Test
-    public void s413() {
-        int sum = Classic.qsum(4,13);
-        assertEquals(17, sum);
+        return matrix;
     }
 }

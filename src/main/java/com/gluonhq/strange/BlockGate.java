@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2018, Gluon Software
+ * Copyright (c) 2020, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,92 +29,88 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange.gate;
+package com.gluonhq.strange;
 
-import com.gluonhq.strange.Gate;
-import java.util.Arrays;
-import java.util.Collections;
+import com.gluonhq.strange.local.Computations;
+import java.util.ArrayList;
+
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  *
- * This class describe a Gate that operates on three qubits. In a single
- * <code>Step</code>, there should not be two Gates that act on the same qubit.
+ * A Gate describes an operation on one or more qubits.
  * @author johan
  */
-public abstract class ThreeQubitGate implements Gate {
-    
-    private int first;
-    private int second;
-    private int third;
-    
-    public ThreeQubitGate() {}
-    
-    public ThreeQubitGate (int first, int second, int third) {
-        this.first = first;
-        this.second = second;
-        this.third = third;
-    }
+public class BlockGate implements Gate {
 
+    private final Block block;
+    protected final int idx;
+    
+    /**
+     * Create a block 
+     * @param block
+     * @param idx
+     */
+    public BlockGate (Block block, int idx) {
+        this.block = block;
+        this.idx = idx;
+    }
+    
     @Override
     public void setMainQubitIndex(int idx) {
-        this.first = idx;
-    }
-    
-    @Override
-    public int getMainQubitIndex() {
-        return this.first;
-    }
-    
-    @Override
-    public void setAdditionalQubit(int idx, int cnt) {
-        if ((cnt < 1) || (cnt > 2)) { 
-            System.err.println("Can't set qubit "+cnt+" as additional on a three qubit gate");
-        }
-        if (cnt == 1) this.second = idx;
-        if (cnt == 2) this.third = idx;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public int getMainQubit() {
-        return this.first;
+    @Override
+    public int getMainQubitIndex() {
+        return idx;
     }
-    
-    public int getSecondQubit() {
-        return this.second;
+
+    @Override
+    public void setAdditionalQubit(int idx, int cnt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    public int getThirdQubit() {
-        return this.third;
-    }
-        
+
     @Override
     public List<Integer> getAffectedQubitIndexes() {
-        return Arrays.asList(first, second, third);
+        return IntStream.range(idx, idx+block.getNQubits()).boxed().collect(Collectors.toList());
     }
 
     @Override
     public int getHighestAffectedQubitIndex() {
-        return Collections.max(getAffectedQubitIndexes());
+        return block.getNQubits()+idx-1;
+    }
+
+    @Override
+    public String getCaption() {
+        return "B";
     }
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return "BlockGate";
     }
-    
-    @Override
-    public String getCaption() {
-        return getName();    
-    }
-    
+
     @Override
     public String getGroup() {
-        return "ThreeQubit";
+        return "BlockGroup";
+    }
+
+    @Override
+    public Complex[][] getMatrix() {
+        Complex[][] answer = block.getMatrix();
+        return answer;
     }
     
+    public int getSize() {
+        return block.getNQubits();
+    }
     
     @Override public String toString() {
-        return "Gate acting on qubits "+first+", "+second+" and "+third+" and caption "+getCaption();
+        return "Gate for block "+block;
     }
+
     
 }

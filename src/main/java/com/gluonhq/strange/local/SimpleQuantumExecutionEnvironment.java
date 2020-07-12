@@ -31,6 +31,7 @@
  */
 package com.gluonhq.strange.local;
 
+import com.gluonhq.strange.BlockGate;
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
@@ -49,7 +50,6 @@ import com.gluonhq.strange.gate.TwoQubitGate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -87,13 +87,13 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         if (simpleSteps == null) {
             simpleSteps = new ArrayList<>();
             for (Step step : steps) {
-                simpleSteps.addAll(decomposeStep(step, nQubits));
+                simpleSteps.addAll(Computations.decomposeStep(step, nQubits));
             }
             p.setDecomposedSteps(simpleSteps);
         }
         Result result = new Result(nQubits, steps.size());
         int cnt = 0;
-        if (simpleSteps.size() == 0) {
+        if (simpleSteps.isEmpty()) {
             result.setIntermediateProbability(0, probs);
         }
         for (Step step: simpleSteps) {
@@ -118,103 +118,16 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     
     @Override
     public void runProgram(Program p, Consumer<Result> result) {
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                result.accept(runProgram(p));
-            }
-        };
+        Thread t = new Thread(() -> result.accept(runProgram(p)));
         t.start();
     }
 
     private void printProbs(Complex[] p) {
-        System.out.println("\n");
         for (int i = 0; i < p.length; i++) {
             System.err.println("Probabiliy["+i+"]: "+p[i]);
         }
     }
-    /**
-     * decompose a Step into steps that can be processed without permutations
-     * @param s
-     * @return 
-     */
-    private List<Step> decomposeStep(Step s, int nqubit) {
-        ArrayList<Step> answer = new ArrayList<>();
-        answer.add(s);
-        List<Gate> gates = s.getGates();
 
-        if (gates.isEmpty()) return answer;
-        boolean simple = gates.stream().allMatch(g -> g instanceof SingleQubitGate);
-        if (simple) return answer;
-        // if only 1 gate, which is an oracle, return as well
-        if ((gates.size() ==1) && (gates.get(0) instanceof Oracle)) return answer;
-        // at least one non-singlequbitgate
-        List<Gate> firstGates = new ArrayList<>();
-        for (Gate gate : gates) {
-            if (gate instanceof ProbabilitiesGate) {
-                s.setInformalStep(true);
-                return answer;
-            }
-            if (gate instanceof SingleQubitGate) {
-                firstGates.add(gate);
-            } else if (gate instanceof TwoQubitGate) {
-                TwoQubitGate tqg = (TwoQubitGate) gate;
-                int first = tqg.getMainQubit();
-                int second = tqg.getSecondQubit();
-                if (first == second + 1) {
-                    firstGates.add(gate);
-                } else {
-                    if (first == second) throw new RuntimeException ("Wrong gate, first == second for "+gate);
-                    if (first > second) {
-                        Step prePermutation = new Step();
-                        Step postPermutation = new Step();
-                        PermutationGate pg = new PermutationGate(first - 1, second, nqubit);
-                        prePermutation.addGate(pg);
-                        postPermutation.addGate(pg);
-                        answer.add(0, prePermutation);
-                        answer.add(postPermutation);
-                        postPermutation.setComplexStep(s.getIndex());
-                        s.setComplexStep(-1);
-                    } else {
-                        Step prePermutation = new Step();
-
-                        Step prePermutationInv = new Step();
-                        PermutationGate pg = new PermutationGate(first, second, nqubit );
-                        prePermutation.addGate(pg);
-                        prePermutationInv.addGate(pg);
-                        int realStep = s.getIndex();
-                        s.setComplexStep(-1);
-                        answer.add(0, prePermutation);
-                        answer.add(prePermutationInv);
-                        Step postPermutation = new Step();
-                        Step postPermutationInv = new Step();
-                        if (first != second -1) {
-                            PermutationGate pg2 = new PermutationGate(second-1, first, nqubit );
-                            postPermutation.addGate(pg2);
-                            postPermutationInv.addGate(pg2);
-                            answer.add(1, postPermutation);
-                            answer.add(3, postPermutationInv);
-                        } 
-                        prePermutationInv.setComplexStep(realStep);
-                    }
-                }
-            } else if (gate instanceof ThreeQubitGate) {
-                ThreeQubitGate tqg = (ThreeQubitGate) gate;
-                int first = tqg.getMainQubit();
-                int second = tqg.getSecondQubit();
-                int third = tqg.getThirdQubit();
-                if ((first == second + 1) && (second == third + 1)) {
-                    firstGates.add(gate);
-                } else {
-                    throw new RuntimeException("ThreeQubit Gate should have qubits in order 1-2-3");
-                }
-            }
-            else {
-                throw new RuntimeException("Gate must be SingleQubit or TwoQubit");
-            }
-        }
-        return answer;
-    }
 
     private List<Step> decomposeSteps(List<Step> steps) {
         return steps;
@@ -222,13 +135,14 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
         List<Gate> gates = step.getGates();
-        if (!gates.isEmpty()) {
-            if (gates.get(0) instanceof ProbabilitiesGate) {
-                return vector;
-            }
+        if (!gates.isEmpty() && gates.get(0) instanceof ProbabilitiesGate ) {
+            return vector;
         }
         Complex[][] a = calculateStepMatrix(gates, qubits.length);
         Complex[] result = new Complex[vector.length];
+        if (a.length != result.length) {
+            throw new RuntimeException ("Wrong length of matrix or probability vector: expected "+result.length+" but got "+a.length);
+        }
         for (int i = 0; i < vector.length; i++) {
             result[i] = Complex.ZERO;
             for (int j = 0; j < vector.length; j++) {
@@ -239,47 +153,12 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
     
     private Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits) {
-        Complex[][] a = new Complex[1][1];
-        a[0][0] = Complex.ONE;
-        int idx = nQubits-1;
-        while (idx >= 0) {
-            Gate myGate = new Identity(idx);
-            final int cnt = idx;
-            Optional<Gate> myGateOpt = gates.stream().filter(
-                   // gate -> gate.getAffectedQubitIndex().contains(cnt)
-                    gate -> gate.getHighestAffectedQubit() == cnt
-            )
-                    .findFirst();
-            if (myGateOpt.isPresent()) {
-                myGate = myGateOpt.get();
-            }
-            if (myGate instanceof SingleQubitGate) {
-                SingleQubitGate sqg = (SingleQubitGate)myGate;
-                a = tensor(a, sqg.getMatrix());
-            }
-            if (myGate instanceof TwoQubitGate) {
-                TwoQubitGate tqg = (TwoQubitGate)myGate;
-                a = tensor(a, tqg.getMatrix());
-                idx--;
-            }
-            if (myGate instanceof ThreeQubitGate) {
-                ThreeQubitGate tqg = (ThreeQubitGate)myGate;
-                a = tensor(a, tqg.getMatrix());
-                idx = idx-2;
-            }
-            if (myGate instanceof PermutationGate) {
-                a = tensor(a, myGate.getMatrix());
-                idx = 0;
-            }
-            if (myGate instanceof Oracle) {
-                a = myGate.getMatrix();
-                idx = 0;
-            }
-            idx--;
-        }
-        return a;
+        return Computations.calculateStepMatrix(gates, nQubits);
+
     }
 
+    // replaced by the similar function on Complex
+    @Deprecated
     public Complex[][] tensor(Complex[][] a, Complex[][] b) {
         int d1 = a.length;
         int d2 = b.length;
@@ -295,7 +174,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         }
         return result;
     }
-        
+
     private double[] calculateQubitStatesFromVector(Complex[] vectorresult) {
         int nq = (int) Math.round(Math.log(vectorresult.length) / Math.log(2));
         double[] answer = new double[nq];
@@ -336,11 +215,11 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
 
     private void printMatrix(Complex[][] a) {
         for (int i = 0; i < a.length; i++) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (int j = 0; j < a[i].length; j++) {
                 sb.append(a[i][j]).append("    ");
             }
-            System.out.println("m["+i+"]: "+sb);
+            System.err.println("m["+i+"]: "+sb);
         }
     }
     

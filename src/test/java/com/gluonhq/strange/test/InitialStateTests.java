@@ -35,24 +35,18 @@ import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Qubit;
 import com.gluonhq.strange.Result;
 import com.gluonhq.strange.Step;
-import com.gluonhq.strange.gate.Hadamard;
 import com.gluonhq.strange.gate.Identity;
-
+import com.gluonhq.strange.gate.X;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import com.gluonhq.strange.gate.X;
-import org.junit.jupiter.api.Test;
 
 public class InitialStateTests extends BaseGateTests {
 
     @Test
     public void dontInitialize() {
-        Program p = new Program(1);
-        Step s = new Step();
-        s.addGate(new Identity(0));
-        p.addStep(s);
+        Program p = new Program(1, new Step(new Identity(0)));
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(0, qubits[0].measure());
@@ -67,11 +61,8 @@ public class InitialStateTests extends BaseGateTests {
 
     @Test
     public void initialize0() {
-        Program p = new Program(1);
+        Program p = new Program(1, new Step(new Identity(0)));
         p.initializeQubit(0, 1);
-        Step s = new Step();
-        s.addGate(new Identity(0));
-        p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(0, qubits[0].measure());
@@ -79,11 +70,8 @@ public class InitialStateTests extends BaseGateTests {
 
     @Test
     public void initialize1() {
-        Program p = new Program(1);
+        Program p = new Program(1, new Step(new Identity(0)));
         p.initializeQubit(0, 0);
-        Step s = new Step();
-        s.addGate(new Identity(0));
-        p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(1, qubits[0].measure());
@@ -91,11 +79,8 @@ public class InitialStateTests extends BaseGateTests {
 
     @Test
     public void initialize1Not() {
-        Program p = new Program(1);
+        Program p = new Program(1, new Step(new X(0)));
         p.initializeQubit(0, 0);
-        Step s = new Step();
-        s.addGate(new X(0));
-        p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(0, qubits[0].measure());
@@ -104,12 +89,9 @@ public class InitialStateTests extends BaseGateTests {
     // 2 qubits, initally 1. Flip the first one, keep the second
     @Test
     public void TwoQubitinitialize1Not() {
-        Program p = new Program(2);
+        Program p = new Program(2, new Step(new X(0)));
         p.initializeQubit(0, 0);
         p.initializeQubit(1, 0);
-        Step s = new Step();
-        s.addGate(new X(0));
-        p.addStep(s);
         Result res = runProgram(p);
         Qubit[] qubits = res.getQubits();
         assertEquals(0, qubits[0].measure());
@@ -120,12 +102,9 @@ public class InitialStateTests extends BaseGateTests {
     // 1 qubit, 50% change 0 or 1, should at least be once 0 and once 1 in 100 tries
     @Test
     public void initializeFifty() {
-        Program p = new Program(1);
+        Program p = new Program(1, new Step(new Identity(0)));
         double sq = Math.sqrt(.5);
         p.initializeQubit(0, sq);
-        Step s = new Step();
-        s.addGate(new Identity(0));
-        p.addStep(s);
         int cnt = 0;
         boolean got0 = false;
         boolean got1 = false;
@@ -149,12 +128,9 @@ public class InitialStateTests extends BaseGateTests {
     // 1 qubit, 10% change 0, should be more 1 than 0 in 100 tries
     @Test
     public void initializeLowHigh() {
-        Program p = new Program(1);
+        Program p = new Program(1, new Step(new Identity(0)));
         double sq = Math.sqrt(.1);
         p.initializeQubit(0, sq);
-        Step s = new Step();
-        s.addGate(new Identity(0));
-        p.addStep(s);
 
         for (int c = 0; c < 10; c++){
             int cnt0 = 0;
