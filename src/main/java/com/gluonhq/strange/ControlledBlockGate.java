@@ -175,7 +175,7 @@ public class ControlledBlockGate<T> extends BlockGate {
                 
                 matrix = Complex.permutate(pg, matrix);
 
- matrix = Complex.permutate(matrix, pg);
+                matrix = Complex.permutate(matrix, pg);
                                 
              //   matrix = Complex.mmul(matrix, pg.getMatrix());
                 System.err.println("after perm, matrix = ");

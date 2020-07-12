@@ -253,7 +253,9 @@ static int nzCount = 0;
         printMatrix(cm, System.err);
     }
     
+    static final boolean debug = false;
     public static void printMatrix(Complex[][] cm, PrintStream ps) {
+        if (!debug) return;
         ps.println("complex["+cm.length+"]: ");
         for (int idx = 0; idx < cm.length; idx++){
             String row = "row "+idx;
