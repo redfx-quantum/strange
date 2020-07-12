@@ -49,9 +49,9 @@ public class Demo {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Hello, demo");
        // memtest();
-       zerotest();
+    //   zerotest();
     //   modmultest();
-       // expmul3p4mod7();
+        expmul3p4mod7();
       //  multiplyMod5x3andswapandclean();
         System.err.println("That was the demo");
     }
