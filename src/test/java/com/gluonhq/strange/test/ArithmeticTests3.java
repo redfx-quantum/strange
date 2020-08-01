@@ -52,7 +52,7 @@ public class ArithmeticTests3 extends BaseGateTests {
     static final double D = 0.000000001d;
         
     
-  // @Test // 
+   @Test // 
     public void expmul3p3() { // 3^3 = 27 -> mod 8 = 3
         int length = 3;
         int N = 8;
@@ -94,7 +94,7 @@ public class ArithmeticTests3 extends BaseGateTests {
         assertEquals(0, q[8].measure());
     }
        
- //  @Test // 
+   @Test // 
     public void mul3x3() { // 3^3 = 27 -> mod 8 = 3
         int length = 3;
         // q0 -> q2: x (3)
@@ -129,7 +129,7 @@ public class ArithmeticTests3 extends BaseGateTests {
         assertEquals(0, q[8].measure());
     }
 
-   // @Test // 
+    @Test // 
     public void mul1() { // test Mul that doesn't start at 0
         int length = 2;
         Program p = new Program(3 * length);
@@ -152,7 +152,7 @@ public class ArithmeticTests3 extends BaseGateTests {
         assertEquals(0, q[5].measure());
     }
     
-   // @Test // 
+  //  @Test // 
     public void expmul3p4() { // 3^4 = 81 -> mod 8 = 1
         int length = 3; 
         // q0 -> q2: x (4)
@@ -189,7 +189,7 @@ public class ArithmeticTests3 extends BaseGateTests {
         assertEquals(0, q[8].measure());
     }
     
-    @Test // 
+ //   @Test // 
     public void expmul3p4mod7() { // 3^4 = 81 -> mod 7 = 4
         int length = 3; 
         // q0 -> q2: 4
@@ -227,7 +227,7 @@ public class ArithmeticTests3 extends BaseGateTests {
         assertEquals(0, q[8].measure());
     }
     
-    @Test // 
+   // @Test // 
     public void expmul3p4mod7gen() { // 3^4 = 81 -> mod 7 = 4
         Qubit[] q = expmod(3,7,3);
         assertEquals(0, q[0].measure());
@@ -241,7 +241,7 @@ public class ArithmeticTests3 extends BaseGateTests {
         assertEquals(0, q[8].measure());
     }
     
-  //  @Test // 
+    //@Test // 
     public void expmul7p4mod15gen() { // 3^4 = 81 -> mod 7 = 4
         Qubit[] q = expmod(7,15,4);
     }

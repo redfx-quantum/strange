@@ -88,6 +88,7 @@ public class BlockGate<T> implements Gate {
 
     @Override
     public List<Integer> getAffectedQubitIndexes() {
+        System.err.println("Blockgate, afqi asked, idx = "+idx+" and nq = "+block.getNQubits());
         return IntStream.range(idx, idx+block.getNQubits()).boxed().collect(Collectors.toList());
     }
 
@@ -116,6 +117,7 @@ public class BlockGate<T> implements Gate {
     @Override
     public Complex[][] getMatrix() {
         long l0 = System.currentTimeMillis();
+        System.err.println("BLOCKGATE, get matrix asked for "+this);
         Complex[][] answer = block.getMatrix();
         if (inverse) {
             answer = Complex.conjugateTranspose(answer);

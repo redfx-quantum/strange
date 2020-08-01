@@ -55,13 +55,35 @@ public class InvFourier extends Fourier {
             for (int i = 0; i < size; i++) {
                 for (int j = i; j < size; j++) {
                     double alpha = omega *i *j;
-                    matrix[i][j] = new Complex(Math.cos(alpha)/den, -1*Math.sin(alpha)/den);
+                    int tpd = (int)(alpha/(Math.PI * 2));
+                    if (tpd > 0) {
+                        alpha = alpha - (Math.PI*2 * tpd);
+                    }
+                    System.err.println("i = "+i+", j = "+j+", alpha = "+alpha);
+                    double ar = Math.cos(alpha);
+                    double ai = Math.sin(alpha);
+                    if (Math.abs(alpha) < 1e-6) {
+                        ar = 1;
+                        ai = 0;
+                    }else if (Math.abs(Math.PI - alpha) < 1e-6) {
+                        ar = -1;
+                        ai = 0;
+                    } else if (Math.abs(Math.PI / 2 - alpha) < 1e-6) {
+                        ar = 0;
+                        ai = 1;
+                    } else if (Math.abs(3 * Math.PI / 2 - alpha) < 1e-6) {
+                        ar = 0;
+                        ai = -1;
+                    }
+                    System.err.println("ar = "+ar+", ai = "+ai);
+                    matrix[i][j] = new Complex(ar/den, -1*ai/den);
                 }
                 for (int k = 0; k < i; k++) {
                     matrix[i][k] = matrix[k][i];
                 }
             }
         }
+        Complex.printMatrix(matrix);
         return matrix;
     }
 }

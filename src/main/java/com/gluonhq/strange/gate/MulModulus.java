@@ -69,9 +69,14 @@ public class MulModulus extends BlockGate<MulModulus> {
     
     public Block createBlock(int y0, int y1, int mul, int mod) {
          int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;
-        System.err.println("hash for "+y0+", " + y1+", ");
+        System.err.println("CreateBlock MulModus hash for "+y0+", " + y1+", mul = "+mul+", mod = "+mod+", hash = "+hash);
         this.block = cache.get(hash);
-        if (block != null) return block;
+        if (block != null) {
+            System.err.println("cached, block = "+block);
+            return block;
+        }
+        System.err.println("not cached, let's create the block");
+
         int x0 = 0;
         int x1 = y1-y0;
         int size = 1 + x1-x0;
@@ -99,6 +104,8 @@ public class MulModulus extends BlockGate<MulModulus> {
             answer.addStep(new Step(add));
         }
 cache.put(hash, answer);
+        System.err.println("CREATED MulModus hash for "+y0+", " + y1+", mul = "+mul+", mod = "+mod+", block = "+block);
+
         return answer;
     }
   

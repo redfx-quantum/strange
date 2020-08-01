@@ -33,32 +33,37 @@ package com.gluonhq.strange;
 
 import com.gluonhq.strange.gate.PermutationGate;
 import java.io.PrintStream;
+import org.nd4j.linalg.api.buffer.DataType;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.cpu.nativecpu.NDArray;
+import org.nd4j.linalg.factory.Nd4j;
 
 public final class Complex {
-    
+
     public static final Complex ZERO = new Complex(0.d, 0.d);
     public static final Complex ONE = new Complex(1.d, 0.d);
     public static final Complex I = new Complex(0.d, 1.d);
-    
-    private static final double HV = 1./Math.sqrt(2.);
+
+    private static final double HV = 1. / Math.sqrt(2.);
 
     public static final Complex HC = new Complex(HV, 0.d);
     public static final Complex HCN = new Complex(-HV, 0.d);
 
-
     public double r;
     public double i;
-    
+
     /**
      * Create a complex number with a real component only
+     *
      * @param r the real component
      */
     public Complex(double r) {
         this(r, 0.d);
     }
-    
+
     /**
      * Create a complex number with a real and imaginary component
+     *
      * @param r the real component
      * @param i the imaginary component
      */
@@ -66,17 +71,18 @@ public final class Complex {
         this.r = r;
         this.i = i;
     }
-    
+
     public Complex add(Complex b) {
         double nr = this.r + b.r;
         double ni = this.i + b.i;
         return new Complex(nr, ni);
-    }    
-    
+    }
+
     /**
      * Add and replace
+     *
      * @param b
-     * @return 
+     * @return
      */
     public Complex addr(Complex b) {
         this.r = this.r + b.r;
@@ -86,8 +92,9 @@ public final class Complex {
 
     /**
      * AddMul and replace
+     *
      * @param b
-     * @return 
+     * @return
      */
     public Complex addmulr(Complex a, Complex b) {
         double nr = (a.r * b.r) - (a.i * b.i);
@@ -108,20 +115,21 @@ public final class Complex {
         double ni = (this.r * b.i) + (this.i * b.r);
         return new Complex(nr, ni);
     }
-    
+
     public Complex mul(double b) {
         return new Complex(this.r * b, this.i * b);
     }
-    
+
     public double abssqr() {
-        return (this.r*this.r + this.i*this.i);
+        return (this.r * this.r + this.i * this.i);
     }
-    
+
     /**
      * Calculate the tensor product of matrix a and matrix b
+     *
      * @param a
      * @param b
-     * @return 
+     * @return
      */
     public static Complex[][] tensor(Complex[][] a, Complex[][] b) {
         int d1 = a.length;
@@ -134,7 +142,7 @@ public final class Complex {
                         if ((a[rowa][cola] == Complex.ZERO) || (b[rowb][colb] == Complex.ZERO)) {
                             result[d2 * rowa + rowb][d2 * cola + colb] = Complex.ZERO;
                         } else {
-                            result[d2 * rowa + rowb][d2 * cola + colb] = a[rowa][cola].mul( b[rowb][colb]);
+                            result[d2 * rowa + rowb][d2 * cola + colb] = a[rowa][cola].mul(b[rowb][colb]);
                         }
                     }
                 }
@@ -142,46 +150,88 @@ public final class Complex {
         }
         return result;
     }
-static int zCount = 0;
-static int nzCount = 0;
+    static int zCount = 0;
+    static int nzCount = 0;
 
-    public static Complex[][] mmul(Complex[][] a, Complex[][]b) {
+    public static Complex[][] mmul(Complex[][] a, Complex[][] b) {
+        //     Thread.dumpStack();
+        INDArray xyGrid = null;
         long l0 = System.currentTimeMillis();
         int arow = a.length;
         int acol = a[0].length;
         int brow = b.length;
         int bcol = b[0].length;
         int am = 0;
-        if (acol != brow) throw new RuntimeException("#cols a "+acol+" != #rows b "+brow);
+        if (acol != brow) {
+            throw new RuntimeException("#cols a " + acol + " != #rows b " + brow);
+        }
+        printMatrix(a);
+        printMatrix(b);
         Complex[][] answer = new Complex[arow][bcol];
+        double[][] ar = new double[arow][acol];
+        double[][] ai = new double[arow][acol];
+        double[][] br = new double[brow][bcol];
+        double[][] bi = new double[brow][bcol];
+        System.err.println("start for loop");
         for (int i = 0; i < arow; i++) {
             for (int j = 0; j < bcol; j++) {
-                Complex el = new Complex(0.,0.);
+                Complex el = new Complex(0., 0.);
+                double newr = 0;
+                double newi = 0;
                 boolean zero = true;
-                for (int k = 0; k < acol;k++) {
-                    if ((a[i][k] != Complex.ZERO) &&(b[k][j] != Complex.ZERO) ) {
-                        if ((a[i][k].r < .0001) && (b[k][j].r < 0.0001) ){
-                            //dooh 
-                            am++;
-                        }
-                        el.addmulr(a[i][k], b[k][j]);
-                        zero = false;
+                for (int k = 0; k < acol; k++) {
+                    if (j == 0) {
+                        //          System.err.println("A["+i+"]["+k+"]: "+a[i][k]);
+                        ar[i][k] = a[i][k].r;
+                        ai[i][k] = a[i][k].i;
                     }
+                    if (i == 0) {
+                        //       System.err.println("B["+k+"]["+j+"]: "+b[k][j]);
+                        br[k][j] = b[k][j].r;
+                        bi[k][j] = b[k][j].i;
+                    }
+//                    if ((a[i][k] != Complex.ZERO) && (b[k][j] != Complex.ZERO)) {
+//                        if ((a[i][k].abssqr() < .0001) && (b[k][j].abssqr() < 0.0001)) {
+//                            am++;
+//                        }
+//                        el.addmulr(a[i][k], b[k][j]);
+//                        zero = false;
+//                    }
                 }
                 if (zero) {
                     answer[i][j] = Complex.ZERO;
                     zCount++;
                 } else {
-                    answer[i][j] = el;
-                    nzCount ++;
+                    answer[i][j] = Complex.ZERO;
+                    nzCount++;
                 }
+                //      System.err.println("ANSWER["+i+"]["+j+"] = "+answer[i][j]);
+
             }
         }
+        //     if (1 < 2) System.exit(0);
         long l1 = System.currentTimeMillis();
-        System.err.println("mulitply matrix "+arow+", "+acol+", "+bcol+" took "+(l1 -l0)+" zc = "+zCount+" and nzc = "+nzCount);
+        System.err.println("mulitply matrix " + arow + ", " + acol + ", " + bcol + " took " + (l1 - l0) + " zc = " + zCount + " and nzc = " + nzCount + " and am = " + am);
+        INDArray n_ar = Nd4j.create(ar);
+        INDArray n_ai = Nd4j.create(ai);
+        INDArray n_br = Nd4j.create(br);
+        INDArray n_bi = Nd4j.create(bi);
+        INDArray n_r = n_ar.mmul(n_br).sub(n_ai.mmul(n_bi));
+        INDArray n_i = n_ai.mmul(n_br).add(n_ar.mmul(n_bi));
+//        System.err.println("ar = "+n_ar);
+//        System.err.println("br = "+n_br);
+//        System.err.println("nr = "+n_r);
+//        System.err.println("ni = "+n_i);
+        for (int i = 0; i < acol; i++) {
+            for (int j = 0; j < brow; j++) {
+                answer[i][j] = new Complex(n_r.getDouble(i, j), n_i.getDouble(i, j));
+//                                System.err.println("NDANSWER["+i+"]["+j+"] = "+answer[i][j]);
+
+            }
+        }
         return answer;
     }
-    
+
     static Complex[][] conjugateTranspose(Complex[][] src) {
         int d0 = src.length;
         int d1 = src[0].length;
@@ -189,12 +239,11 @@ static int nzCount = 0;
         for (int i = 0; i < d0; i++) {
             for (int j = 0; j < d1; j++) {
                 Complex c = src[i][j];
-                answer[j][i] = new Complex(c.r, -1*c.i);
+                answer[j][i] = new Complex(c.r, -1 * c.i);
             }
         }
         return answer;
     }
-    
 
     public static Complex[][] permutate0(Complex[][] matrix, PermutationGate pg) {
         Complex[][] p = pg.getMatrix();
@@ -202,74 +251,99 @@ static int nzCount = 0;
         Complex[][] answer = new Complex[dim][dim];
         for (int i = 0; i < dim; i++) {
             int idx = 0;
-            while (p[i][idx].equals(Complex.ZERO)) idx++;
-            for (int j = 0; j < dim; j ++) {
+            while (p[i][idx].equals(Complex.ZERO)) {
+                idx++;
+            }
+            for (int j = 0; j < dim; j++) {
                 answer[i][j] = matrix[idx][j];
             }
         }
         return answer;
     }
-    
+
     public static Complex[][] permutate(PermutationGate pg, Complex[][] matrix) {
         Complex[][] p = pg.getMatrix();
         int dim = p.length;
         Complex[][] answer = new Complex[dim][dim];
         for (int i = 0; i < dim; i++) {
             int idx = 0;
-            while (p[i][idx].equals(Complex.ZERO)) idx++;
-            for (int j = 0; j < dim; j ++) {
+            while (p[i][idx].equals(Complex.ZERO)) {
+                idx++;
+            }
+            for (int j = 0; j < dim; j++) {
                 answer[i][j] = matrix[idx][j];
             }
         }
-       return answer;
-        }
-    
+        return answer;
+    }
+
     public static Complex[][] permutate(Complex[][] matrix, PermutationGate pg) {
         Complex[][] p = pg.getMatrix();
         int dim = p.length;
         Complex[][] answer = new Complex[dim][dim];
         for (int i = 0; i < dim; i++) {
             int idx = 0;
-            while (p[idx][i].equals(Complex.ZERO)) idx++;
-            for (int j = 0; j < dim; j ++) {
+            while (p[idx][i].equals(Complex.ZERO)) {
+                idx++;
+            }
+            for (int j = 0; j < dim; j++) {
                 answer[j][i] = matrix[j][idx];
             }
         }
-       return answer;
-   }
+        return answer;
+    }
 
     public static void printArray(Complex[] ca) {
         printArray(ca, System.err);
     }
-    
+
     public static void printArray(Complex[] ca, PrintStream ps) {
-        ps.println("complex["+ca.length+"]: ");
-        for (Complex c: ca){
-            ps.println("-> "+c);
+        ps.println("complex[" + ca.length + "]: ");
+        for (Complex c : ca) {
+            ps.println("-> " + c);
         }
     }
-    
+
     public static void printMatrix(Complex[][] cm) {
         printMatrix(cm, System.err);
     }
-    
+
     static final boolean debug = false;
+
     public static void printMatrix(Complex[][] cm, PrintStream ps) {
-        if (!debug) return;
-        ps.println("complex["+cm.length+"]: ");
-        for (int idx = 0; idx < cm.length; idx++){
-            String row = "row "+idx;
+        if (!debug) {
+            return;
+        }
+        Thread.dumpStack();
+        ps.println("complex[" + cm.length + "]: ");
+        for (int idx = 0; idx < cm.length; idx++) {
+            String row = "row " + idx;
             for (int jdx = 0; jdx < cm.length; jdx++) {
                 Complex c = cm[idx][jdx];
                 row = row + ":" + c.toString();
             }
-            ps.println("-> "+row);
-         //   idx++;
+            ps.println("-> " + row);
+            //   idx++;
         }
     }
-    
-    @Override 
+
+    @Override
     public String toString() {
-        return "("+this.r+", "+this.i+")";
+        return "(" + this.r + ", " + this.i + ")";
     }
+
+    public static void calcGrid() {
+        System.err.println("CALC GRID");
+        System.out.println(Nd4j.zeros(2));
+        int nPointsPerAxis = 100;
+        // x coordinates of the pixels for the NN.
+        INDArray xPixels = Nd4j.linspace(0, 1.0, nPointsPerAxis, DataType.DOUBLE);
+        // y coordinates of the pixels for the NN.
+        INDArray yPixels = Nd4j.linspace(0, 1.0, nPointsPerAxis, DataType.DOUBLE);
+        //create the mesh:
+        INDArray[] mesh = Nd4j.meshgrid(xPixels, yPixels);
+        INDArray xyGrid = Nd4j.vstack(mesh[0].ravel(), mesh[1].ravel()).transpose();
+        System.err.println("Done calculating grid, xyGrid = " + xyGrid);
+    }
+
 }
