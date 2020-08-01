@@ -154,6 +154,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             System.err.println("fatal issue calculating step for gates "+gates);
             throw new RuntimeException ("Wrong length of matrix or probability vector: expected "+result.length+" but got "+a.length);
         }
+        dbg ("start matrix-vector multiplication for vector size = "+vector.length);
         for (int i = 0; i < vector.length; i++) {
             result[i] = Complex.ZERO;
             for (int j = 0; j < vector.length; j++) {

@@ -61,6 +61,8 @@ public class Computations {
         Complex[][] a = new Complex[1][1];
         a[0][0] = Complex.ONE;
         int idx = nQubits-1;
+        System.err.println("Calculate stepMatrix for gates "+gates);
+        printMemory();
         while (idx >= 0) {
             final int cnt = idx;
             Gate myGate = gates.stream()
@@ -71,7 +73,7 @@ public class Computations {
                     .orElse(new Identity(idx));
             System.err.println("stepmatrix, cnt = "+cnt+", idx = "+idx);
             if (myGate instanceof BlockGate) {
-                dbg("calculateStepMatrix for blockgate "+myGate);
+                dbg("calculateStepMatrix for blockgate "+myGate+" of class "+myGate.getClass());
                 BlockGate sqg = (BlockGate)myGate;
                 a = tensor(a, sqg.getMatrix());
                 dbg("calculateStepMatrix for blockgate calculated "+myGate);
@@ -288,4 +290,19 @@ public class Computations {
         return matrix;
     }
 
+    static void printMemory() {
+        Runtime rt = Runtime.getRuntime();
+        long fm = rt.freeMemory()/1024;
+        long mm = rt.maxMemory()/1024;
+        long tm = rt.totalMemory()/1024;
+        long um = tm - fm;
+        System.err.println("free = "+fm+", mm = "+mm+", tm = "+tm+", used = "+um);
+        System.err.println("now gc...");
+        System.gc();
+        fm = rt.freeMemory()/1024;
+        mm = rt.maxMemory()/1024;
+        tm = rt.totalMemory()/1024;
+        um = tm - fm;
+        System.err.println("free = "+fm+", mm = "+mm+", tm = "+tm+", used = "+um);
+    }
 }

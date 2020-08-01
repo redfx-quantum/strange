@@ -84,6 +84,7 @@ public class ControlledBlockGate<T> extends BlockGate {
     @Override
     public List<Integer> getAffectedQubitIndexes() {
         ArrayList answer = new ArrayList(super.getAffectedQubitIndexes());
+        System.err.println("AQI asked for "+this+" currently "+answer+" add ctrl at "+control);
         answer.add(control);
         return answer;
     }
@@ -122,6 +123,8 @@ public class ControlledBlockGate<T> extends BlockGate {
             List<PermutationGate> perm = new LinkedList<>();
             int bs = block.getNQubits();
             System.err.println("control = " + control + ", idx = " + idx + ", gap = " + gap + " and bs = " + bs);
+                         printMemory();
+
             if (control > idx) {
                 if (gap < bs) {
                     throw new IllegalArgumentException("Can't have control at " + control + " for gate with size " + bs + " starting at " + idx);
@@ -139,8 +142,14 @@ public class ControlledBlockGate<T> extends BlockGate {
                 high = idx + bs - 1;
                 size = high - low + 1;
                 for (int i = 0; i < size - 1; i++) {
+                    System.err.println("ADD PG "+i);
+                                    printMemory();
+
                     PermutationGate pg = new PermutationGate(i, i + 1, size);
                     perm.add(0,pg);
+                                    printMemory();
+                                    System.err.println("ADDED PG "+i);
+
                 }
             }
             System.err.println("GetMatrix called for CBG, perm = "+perm);
@@ -167,6 +176,7 @@ public class ControlledBlockGate<T> extends BlockGate {
             System.err.println("before perm, matrix = ");
             Complex.printMatrix(matrix);
             for (PermutationGate pg : perm) {
+                printMemory();
                 System.err.println("PRE/POST perm : "+pg);
                 Complex.printMatrix(pg.getMatrix());
                 
@@ -184,7 +194,7 @@ public class ControlledBlockGate<T> extends BlockGate {
             }
 
             System.err.println("CBG matrix: ");
-             Complex.printMatrix(matrix);
+            Complex.printMatrix(matrix);
         } else {
             System.err.println("Matrix was cached");
         }
@@ -199,5 +209,20 @@ public class ControlledBlockGate<T> extends BlockGate {
         return "CGate for "+super.toString();
     }
 
+    void printMemory() {
+        Runtime rt = Runtime.getRuntime();
+        long fm = rt.freeMemory()/1024;
+        long mm = rt.maxMemory()/1024;
+        long tm = rt.totalMemory()/1024;
+        long um = tm - fm;
+        System.err.println("free = "+fm+", mm = "+mm+", tm = "+tm+", used = "+um);
+        System.err.println("now gc...");
+        System.gc();
+        fm = rt.freeMemory()/1024;
+        mm = rt.maxMemory()/1024;
+        tm = rt.totalMemory()/1024;
+        um = tm - fm;
+        System.err.println("free = "+fm+", mm = "+mm+", tm = "+tm+", used = "+um);
+    }
     
 }

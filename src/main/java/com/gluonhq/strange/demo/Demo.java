@@ -47,16 +47,29 @@ import java.util.concurrent.ExecutionException;
 public class Demo {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        System.out.println("Hello, demo");
-       // memtest();
-    //   zerotest();
-    //   modmultest();
+        System.out.println("Hello, Demo");
+    //    Complex.calcGrid();
+        mulTest();
+//       addTest();
 //         expmul3p4mod7();
-        expmul7p4mod15gen();
+        // expmul7p4mod15gen();
       //  multiplyMod5x3andswapandclean();
         System.err.println("That was the demo");
     }
-    
+  
+    private static void mulTest() {
+        int s = 1024;
+        Complex[][] a = new Complex[s][s];
+        Complex[][] b = new Complex[s][s];
+        for (int i = 0; i < s; i++) {
+            for (int j = 0; j < s; j++) {
+                a[i][j] = Complex.ONE;
+                b[i][j] = Complex.ONE;
+            }
+        }
+        Complex.mmul(a, b);
+    }
+
     private static void memtest() {
         for (int i = 0; i < 100; i++) {
             int dim = 1 <<i;
@@ -224,7 +237,8 @@ public class Demo {
         // q3 -> q5: ancilla (0 before, 0 after)
         // q6 -> q8: result
         Program p = new Program(3 * length);
-        Step prep = new Step(new X(2)); // exp = 4
+   //     Step prep = new Step(new X(2)); // exp = 4
+        Step prep = new Step(new X(0), new X(1)); // exp = 3
         Step prepAnc = new Step(new X(2 * length)); 
         p.addStep(prep);
         p.addStep(prepAnc);
@@ -245,4 +259,15 @@ public class Demo {
         return q;
     }
      
+    static void addTest () {
+        Program p = new Program(6);
+        Step prep = new Step();
+        prep.addGates(new X(1), new X(2), new X(3));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result result = sqee.runProgram(p);
+        Qubit[] q = result.getQubits();
+    }
 }

@@ -229,8 +229,30 @@ public class SingleTest extends BaseGateTests {
         assertEquals(0, q[5].measure());  
     }
     
-      
-      @Test
+    @Test
+    public void add0num0() {
+        Program p = new Program(1);
+        Step prep = new Step();
+        p.addStep(prep);
+        AddInteger add = new AddInteger(0, 0, 0);
+        p.addStep(new Step(add));
+        System.err.println("RUN ADD0NUM0");
+        try {
+            Result result = runProgram(p);
+
+            System.err.println("RESULT FROM RUN = " + result);
+            Qubit[] q = result.getQubits();
+            System.err.println("GOT QUBITS: " + q);
+            System.err.println("GOT QUBITSlength: " + q.length);
+            assertEquals(1, q.length);
+            assertEquals(0, q[0].measure());
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+  //    @Test
     public void add21() {
         Program p = new Program(4);
         Step prep = new Step();

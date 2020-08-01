@@ -85,7 +85,7 @@ public class Block {
     
     Complex[][] getMatrix() {
         System.err.println("Need to get MATRIX for "+this);
-    long l0 = System.currentTimeMillis();
+        long l0 = System.currentTimeMillis();
         if (matrix == null) {
             List<Step> simpleSteps = new ArrayList<>();
             for (Step step : steps) {

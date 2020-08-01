@@ -72,6 +72,8 @@ public class Fourier extends BlockGate {
                 }
             }
         }
+        System.err.println("FOURIER: ");
+        Complex.printMatrix(matrix);
         return matrix;
     }
 
