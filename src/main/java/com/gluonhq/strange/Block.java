@@ -87,6 +87,7 @@ public class Block {
         System.err.println("Need to get MATRIX for "+this);
         long l0 = System.currentTimeMillis();
         if (matrix == null) {
+            matrix = Complex.identityMatrix(1<<nqubits);
             List<Step> simpleSteps = new ArrayList<>();
             for (Step step : steps) {
                 simpleSteps.addAll(Computations.decomposeStep(step, nqubits));
@@ -95,8 +96,14 @@ public class Block {
             for (Step step: simpleSteps) {
                 System.err.println(System.currentTimeMillis()%100000+" Matrix for block "+this+" will process step "+step);
                 List<Gate> gates = step.getGates();
+                System.err.println("gates = "+gates+", matrix = "+matrix);
                 if ((matrix != null) && (gates.size() == 1) && (gates.get(0) instanceof PermutationGate)) {
-                    matrix = Complex.permutate(matrix, (PermutationGate)gates.get(0));
+                    System.err.println("PERM!");
+                    Complex.printMatrix(matrix);
+                    matrix = Complex.permutate((PermutationGate)gates.get(0), matrix);
+
+                    Complex.printMatrix(matrix);
+                    System.err.println("PERM done!");
                 } else {
                     Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits);
                     if (matrix == null) {

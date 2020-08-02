@@ -33,6 +33,8 @@ package com.gluonhq.strange;
 
 import com.gluonhq.strange.gate.PermutationGate;
 import java.io.PrintStream;
+import java.util.LinkedList;
+import java.util.List;
 import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.cpu.nativecpu.NDArray;
@@ -125,6 +127,24 @@ public final class Complex {
     }
 
     /**
+     * return an identity matrix 
+     * @param dim 
+     */
+    public static Complex[][] identityMatrix (int dim) {
+        Complex[][] answer = new Complex[dim][dim];
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                if (i == j) {
+                    answer[i][j] = Complex.ONE;
+                } else {
+                    answer[i][j] = Complex.ZERO;
+                }
+            }
+                
+        }
+        return answer;
+    }
+    /**
      * Calculate the tensor product of matrix a and matrix b
      *
      * @param a
@@ -132,6 +152,9 @@ public final class Complex {
      * @return
      */
     public static Complex[][] tensor(Complex[][] a, Complex[][] b) {
+        System.err.println("tensor for: ");
+        Complex.printMatrix(a);
+        Complex.printMatrix(b);
         int d1 = a.length;
         int d2 = b.length;
         Complex[][] result = new Complex[d1 * d2][d1 * d2];
@@ -262,35 +285,69 @@ public final class Complex {
     }
 
     public static Complex[][] permutate(PermutationGate pg, Complex[][] matrix) {
-        Complex[][] p = pg.getMatrix();
-        int dim = p.length;
-        Complex[][] answer = new Complex[dim][dim];
+        int a = pg.getIndex1();
+        int b = pg.getIndex2();
+        int amask = 1 << a;
+        int bmask = 1 << b;
+        int dim = matrix.length;
+        List<Integer> swapped = new LinkedList<>();
         for (int i = 0; i < dim; i++) {
-            int idx = 0;
-            while (p[i][idx].equals(Complex.ZERO)) {
-                idx++;
-            }
-            for (int j = 0; j < dim; j++) {
-                answer[i][j] = matrix[idx][j];
+            int j = i;
+            int x = (amask & i) / amask;
+            int y = (bmask & i) / bmask;
+    //        System.err.println("x = " + x + ", y = " + y);
+            if (x != y) {
+                j ^= amask;
+                j ^= bmask;
+
+         //       System.err.println("need to swap cols " + i + " and " + j);
+                if (swapped.contains(j)) {
+           //         System.err.println("Already swapped those ");
+                } else {
+                    swapped.add(j);
+                    swapped.add(i);
+                    for (int k = 0; k < dim; k++) {
+                        Complex cp = matrix[k][i];
+                        matrix[k][i] = matrix[k][j];
+                        matrix[k][j] = cp;
+                    }
+                }
             }
         }
-        return answer;
+        return matrix;
+        
     }
 
     public static Complex[][] permutate(Complex[][] matrix, PermutationGate pg) {
-        Complex[][] p = pg.getMatrix();
-        int dim = p.length;
-        Complex[][] answer = new Complex[dim][dim];
+        int a = pg.getIndex1();
+        int b = pg.getIndex2();
+        int amask = 1 << a;
+        int bmask = 1 << b;
+        int dim = matrix.length;
+        List<Integer> swapped = new LinkedList<>();
         for (int i = 0; i < dim; i++) {
-            int idx = 0;
-            while (p[idx][i].equals(Complex.ZERO)) {
-                idx++;
-            }
-            for (int j = 0; j < dim; j++) {
-                answer[j][i] = matrix[j][idx];
+            int j = i;
+            int x = (amask & i) / amask;
+            int y = (bmask & i) / bmask;
+       //     System.err.println("x = " + x + ", y = " + y);
+            if (x != y) {
+                j ^= amask;
+                j ^= bmask;
+
+             //   System.err.println("need to swap rows " + i + " and " + j);
+                if (swapped.contains(j)) {
+             //       System.err.println("Already swapped those ");
+                } else {
+                    swapped.add(j);
+                    swapped.add(i);
+                    Complex[] rowa = matrix[i];
+                    matrix[i] = matrix[j];
+                    matrix[j] = rowa;
+                }
             }
         }
-        return answer;
+
+        return matrix;
     }
 
     public static void printArray(Complex[] ca) {
@@ -314,13 +371,13 @@ public final class Complex {
         if (!debug) {
             return;
         }
-        Thread.dumpStack();
+       // Thread.dumpStack();
         ps.println("complex[" + cm.length + "]: ");
         for (int idx = 0; idx < cm.length; idx++) {
             String row = "row " + idx;
             for (int jdx = 0; jdx < cm.length; jdx++) {
                 Complex c = cm[idx][jdx];
-                row = row + ":" + c.toString();
+                row = row + ":" + (c == null ? "NULL!!!!!!" : c.toString());
             }
             ps.println("-> " + row);
             //   idx++;

@@ -104,7 +104,11 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             if (!step.getGates().isEmpty()) {
             dbg("RUN STEP "+step+", cnt = "+cnt);
                 cnt++;
+                dbg("before this step, probs = ");
+             //   printProbs(probs);
                 probs = applyStep(step, probs, qubit);
+                dbg("after this step, probs = ");
+            //    printProbs(probs);
           //       printProbs(probs);
                 int idx = step.getComplexStep();
                 if (idx > -1) {
@@ -112,7 +116,8 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 }
             }
         }
-        dbg("DONE RUN");
+        dbg("DONE RUN, probs = "+probs);
+       // printProbs(probs);
         double[] qp = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < nQubits; i++) {
             qubit[i].setProbability(qp[i]);
@@ -146,9 +151,15 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         if (!gates.isEmpty() && gates.get(0) instanceof ProbabilitiesGate ) {
             return vector;
         }
-        dbg("start calcstepmatrix");
+        if (gates.size() == 1 && gates.get(0) instanceof PermutationGate) {
+            PermutationGate pg = (PermutationGate)gates.get(0);
+            return Computations.permutateVector (vector, pg.getIndex1(), pg.getIndex2());
+        }
+        dbg("start calcstepmatrix with gates "+gates);
         Complex[][] a = calculateStepMatrix(gates, qubits.length);
         dbg("done calcstepmatrix");
+        dbg("vector");
+       // printProbs(vector);
         Complex[] result = new Complex[vector.length];
         if (a.length != result.length) {
             System.err.println("fatal issue calculating step for gates "+gates);
@@ -228,14 +239,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         return answer;
     }
 
-    private void printMatrix(Complex[][] a) {
-        for (int i = 0; i < a.length; i++) {
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < a[i].length; j++) {
-                sb.append(a[i][j]).append("    ");
-            }
-            System.err.println("m["+i+"]: "+sb);
-        }
-    }
+    
     
 }
