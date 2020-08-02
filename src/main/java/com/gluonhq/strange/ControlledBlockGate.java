@@ -209,6 +209,7 @@ Complex.printMatrix(matrix);
     }
 
     void printMemory() {
+        if (1 < 2) return;
         Runtime rt = Runtime.getRuntime();
         long fm = rt.freeMemory()/1024;
         long mm = rt.maxMemory()/1024;

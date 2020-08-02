@@ -71,7 +71,7 @@ public class Computations {
                         gate -> gate.getHighestAffectedQubitIndex() == cnt )
                     .findFirst()
                     .orElse(new Identity(idx));
-            System.err.println("stepmatrix, cnt = "+cnt+", idx = "+idx+", myGate = "+myGate);
+            dbg("stepmatrix, cnt = "+cnt+", idx = "+idx+", myGate = "+myGate);
             if (myGate instanceof BlockGate) {
                 dbg("calculateStepMatrix for blockgate "+myGate+" of class "+myGate.getClass());
                 BlockGate sqg = (BlockGate)myGate;
@@ -82,8 +82,10 @@ public class Computations {
                 System.err.println("now, idx = "+idx);
             }
             if (myGate instanceof SingleQubitGate) {
+                dbg("sqg");
                 SingleQubitGate sqg = (SingleQubitGate)myGate;
                 a = tensor(a, sqg.getMatrix());
+                dbg("sqgdone");
             }
             if (myGate instanceof TwoQubitGate) {
                 TwoQubitGate tqg = (TwoQubitGate)myGate;
@@ -292,6 +294,7 @@ public class Computations {
     }
 
     static void printMemory() {
+        if (1 < 2 ) return;
         Runtime rt = Runtime.getRuntime();
         long fm = rt.freeMemory()/1024;
         long mm = rt.maxMemory()/1024;

@@ -59,10 +59,11 @@ import java.util.function.Consumer;
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
     
     void dbg (String s) {
-        System.err.println("[DBG] " + System.currentTimeMillis()%100000+": "+s);
+        System.err.println("[DBG] " + System.currentTimeMillis()%1000000+": "+s);
     }
     @Override
     public Result runProgram(Program p) {
+        dbg("runProgram ");
         int nQubits = p.getNumberQubits();
         Qubit[] qubit = new Qubit[nQubits];
         for (int i = 0; i < nQubits; i++) {

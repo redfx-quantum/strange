@@ -204,12 +204,10 @@ public final class Complex {
                 boolean zero = true;
                 for (int k = 0; k < acol; k++) {
                     if (j == 0) {
-                        //          System.err.println("A["+i+"]["+k+"]: "+a[i][k]);
                         ar[i][k] = a[i][k].r;
                         ai[i][k] = a[i][k].i;
                     }
                     if (i == 0) {
-                        //       System.err.println("B["+k+"]["+j+"]: "+b[k][j]);
                         br[k][j] = b[k][j].r;
                         bi[k][j] = b[k][j].i;
                     }
@@ -295,15 +293,10 @@ public final class Complex {
             int j = i;
             int x = (amask & i) / amask;
             int y = (bmask & i) / bmask;
-    //        System.err.println("x = " + x + ", y = " + y);
             if (x != y) {
                 j ^= amask;
                 j ^= bmask;
-
-         //       System.err.println("need to swap cols " + i + " and " + j);
-                if (swapped.contains(j)) {
-           //         System.err.println("Already swapped those ");
-                } else {
+                if (!swapped.contains(j)) {
                     swapped.add(j);
                     swapped.add(i);
                     for (int k = 0; k < dim; k++) {
@@ -324,6 +317,8 @@ public final class Complex {
         int amask = 1 << a;
         int bmask = 1 << b;
         int dim = matrix.length;
+               System.err.println("permutate "+a+" and "+b+" on matrix sized "+dim);
+
         List<Integer> swapped = new LinkedList<>();
         for (int i = 0; i < dim; i++) {
             int j = i;
