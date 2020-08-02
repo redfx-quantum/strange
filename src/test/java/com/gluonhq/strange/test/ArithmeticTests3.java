@@ -241,7 +241,7 @@ public class ArithmeticTests3 extends BaseGateTests {
         assertEquals(0, q[8].measure());
     }
     
-    @Test // 
+ //   @Test // 
     public void expmul7p4mod15gen() { // 3^4 = 81 -> mod 7 = 4
         Qubit[] q = expmod(7,15,4);
     }

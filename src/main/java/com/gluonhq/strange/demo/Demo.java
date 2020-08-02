@@ -48,11 +48,12 @@ public class Demo {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Hello, Demo");
+//        expmul2p3mod7gen();
+        expmul7p4mod15gen();
     //    Complex.calcGrid();
-        mulTest();
+     //   mulTest();
 //       addTest();
 //         expmul3p4mod7();
-        // expmul7p4mod15gen();
       //  multiplyMod5x3andswapandclean();
         System.err.println("That was the demo");
     }
@@ -224,14 +225,7 @@ public class Demo {
         }
 
     }
-     
-      public static void expmul7p4mod15gen() { // 3^4 = 81 -> mod 7 = 4
-        Qubit[] q = expmod(7,15,4);
-                for (int i = 0; i < q.length; i++) {
-            System.err.println("m["+i+"]: "+q[i].measure());
-        }
-    }
-    
+
     private static Qubit[] expmod(int a, int mod, int length) {
         // q0 -> q2: 4
         // q3 -> q5: ancilla (0 before, 0 after)
@@ -269,5 +263,49 @@ public class Demo {
         SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
         Result result = sqee.runProgram(p);
         Qubit[] q = result.getQubits();
+    }
+    
+    public static void expmul2p3mod7gen() { // 3^4 = 81 -> mod 7 = 4
+        Qubit[] q = expmodNum3(2, 7, 3);
+        for (int i = 0; i < q.length; i++) {
+            System.err.println("m[" + i + "]: " + q[i].measure());
+        }
+    }
+     public static void expmul7p4mod15gen() { // 3^4 = 81 -> mod 7 = 4
+        Qubit[] q = expmodNum3(7, 15, 4);
+        for (int i = 0; i < q.length; i++) {
+            System.err.println("m[" + i + "]: " + q[i].measure());
+        }
+    }
+    private static Qubit[] expmodNum3(int a, int mod, int length) {
+        int offset = 4;
+        Program p = new Program(2 * length+3 + offset);
+        Step prep = new Step();
+        prep.addGate(new X(0));
+        for (int i = 0; i < offset; i++) {
+        //    prep.addGate(new Hadamard(i));
+        }
+        Step prepAnc = new Step(new X(length+1 + offset)); 
+        p.addStep(prep);
+        p.addStep(prepAnc);
+//                for (int i = length - 1; i > -1; i--) {
+        for (int i = length - 1; i > length - 1 - offset; i--) {
+            int m = 1;
+            for (int j = 0; j < 1 << i; j++) {
+                m = m * a % mod;
+            }
+            System.err.println("i = " + i + ", M = " + m);
+                MulModulus mul = new MulModulus(0, length, m, mod);
+                ControlledBlockGate cbg = new ControlledBlockGate(mul, offset, length-i-1);
+                p.addStep(new Step(cbg));
+            
+
+        }
+//        Step post = new Step(new Hadamard(0));
+//        p.addStep(post);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result result = sqee.runProgram(p);
+        Qubit[] q = result.getQubits();
+        return q;
     }
 }
