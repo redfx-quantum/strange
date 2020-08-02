@@ -43,9 +43,11 @@ import com.gluonhq.strange.gate.Add;
 import com.gluonhq.strange.gate.AddInteger;
 import com.gluonhq.strange.gate.Cnot;
 import com.gluonhq.strange.gate.Fourier;
+import com.gluonhq.strange.gate.Identity;
 import com.gluonhq.strange.gate.Mul;
 import com.gluonhq.strange.gate.MulModulus;
 import com.gluonhq.strange.gate.Swap;
+import com.gluonhq.strange.gate.Toffoli;
 import com.gluonhq.strange.gate.X;
 import com.gluonhq.strange.local.Computations;
 import org.junit.jupiter.api.Test;
@@ -56,7 +58,74 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author johan
  */
 public class SingleTest extends BaseGateTests {
+      
+    @Test
+    public void compareBlock() {
+     //   for (int a = 0; a < 4; a++) {
+           // for (int b = 0; b < 4; b++) {
+                Step prep = new Step();
+                int a = 1; int b = 1;
+                prep.addGate(new X(0));
+                prep.addGate(new X(1));
+                Program p = new Program(2);
+              //  Step s0 = new Step(new Toffoli(1, 2, 3));
+                Step s0 = new Step(new Cnot(0,1));
+                p.addSteps(prep, s0);//, s1, s2);
+                Result normal = runProgram(p);
+                Qubit[] normalQ = normal.getQubits();
+                System.err.println("CREATE BLOCK NOW");
+                Block carry = new Block("carry", 2);
+//                carry.addStep(new Step(new Toffoli(1, 2, 3)));
+                carry.addStep(new Step(new Cnot(0,1)));
+                Program bp = new Program(2);
+                Step bs0 = new Step(new BlockGate(carry, 0));
+                bp.addSteps(prep, bs0);
+                Result blockResult = runProgram(bp);
+                Qubit[] blockQ = blockResult.getQubits();
+                System.err.println("a = "+a+" and b = "+b);
+                assertEquals(normalQ.length, blockQ.length);
+                for (int i = 0; i < normalQ.length; i++) {
+                    System.err.println("i = "+i);
+                    assertEquals(normalQ[i].measure(), blockQ[i].measure());
+                }
+         //   }
+    //    }
+    }
 
+    //@Test
+    public void compareBlockok() {
+     //   for (int a = 0; a < 4; a++) {
+           // for (int b = 0; b < 4; b++) {
+                Step prep = new Step();
+                int a = 1; int b = 1;
+                prep.addGate(new X(1));
+                prep.addGate(new X(2));
+                Program p = new Program(3);
+              //  Step s0 = new Step(new Toffoli(1, 2, 3));
+                Step s0 = new Step(new Cnot(1,2));
+                p.addSteps(prep, s0);//, s1, s2);
+                Result normal = runProgram(p);
+                Qubit[] normalQ = normal.getQubits();
+                System.err.println("CREATE BLOCK NOW");
+                Block carry = new Block("carry", 3);
+//                carry.addStep(new Step(new Toffoli(1, 2, 3)));
+                carry.addStep(new Step(new Cnot(1,2)));
+                Program bp = new Program(3);
+                Step bs0 = new Step(new BlockGate(carry, 0));
+                bp.addSteps(prep, bs0);
+                Result blockResult = runProgram(bp);
+                Qubit[] blockQ = blockResult.getQubits();
+                System.err.println("a = "+a+" and b = "+b);
+                assertEquals(normalQ.length, blockQ.length);
+                for (int i = 0; i < normalQ.length; i++) {
+                    System.err.println("i = "+i);
+                    assertEquals(normalQ[i].measure(), blockQ[i].measure());
+                }
+         //   }
+    //    }
+    }
+
+            
   //  @Test // 
     public void expmul3p3() { // 3^3 = 27 -> mod 8 = 3
         int length = 3;
@@ -229,7 +298,7 @@ public class SingleTest extends BaseGateTests {
         assertEquals(0, q[5].measure());  
     }
     
-    @Test
+  //  @Test
     public void add0num0() {
         Program p = new Program(1);
         Step prep = new Step();

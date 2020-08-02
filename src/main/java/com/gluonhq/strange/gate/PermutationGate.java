@@ -62,24 +62,6 @@ public class PermutationGate implements Gate {
         this.a = a;
         this.b = b;
         this.n = n;
-        int dim = 1 << n;
-        m = new Complex[dim][dim];
-        int amask = 1 << a;
-        int bmask = 1 << b;
-        for (int i = 0; i < dim; i++) {
-            int x = (amask & i) /amask;
-            int y = (bmask & i) /bmask;
-            if (x == y) {
-                for (int j = 0; j < dim; j++) {
-                    m[i][j] = (i ==j ? Complex.ONE : Complex.ZERO);
-                }
-            } else {
-                int flipped = ((i ^ amask) ^ bmask);
-                for (int j = 0; j < dim; j++) {
-                    m[i][j] = (j == flipped ? Complex.ONE : Complex.ZERO );
-                }
-            }
-        }
         for (int i =0 ; i < n; i++) {
             affected.add(i);
         }
@@ -130,7 +112,8 @@ public class PermutationGate implements Gate {
 
     @Override
     public Complex[][] getMatrix() {
-        return m;
+        throw new RuntimeException ("No matrix required for Permutation");
+//        return m;
     }
     
     @Override

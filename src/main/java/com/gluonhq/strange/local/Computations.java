@@ -71,7 +71,7 @@ public class Computations {
                         gate -> gate.getHighestAffectedQubitIndex() == cnt )
                     .findFirst()
                     .orElse(new Identity(idx));
-            System.err.println("stepmatrix, cnt = "+cnt+", idx = "+idx);
+            System.err.println("stepmatrix, cnt = "+cnt+", idx = "+idx+", myGate = "+myGate);
             if (myGate instanceof BlockGate) {
                 dbg("calculateStepMatrix for blockgate "+myGate+" of class "+myGate.getClass());
                 BlockGate sqg = (BlockGate)myGate;
@@ -96,8 +96,9 @@ public class Computations {
                 idx = idx-2;
             }
             if (myGate instanceof PermutationGate) {
-                a = tensor(a, myGate.getMatrix());
-                idx = 0;
+                throw new RuntimeException("No perm allowed ");
+//                a = tensor(a, myGate.getMatrix());
+  //              idx = 0;
             }
             if (myGate instanceof Oracle) {
                 a = myGate.getMatrix();
@@ -237,7 +238,7 @@ public class Computations {
         return answer;
     }
     
-    public static void printMatrix(Complex[][] a) {
+    public static void dontprintMatrix(Complex[][] a) {
         for (int i = 0; i < a.length; i++) {
             StringBuilder sb = new StringBuilder();
             for (int j = 0; j < a[i].length; j++) {
@@ -304,5 +305,27 @@ public class Computations {
         tm = rt.totalMemory()/1024;
         um = tm - fm;
         System.err.println("free = "+fm+", mm = "+mm+", tm = "+tm+", used = "+um);
+    }
+
+    static Complex[] permutateVector(Complex[] vector, int a, int b) {
+     //   System.err.println("permutate vector, a = "+a+" and b = "+b);
+        int amask = 1 << a;
+        int bmask = 1 << b;
+        int dim = vector.length;
+   //     System.err.println("amask = "+amask+", bmask = "+bmask);
+        Complex[] answer = new Complex[dim];
+        for (int i = 0; i < dim; i++) {
+            int j = i;
+            int x = (amask & i) /amask;
+            int y = (bmask & i) /bmask;
+       //     System.err.println("x = "+x+", y = "+y);
+            if (x != y) {
+               j ^= amask;
+               j ^= bmask;
+            }
+        //    System.err.println("i = "+i+" and j = "+j+" and vj = "+vector[j]);
+            answer[i] = vector[j];
+        }
+        return answer;
     }
 }

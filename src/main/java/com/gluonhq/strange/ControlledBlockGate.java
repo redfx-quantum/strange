@@ -178,18 +178,17 @@ public class ControlledBlockGate<T> extends BlockGate {
             for (PermutationGate pg : perm) {
                 printMemory();
                 System.err.println("PRE/POST perm : "+pg);
-                Complex.printMatrix(pg.getMatrix());
                 
 
               //  matrix = Complex.mmul(pg.getMatrix(), matrix);
                 
                 matrix = Complex.permutate(pg, matrix);
-
+                System.err.println("After P0");
+Complex.printMatrix(matrix);
                 matrix = Complex.permutate(matrix, pg);
                                 
              //   matrix = Complex.mmul(matrix, pg.getMatrix());
                 System.err.println("after perm, matrix = ");
-                Complex.printMatrix(pg.getMatrix());
 
             }
 

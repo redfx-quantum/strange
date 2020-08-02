@@ -79,9 +79,9 @@ public class SyntaxTests {
         assertEquals(a[1][1].r , 5 );
         assertEquals(a[1][2].r , 6 );
         PermutationGate pg = new PermutationGate(0,1,2);
-        Complex.printMatrix(pg.getMatrix());
-        Complex[][] res = Complex.permutate(a, pg);
-        Complex.printMatrix(res);
+     //   Complex.printMatrix(pg.getMatrix());
+        Complex[][] res = Complex.permutate(pg, a);
+      //  Complex.printMatrix(res);
         assertEquals(res[0][0].r , 0 );
         assertEquals(res[0][1].r , 2 );
         assertEquals(res[0][2].r , 1 );
