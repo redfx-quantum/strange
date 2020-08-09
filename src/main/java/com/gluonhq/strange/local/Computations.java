@@ -61,7 +61,7 @@ public class Computations {
         Complex[][] a = new Complex[1][1];
         a[0][0] = Complex.ONE;
         int idx = nQubits-1;
-        System.err.println("Calculate stepMatrix for gates "+gates);
+        System.err.println("COMPCIN Calculate stepMatrix for gates "+gates);
         printMemory();
         while (idx >= 0) {
             final int cnt = idx;
@@ -110,7 +110,7 @@ public class Computations {
         }
       //  printMatrix(a);
         long l1 = System.currentTimeMillis();
-        System.err.println("calculateStepMatrix for "+gates+" and "+nQubits+" took "+ (l1 -l0) +" ms");
+        System.err.println("COMPCOUT calculateStepMatrix for "+gates+" and "+nQubits+" took "+ (l1 -l0) +" ms");
         return a;
     }
     
@@ -293,8 +293,7 @@ public class Computations {
         return matrix;
     }
 
-    static void printMemory() {
-        if (1 < 2 ) return;
+    public static void printMemory() {
         Runtime rt = Runtime.getRuntime();
         long fm = rt.freeMemory()/1024;
         long mm = rt.maxMemory()/1024;
