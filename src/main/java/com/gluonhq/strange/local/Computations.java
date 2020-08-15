@@ -61,7 +61,7 @@ public class Computations {
         Complex[][] a = new Complex[1][1];
         a[0][0] = Complex.ONE;
         int idx = nQubits-1;
-        System.err.println("COMPCIN Calculate stepMatrix for gates "+gates);
+        System.err.println("Calculate stepMatrix for "+nQubits+" qubits, gates = "+gates);
         printMemory();
         while (idx >= 0) {
             final int cnt = idx;
@@ -329,5 +329,23 @@ public class Computations {
             answer[i] = vector[j];
         }
         return answer;
+    }
+
+    static Complex[] calculateNewState(List<Gate> gates, Complex[] vector, int length) {
+        int dim = 1 << length;
+        if (dim != vector.length) {
+            throw new IllegalArgumentException ("probability vector has size "+
+                    vector.length+" but we have only "+ length+" qubits.");
+        }
+        Complex[] result = new Complex[dim];
+
+        Complex[][] c = calculateStepMatrix(gates, length);
+        for (int i = 0; i < vector.length; i++) {
+            result[i] = Complex.ZERO;
+            for (int j = 0; j < vector.length; j++) {
+                result[i] = result[i].add(c[i][j].mul(vector[j]));
+            }
+        }
+        return result;
     }
 }

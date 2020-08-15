@@ -160,6 +160,8 @@ public final class Complex {
         System.err.println("tensor for "+d1+" and "+d2+", new dim will be "+(d1*d2));
 Computations.printMemory();
         Complex[][] result = new Complex[d1 * d2][d1 * d2];
+        System.err.println("allocated memory");
+// Computations.printMemory();
         for (int rowa = 0; rowa < d1; rowa++) {
             for (int cola = 0; cola < d1; cola++) {
                 for (int rowb = 0; rowb < d2; rowb++) {
@@ -216,13 +218,6 @@ Computations.printMemory();
                         br[k][j] = b[k][j].r;
                         bi[k][j] = b[k][j].i;
                     }
-//                    if ((a[i][k] != Complex.ZERO) && (b[k][j] != Complex.ZERO)) {
-//                        if ((a[i][k].abssqr() < .0001) && (b[k][j].abssqr() < 0.0001)) {
-//                            am++;
-//                        }
-//                        el.addmulr(a[i][k], b[k][j]);
-//                        zero = false;
-//                    }
                 }
                 if (zero) {
                     answer[i][j] = Complex.ZERO;
