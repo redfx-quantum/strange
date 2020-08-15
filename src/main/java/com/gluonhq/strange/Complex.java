@@ -173,6 +173,7 @@ public final class Complex {
 //        INDArray n_bi = Nd4j.create(bi);
   
         
+
         Complex[][] result = new Complex[d1 * d2][d1 * d2];
         System.err.println("allocated memory");
 // Computations.printMemory();
@@ -189,6 +190,9 @@ public final class Complex {
                 }
             }
         }
+        System.err.println("tensor created new matrix");
+        Computations.printMemory();
+
         return result;
     }
     static int zCount = 0;
@@ -213,7 +217,7 @@ public final class Complex {
         double[][] ai = new double[arow][acol];
         double[][] br = new double[brow][bcol];
         double[][] bi = new double[brow][bcol];
-        System.err.println("start for loop");
+        dbg("start for loop");
         for (int i = 0; i < arow; i++) {
             for (int j = 0; j < bcol; j++) {
                 Complex el = new Complex(0., 0.);
@@ -243,7 +247,7 @@ public final class Complex {
         }
         //     if (1 < 2) System.exit(0);
         long l1 = System.currentTimeMillis();
-        System.err.println("mulitply matrix " + arow + ", " + acol + ", " + bcol + " took " + (l1 - l0) + " zc = " + zCount + " and nzc = " + nzCount + " and am = " + am);
+        dbg("mulitply matrix " + arow + ", " + acol + ", " + bcol + " took " + (l1 - l0) + " zc = " + zCount + " and nzc = " + nzCount + " and am = " + am);
         INDArray n_ar = Nd4j.create(ar);
         INDArray n_ai = Nd4j.create(ai);
         INDArray n_br = Nd4j.create(br);
@@ -299,6 +303,7 @@ public final class Complex {
         int amask = 1 << a;
         int bmask = 1 << b;
         int dim = matrix.length;
+        Complex cp;
         List<Integer> swapped = new LinkedList<>();
         for (int i = 0; i < dim; i++) {
             int j = i;
@@ -311,7 +316,7 @@ public final class Complex {
                     swapped.add(j);
                     swapped.add(i);
                     for (int k = 0; k < dim; k++) {
-                        Complex cp = matrix[k][i];
+                        cp = matrix[k][i];
                         matrix[k][i] = matrix[k][j];
                         matrix[k][j] = cp;
                     }
@@ -369,6 +374,10 @@ public final class Complex {
 
     public static void printMatrix(Complex[][] cm) {
         printMatrix(cm, System.err);
+    }
+    
+    public static void dbg (String s) {
+        System.err.println("[DBG] " + System.currentTimeMillis()%1000000+": "+s);
     }
 
     static final boolean debug = false;

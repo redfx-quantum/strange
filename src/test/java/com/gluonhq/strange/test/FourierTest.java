@@ -56,7 +56,7 @@ public class FourierTest extends BaseGateTests {
     @Test
     public void createFourierOne() {
         Fourier f = new Fourier(1,0);
-        double den = Math.sqrt(2);
+        float den = (float) Math.sqrt(2);
         Complex[][] a = f.getMatrix();
         assertEquals(2, a.length);
         Complex val = a[0][0];

@@ -58,9 +58,10 @@ import java.util.function.Consumer;
  */
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
     
-    void dbg (String s) {
-        System.err.println("[DBG] " + System.currentTimeMillis()%1000000+": "+s);
+    static void dbg (String s) {
+        Complex.dbg(s);
     }
+    
     @Override
     public Result runProgram(Program p) {
         dbg("runProgram ");

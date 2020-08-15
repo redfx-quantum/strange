@@ -110,7 +110,7 @@ public class Computations {
         }
       //  printMatrix(a);
         long l1 = System.currentTimeMillis();
-        System.err.println("calculateStepMatrix for "+gates+" and "+nQubits+" took "+ (l1 -l0) +" ms");
+        System.err.println("COMPCOUT calculateStepMatrix for "+gates+" and "+nQubits+" took "+ (l1 -l0) +" ms");
         return a;
     }
     
