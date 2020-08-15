@@ -47,9 +47,19 @@ import java.util.concurrent.ExecutionException;
 public class Demo {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        System.out.println("Hello, Demo");
+        System.out.println("Hello, Demo2");
+        int rows = 256;
+        int cols = 16;
+        for (int k = 0; k < 100; k++) {
+            Complex[][] test1 = new Complex[rows][cols];
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    test1[i][j] = new Complex(i, j);
+                }
+            }
+        }
 //        expmul2p3mod7gen();
-        expmul7p4mod15gen();
+  //      expmul7p4mod15gen();
     //    Complex.calcGrid();
      //   mulTest();
 //       addTest();

@@ -32,6 +32,7 @@
 package com.gluonhq.strange;
 
 import com.gluonhq.strange.gate.PermutationGate;
+import com.gluonhq.strange.local.Computations;
 import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,8 +52,8 @@ public final class Complex {
     public static final Complex HC = new Complex(HV, 0.d);
     public static final Complex HCN = new Complex(-HV, 0.d);
 
-    public double r;
-    public double i;
+    public float r;
+    public float i;
 
     /**
      * Create a complex number with a real component only
@@ -70,8 +71,8 @@ public final class Complex {
      * @param i the imaginary component
      */
     public Complex(double r, double i) {
-        this.r = r;
-        this.i = i;
+        this.r = (float) r;
+        this.i = (float) i;
     }
 
     public Complex add(Complex b) {
@@ -101,8 +102,8 @@ public final class Complex {
     public Complex addmulr(Complex a, Complex b) {
         double nr = (a.r * b.r) - (a.i * b.i);
         double ni = (a.r * b.i) + (a.i * b.r);
-        this.r = this.r + nr;
-        this.i = this.i + ni;
+        this.r = (float) (this.r + nr);
+        this.i = (float) (this.i + ni);
         return this;
     }
 
@@ -152,12 +153,29 @@ public final class Complex {
      * @return
      */
     public static Complex[][] tensor(Complex[][] a, Complex[][] b) {
-        System.err.println("tensor for: ");
         Complex.printMatrix(a);
         Complex.printMatrix(b);
         int d1 = a.length;
         int d2 = b.length;
+        int arow = a.length;
+        int acol = arow;
+        int brow = b.length;
+        int bcol = brow;
+                System.err.println("tensor for: "+d1+", "+d2);
+// Computations.printMemory();
+//        double[][] ar = new double[arow][acol];
+//        double[][] ai = new double[arow][acol];
+//        double[][] br = new double[brow][bcol];
+//        double[][] bi = new double[brow][bcol];
+//        INDArray n_ar = Nd4j.create(ar);
+//        INDArray n_ai = Nd4j.create(ai);
+//        INDArray n_br = Nd4j.create(br);
+//        INDArray n_bi = Nd4j.create(bi);
+  
+        
         Complex[][] result = new Complex[d1 * d2][d1 * d2];
+        System.err.println("allocated memory");
+// Computations.printMemory();
         for (int rowa = 0; rowa < d1; rowa++) {
             for (int cola = 0; cola < d1; cola++) {
                 for (int rowb = 0; rowb < d2; rowb++) {
@@ -211,13 +229,6 @@ public final class Complex {
                         br[k][j] = b[k][j].r;
                         bi[k][j] = b[k][j].i;
                     }
-//                    if ((a[i][k] != Complex.ZERO) && (b[k][j] != Complex.ZERO)) {
-//                        if ((a[i][k].abssqr() < .0001) && (b[k][j].abssqr() < 0.0001)) {
-//                            am++;
-//                        }
-//                        el.addmulr(a[i][k], b[k][j]);
-//                        zero = false;
-//                    }
                 }
                 if (zero) {
                     answer[i][j] = Complex.ZERO;

@@ -156,21 +156,27 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             PermutationGate pg = (PermutationGate)gates.get(0);
             return Computations.permutateVector (vector, pg.getIndex1(), pg.getIndex2());
         }
-        dbg("start calcstepmatrix with gates "+gates);
-        Complex[][] a = calculateStepMatrix(gates, qubits.length);
-        dbg("done calcstepmatrix");
-        dbg("vector");
-       // printProbs(vector);
+      
         Complex[] result = new Complex[vector.length];
-        if (a.length != result.length) {
-            System.err.println("fatal issue calculating step for gates "+gates);
-            throw new RuntimeException ("Wrong length of matrix or probability vector: expected "+result.length+" but got "+a.length);
-        }
-        dbg ("start matrix-vector multiplication for vector size = "+vector.length);
-        for (int i = 0; i < vector.length; i++) {
-            result[i] = Complex.ZERO;
-            for (int j = 0; j < vector.length; j++) {
-                result[i] = result[i].add(a[i][j].mul(vector[j]));
+        boolean vdd = false;
+        if (vdd) {
+            result = Computations.calculateNewState(gates, vector, qubits.length);
+        } else {
+            dbg("start calcstepmatrix with gates " + gates);
+            Complex[][] a = calculateStepMatrix(gates, qubits.length);
+            dbg("done calcstepmatrix");
+            dbg("vector");
+            // printProbs(vector);
+            if (a.length != result.length) {
+                System.err.println("fatal issue calculating step for gates " + gates);
+                throw new RuntimeException("Wrong length of matrix or probability vector: expected " + result.length + " but got " + a.length);
+            }
+            dbg("start matrix-vector multiplication for vector size = " + vector.length);
+            for (int i = 0; i < vector.length; i++) {
+                result[i] = Complex.ZERO;
+                for (int j = 0; j < vector.length; j++) {
+                    result[i] = result[i].add(a[i][j].mul(vector[j]));
+                }
             }
         }
         long s1 = System.currentTimeMillis();
