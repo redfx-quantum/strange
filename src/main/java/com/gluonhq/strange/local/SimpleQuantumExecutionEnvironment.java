@@ -159,7 +159,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         }
       
         Complex[] result = new Complex[vector.length];
-        boolean vdd = false;
+        boolean vdd = true;
         if (vdd) {
             result = Computations.calculateNewState(gates, vector, qubits.length);
         } else {
