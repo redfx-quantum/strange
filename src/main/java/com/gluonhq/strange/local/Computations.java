@@ -332,7 +332,8 @@ public class Computations {
     }
 
     static Complex[] calculateNewState(List<Gate> gates, Complex[] vector, int length) {
-        int dim = 1 << length;
+        return getNextProbability(getAllGates(gates, length), vector);
+      /*  int dim = 1 << length;
         if (dim != vector.length) {
             throw new IllegalArgumentException ("probability vector has size "+
                     vector.length+" but we have only "+ length+" qubits.");
@@ -347,5 +348,96 @@ public class Computations {
             }
         }
         return result;
+*/
+    }
+    
+    private static Complex[] getNextProbability(List<Gate> gates, Complex[] v) {
+         Gate gate = gates.get(0);
+      //  System.err.println("GNP, gate = "+gate);
+      //  System.err.println("v = ");
+   //     Complex.printArray(v);
+        Complex[][] matrix = gate.getMatrix();
+        int size = v.length;
+
+        if (gates.size() > 1) {
+            List<Gate> nextGates = gates.subList(1, gates.size());
+           // List<Gate> nextGates = gates.subList(0, gates.size()-1);
+            int gatedim = matrix.length;
+            int partdim = size/gatedim;
+            Complex[] answer = new Complex[size];
+            Complex[][] vsub = new Complex[gatedim][partdim];
+            for (int i = 0; i < gatedim; i++) {
+                Complex[] vorig = new Complex[partdim];
+                for (int j = 0; j < partdim; j++) {
+                    vorig[j] = v[j + i *partdim];
+                }
+                vsub[i] = getNextProbability(nextGates, vorig);
+            }
+//            System.err.println("Ok, we got the subv's: ");
+//                        for (int i = 0; i < gatedim; i++) {
+//                            Complex.printArray(vsub[i]);
+//                        }
+            for (int i = 0; i < gatedim; i++) {
+                for (int j = 0; j < partdim; j++) {
+                    answer[j + i * partdim] = Complex.ZERO;
+                    for (int k = 0; k < gatedim;k++) {
+                     //   System.err.println("i = "+i+", j = "+j+", k = "+k+" pd = "+partdim);
+                     //   System.err.println("mik = "+matrix[i][k]+", vsb = "+vsub[k][j]);
+                        answer[j + i * partdim] = answer[j + i * partdim].add(matrix[i][k].mul(vsub[k][j]));
+                    }
+                }
+            }
+         //   System.err.println("Will return prob");
+        //    Complex.printArray(answer);
+            return answer;
+        } else {
+            if (matrix.length != size) {
+                throw new IllegalArgumentException ("wrong matrix size "+matrix.length+" vs vector size "+v.length);
+            }
+            Complex[] answer = new Complex[size];
+            for (int i = 0; i < size; i++) {
+                answer[i] = Complex.ZERO;
+                for (int j = 0; j < size; j++) {
+                    answer[i] = answer[i].add(matrix[i][j].mul(v[j]));
+                }
+            }
+       //     System.err.println("REturn v: ");
+       //     Complex.printArray(answer);
+            return answer;
+        }
+    }
+            
+    private static List<Gate> getAllGates(List<Gate> gates, int nQubits) {
+        List<Gate> answer = new ArrayList<>();
+        int idx = nQubits -1;
+          while (idx >= 0) {
+            final int cnt = idx;
+            Gate myGate = gates.stream()
+                    .filter(
+                        gate -> gate.getHighestAffectedQubitIndex() == cnt )
+                    .findFirst()
+                    .orElse(new Identity(idx));
+            dbg("stepmatrix, cnt = "+cnt+", idx = "+idx+", myGate = "+myGate);
+                           answer.add(myGate);    
+           if (myGate instanceof BlockGate) {
+                BlockGate sqg = (BlockGate)myGate;
+                idx = idx - sqg.getSize()+1;
+            }           
+            if (myGate instanceof TwoQubitGate) {
+                idx--;
+            }
+            if (myGate instanceof ThreeQubitGate) {
+                idx = idx-2;
+            }
+            if (myGate instanceof PermutationGate) {
+                throw new RuntimeException("No perm allowed ");
+            }
+            if (myGate instanceof Oracle) {
+                idx = 0;
+            }
+            idx--;
+        }
+          System.err.println("AllGates will return "+answer);
+        return answer;
     }
 }
