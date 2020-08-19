@@ -58,40 +58,101 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author johan
  */
 public class SingleTest extends BaseGateTests {
-      
-    @Test
-    public void compareBlock() {
-     //   for (int a = 0; a < 4; a++) {
-           // for (int b = 0; b < 4; b++) {
-                Step prep = new Step();
-                int a = 1; int b = 1;
-                prep.addGate(new X(0));
-                prep.addGate(new X(1));
-                Program p = new Program(2);
-              //  Step s0 = new Step(new Toffoli(1, 2, 3));
-                Step s0 = new Step(new Cnot(0,1));
-                p.addSteps(prep, s0);//, s1, s2);
-                Result normal = runProgram(p);
-                Qubit[] normalQ = normal.getQubits();
-                System.err.println("CREATE BLOCK NOW");
-                Block carry = new Block("carry", 2);
-//                carry.addStep(new Step(new Toffoli(1, 2, 3)));
-                carry.addStep(new Step(new Cnot(0,1)));
-                Program bp = new Program(2);
-                Step bs0 = new Step(new BlockGate(carry, 0));
-                bp.addSteps(prep, bs0);
-                Result blockResult = runProgram(bp);
-                Qubit[] blockQ = blockResult.getQubits();
-                System.err.println("a = "+a+" and b = "+b);
-                assertEquals(normalQ.length, blockQ.length);
-                for (int i = 0; i < normalQ.length; i++) {
-                    System.err.println("i = "+i);
-                    assertEquals(normalQ[i].measure(), blockQ[i].measure());
-                }
-         //   }
-    //    }
-    }
+    
+        @Test
+    public void cnotblock1010inv() { //1010 -> 0010
+        Program p = new Program(4);
+        Step prep = new Step(new X(1), new X(3));
+        Block block = new Block(1);
+        block.addStep(new Step(new X(0)));
+        BlockGate gate = new BlockGate(block, 0);
+        ControlledBlockGate cbg = new ControlledBlockGate(gate, 1, 3);
+        Complex[][] m = cbg.getMatrix();
+        Complex.printMatrix(m, System.err);
 
+        p.addStep(prep);
+        p.addStep(new Step(cbg));
+        Result result = runProgram(p);
+        Complex[] probability = result.getProbability();
+        Complex.printArray(probability);
+        Qubit[] q = result.getQubits();
+                for (int i = 0; i < 4; i++) {
+            System.err.println("q["+i+"] = "+q[i].measure());
+        }
+        assertEquals(4, q.length);
+        assertEquals(0, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(1, q[3].measure());
+    }
+    
+    //@Test
+    public void addmod2() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(0));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+        AddInteger addN = new AddInteger(0,2,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
+        p.addStep(new Step(cbg));
+
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(1, q[6].measure());
+     //   assertEquals(1, q[6].measure());
+    }
+    
+//    @Test // 
+    public void expmul() {
+        int length = 2;
+        int a = 3;
+        Program p = new Program(3 * length);
+        Step prepAnc = new Step(new X(3 * length -1));
+        p.addStep(prepAnc);
+        for (int i = 0; i < length; i++) {
+            int m = a << (length -1 - i); // 2^(n-1-i)
+            Mul mul = new Mul(length, 2 * length-1, a);
+            if (i < length -1) {
+                Swap swap = new Swap(i, length-1);
+                p.addStep(new Step(swap));
+            }
+            ControlledBlockGate cbg = new ControlledBlockGate(mul, length, length -1);
+            p.addStep(new Step(cbg));
+            if (i < length -1) {
+                Swap swap = new Swap(i, length-1);
+                p.addStep(new Step(swap));
+            }
+        }
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(6, q.length);
+        System.err.println("results: ");
+        for (int i = 0; i < 6; i++) {
+            System.err.println("m["+i+"]: "+q[i].measure());
+        }
+        assertEquals(0, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(1, q[5].measure());
+    }
     //@Test
     public void compareBlockok() {
      //   for (int a = 0; a < 4; a++) {

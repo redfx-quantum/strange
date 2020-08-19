@@ -63,7 +63,7 @@ public class BlockGate<T> implements Gate {
         this.block = b;
     }
     
-    protected final Block getBlock() {
+    public final Block getBlock() {
         return this.block;
     }
     

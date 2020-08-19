@@ -179,29 +179,7 @@ public class ControlledBlockTests extends BaseGateTests {
         assertEquals(1, q[2].measure());
     }
     
-    @Test
-    public void cnotblock100() { //100 -> 101
-        Program p = new Program(3);
-        Step prep = new Step(new X(2));
-        Block block = new Block(1);
-        block.addStep(new Step(new X(0)));
-        BlockGate gate = new BlockGate(block, 0);
-        ControlledBlockGate cbg = new ControlledBlockGate(gate, 0, 2);
-        Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
-
-        p.addStep(prep);
-        p.addStep(new Step(cbg));
-        Result result = runProgram(p);
-        Complex[] probability = result.getProbability();
-        Complex.printArray(probability);
-        Qubit[] q = result.getQubits();
-        assertEquals(3, q.length);
-        assertEquals(1, q[0].measure());
-        assertEquals(0, q[1].measure());
-        assertEquals(1, q[2].measure());
-    }
-     
+    
     @Test
     public void cnotblock101() { //101 -> 001
         Program p = new Program(3);

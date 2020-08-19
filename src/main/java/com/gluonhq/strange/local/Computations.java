@@ -31,9 +31,11 @@
  */
 package com.gluonhq.strange.local;
 
+import com.gluonhq.strange.Block;
 import com.gluonhq.strange.BlockGate;
 import com.gluonhq.strange.Complex;
 import static com.gluonhq.strange.Complex.tensor;
+import com.gluonhq.strange.ControlledBlockGate;
 import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Identity;
@@ -44,6 +46,7 @@ import com.gluonhq.strange.gate.SingleQubitGate;
 import com.gluonhq.strange.gate.ThreeQubitGate;
 import com.gluonhq.strange.gate.TwoQubitGate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -120,6 +123,7 @@ public class Computations {
      * @return 
      */
     public static List<Step> decomposeStep(Step s, int nqubit) {
+        System.err.println("I NEED DO DECOMPOSE STEP "+s);
         ArrayList<Step> answer = new ArrayList<>();
         answer.add(s);
         List<Gate> gates = s.getGates();
@@ -137,6 +141,9 @@ public class Computations {
                 return answer;
             }
             if (gate instanceof BlockGate) {
+                if (gate instanceof ControlledBlockGate) {
+                    processBlockGate ((ControlledBlockGate)gate, answer) ;
+                }
                 firstGates.add(gate);
             } else if (gate instanceof SingleQubitGate) {
                 firstGates.add(gate);
@@ -237,6 +244,7 @@ public class Computations {
                 throw new RuntimeException("Gate must be SingleQubit or TwoQubit");
             }
         }
+        System.err.println("Step "+s+" decomposed into "+answer);
         return answer;
     }
     
@@ -333,22 +341,22 @@ public class Computations {
 
     static Complex[] calculateNewState(List<Gate> gates, Complex[] vector, int length) {
         return getNextProbability(getAllGates(gates, length), vector);
-      /*  int dim = 1 << length;
-        if (dim != vector.length) {
-            throw new IllegalArgumentException ("probability vector has size "+
-                    vector.length+" but we have only "+ length+" qubits.");
-        }
-        Complex[] result = new Complex[dim];
+//        int dim = 1 << length;
+//        if (dim != vector.length) {
+//            throw new IllegalArgumentException ("probability vector has size "+
+//                    vector.length+" but we have only "+ length+" qubits.");
+//        }
+//        Complex[] result = new Complex[dim];
+//
+//        Complex[][] c = calculateStepMatrix(gates, length);
+//        for (int i = 0; i < vector.length; i++) {
+//            result[i] = Complex.ZERO;
+//            for (int j = 0; j < vector.length; j++) {
+//                result[i] = result[i].add(c[i][j].mul(vector[j]));
+//            }
+//        }
+//        return result;
 
-        Complex[][] c = calculateStepMatrix(gates, length);
-        for (int i = 0; i < vector.length; i++) {
-            result[i] = Complex.ZERO;
-            for (int j = 0; j < vector.length; j++) {
-                result[i] = result[i].add(c[i][j].mul(vector[j]));
-            }
-        }
-        return result;
-*/
     }
     
     private static Complex[] getNextProbability(List<Gate> gates, Complex[] v) {
@@ -392,6 +400,7 @@ public class Computations {
             return answer;
         } else {
             if (matrix.length != size) {
+                System.err.println("problem with matrix for gate "+gate);
                 throw new IllegalArgumentException ("wrong matrix size "+matrix.length+" vs vector size "+v.length);
             }
             Complex[] answer = new Complex[size];
@@ -408,6 +417,7 @@ public class Computations {
     }
             
     private static List<Gate> getAllGates(List<Gate> gates, int nQubits) {
+        dbg("getAllGates, orig = "+gates);
         List<Gate> answer = new ArrayList<>();
         int idx = nQubits -1;
           while (idx >= 0) {
@@ -422,6 +432,7 @@ public class Computations {
            if (myGate instanceof BlockGate) {
                 BlockGate sqg = (BlockGate)myGate;
                 idx = idx - sqg.getSize()+1;
+                System.err.println("processed blockgate, size = "+sqg.getSize()+", idx = "+idx);
             }           
             if (myGate instanceof TwoQubitGate) {
                 idx--;
@@ -439,5 +450,56 @@ public class Computations {
         }
           System.err.println("AllGates will return "+answer);
         return answer;
+    }
+
+    private static void processBlockGate(ControlledBlockGate gate, ArrayList<Step> answer) {
+        gate.calculateHighLow();
+        System.err.println("PROCESS BG: "+gate);
+        System.err.println("ANSWER = "+answer);
+        int low = gate.getLow();
+        int control = gate.getControlQubit();
+        int idx = gate.getMainQubitIndex();
+        int high = control;
+        int size = gate.getSize();
+        int gap = control - idx;
+        List<PermutationGate> perm = new LinkedList<>();
+        Block block = gate.getBlock();
+        int bs = block.getNQubits();
+        System.err.println("ctr = " + control + ", idx = " + idx + ", gap = " + gap + " and bs = " + bs+", low = "+low);
+            gate.correctHigh(low+bs);
+
+        if (control > idx) {
+            if (gap < bs) {
+                throw new IllegalArgumentException("Can't have control at " + control + " for gate with size " + bs + " starting at " + idx);
+            }
+            low = idx;
+            if (gap > bs) {
+                high = control;
+                size = high - low + 1;
+                System.err.println("PG, control = " + control + ", gap = " + gap + ", bs = " + bs);
+                System.err.println("new high at "+(low+ bs));
+                gate.correctHigh(low+bs+1);
+                PermutationGate pg = new PermutationGate(control - low, control - low - gap + bs, size);
+                perm.add(pg);
+            }
+        } else {
+            low = control;
+            high = idx + bs - 1;
+            size = high - low + 1;
+            gate.correctHigh(low+bs);
+            for (int i = low; i < low + size - 1; i++) {
+                PermutationGate pg = new PermutationGate(i, i + 1, low + size);
+                perm.add(0, pg);
+            }
+        }
+     //   answer.add(new Step(gate));
+        System.err.println("processing cbg, will need to add those perms: "+perm);
+        for (PermutationGate pg :  perm) {
+            Step lpg = new Step(pg);
+            lpg.setComplexStep(1);
+            answer.add(lpg);
+            answer.add(0, new Step(pg));
+        }
+        System.err.println("finally, answer = "+answer);
     }
 }
