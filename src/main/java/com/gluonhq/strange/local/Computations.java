@@ -318,23 +318,25 @@ public class Computations {
         System.err.println("free = "+fm+", mm = "+mm+", tm = "+tm+", used = "+um);
     }
 
+    
+    
     static Complex[] permutateVector(Complex[] vector, int a, int b) {
-     //   System.err.println("permutate vector, a = "+a+" and b = "+b);
+        System.err.println("permutate vector, a = "+a+" and b = "+b);
         int amask = 1 << a;
         int bmask = 1 << b;
         int dim = vector.length;
-   //     System.err.println("amask = "+amask+", bmask = "+bmask);
+        System.err.println("amask = "+amask+", bmask = "+bmask);
         Complex[] answer = new Complex[dim];
         for (int i = 0; i < dim; i++) {
             int j = i;
             int x = (amask & i) /amask;
             int y = (bmask & i) /bmask;
-       //     System.err.println("x = "+x+", y = "+y);
+            System.err.println("x = "+x+", y = "+y);
             if (x != y) {
                j ^= amask;
                j ^= bmask;
             }
-        //    System.err.println("i = "+i+" and j = "+j+" and vj = "+vector[j]);
+            System.err.println("i = "+i+" and j = "+j);//+" and vj = "+vector[j]);
             answer[i] = vector[j];
         }
         return answer;
@@ -467,7 +469,7 @@ public class Computations {
         Block block = gate.getBlock();
         int bs = block.getNQubits();
         System.err.println("ctr = " + control + ", idx = " + idx + ", gap = " + gap + " and bs = " + bs+", low = "+low);
-            gate.correctHigh(low+bs);
+      //      gate.correctHigh(low+bs);
 
         if (control > idx) {
             if (gap < bs) {
@@ -477,17 +479,19 @@ public class Computations {
             if (gap > bs) {
                 high = control;
                 size = high - low + 1;
-                System.err.println("PG, control = " + control + ", gap = " + gap + ", bs = " + bs);
+                System.err.println("PG, control = " + control + ", gap = " + gap + ", bs = " + bs+", size = "+size);
                 System.err.println("new high at "+(low+ bs));
-                gate.correctHigh(low+bs+1);
-                PermutationGate pg = new PermutationGate(control - low, control - low - gap + bs, size);
+           //     gate.correctHigh(low+bs+1);
+           //     PermutationGate pg = new PermutationGate(control - low, control - low - gap + bs, size);
+                PermutationGate pg = new PermutationGate(control , control  - gap + bs,low + size);
+
                 perm.add(pg);
             }
         } else {
             low = control;
             high = idx + bs - 1;
             size = high - low + 1;
-            gate.correctHigh(low+bs);
+         //   gate.correctHigh(low+bs);
             for (int i = low; i < low + size - 1; i++) {
                 PermutationGate pg = new PermutationGate(i, i + 1, low + size);
                 perm.add(0, pg);
