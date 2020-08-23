@@ -84,9 +84,10 @@ public class Result {
     
     public void setIntermediateProbability(int step, Complex[] p) {
         this.intermediates[step] = p;
-        if ((step == nsteps -1) || (nsteps == 0)) { // in case we have no steps, this is the final result
+        System.err.println("SIP, step = " + step+", nsteps = "+nsteps);
+    //    if ((step == nsteps -1) || (nsteps == 0)) { // in case we have no steps, this is the final result
             this.probability = p;
-        }
+     //   }
     }
     
     public Complex[] getIntermediateProbability(int step) {

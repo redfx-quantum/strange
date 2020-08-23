@@ -58,35 +58,46 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author johan
  */
 public class SingleTest extends BaseGateTests {
-    
-        @Test
-    public void cnotblock1010inv() { //1010 -> 0010
-        Program p = new Program(4);
-        Step prep = new Step(new X(1), new X(3));
-        Block block = new Block(1);
-        block.addStep(new Step(new X(0)));
-        BlockGate gate = new BlockGate(block, 0);
-        ControlledBlockGate cbg = new ControlledBlockGate(gate, 1, 3);
-        Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
-
+       
+    @Test // 
+    public void expmul3p4mod7() { // 3^4 = 81 -> mod 7 = 4
+        int length = 3; 
+        // q0 -> q2: 4
+        // q3 -> q5: ancilla (0 before, 0 after)
+        // q6 -> q8: result
+        int a = 3;
+        int mod = 7;
+        Program p = new Program(3 * length);
+        Step prep = new Step(new X(2)); // exp = 4
+        Step prepAnc = new Step(new X(2 * length)); 
         p.addStep(prep);
-        p.addStep(new Step(cbg));
-        Result result = runProgram(p);
-        Complex[] probability = result.getProbability();
-        Complex.printArray(probability);
-        Qubit[] q = result.getQubits();
-                for (int i = 0; i < 4; i++) {
-            System.err.println("q["+i+"] = "+q[i].measure());
+        p.addStep(prepAnc);
+        for (int i = length - 1; i > -1; i--) {
+            int m = (int) Math.pow(a, 1 << i);
+            System.err.println("M = "+m);
+            MulModulus mul = new MulModulus(length, 2 * length-1, m, mod);
+            ControlledBlockGate cbg = new ControlledBlockGate(mul, length, i);
+            p.addStep(new Step(cbg));
         }
-        assertEquals(4, q.length);
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(9, q.length);
+        System.err.println("results: ");
+        for (int i = 0; i < 9; i++) {
+            System.err.println("m["+i+"]: "+q[i].measure());
+        }
         assertEquals(0, q[0].measure());
         assertEquals(0, q[1].measure());
-        assertEquals(0, q[2].measure());
-        assertEquals(1, q[3].measure());
+        assertEquals(1, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(1, q[6].measure());
+        assertEquals(0, q[7].measure());
+        assertEquals(0, q[8].measure());
     }
     
-    //@Test
+//    @Test
     public void addmod2() {
         int n = 2;
         int N = 3;
@@ -106,6 +117,9 @@ public class SingleTest extends BaseGateTests {
         p.addStep(new Step(cbg));
 
         Result result = runProgram(p);
+        System.err.println("RESULTPROB:");
+        Complex.printArray(result.getProbability());
+        result.getProbability();
         Qubit[] q = result.getQubits();
         assertEquals(7, q.length);
         assertEquals(1, q[0].measure());
@@ -257,49 +271,6 @@ public class SingleTest extends BaseGateTests {
         assertEquals(0, q[8].measure());  
     }
     
-  //  @Test
-  public void expmul3p4mod7() { // 3^4 = 81 -> mod 7 = 4
-        int length = 3; 
-        // q0 -> q2: a (3)
-        // q3 -> q6: ancilla (0 before, 0 after)
-        // q7: ancilla
-        // q8 -> q11: result
-        int a = 3;
-        int mod = 7;
-        Program p = new Program(12);
-        Step prep = new Step(new X(2));
-        Step prepAnc = new Step(new X(2 * (length+1)));
-        p.addStep(prep);
-        p.addStep(prepAnc);
-
-        for (int i = 0; i < length; i++) {
-            int m = (int) Math.pow(a, 1 <<  i);
-            System.err.println("M = "+m);
-            MulModulus mul = new MulModulus(length, 2 * length, m, mod);
-            ControlledBlockGate cbg = new ControlledBlockGate(mul, length, i);
-            p.addStep(new Step(cbg));
-        }
-        Result result = runProgram(p);
-        Qubit[] q = result.getQubits();
-        assertEquals(12, q.length);
-        System.err.println("results: ");
-        for (int i = 0; i < 12; i++) {
-            System.err.println("m["+i+"]: "+q[i].measure());
-        }
-        assertEquals(0, q[0].measure());
-        assertEquals(0, q[1].measure());
-        assertEquals(1, q[2].measure());
-        assertEquals(0, q[3].measure());
-        assertEquals(0, q[4].measure());
-        assertEquals(0, q[5].measure());
-        assertEquals(0, q[6].measure());
-        assertEquals(0, q[7].measure());
-        assertEquals(0, q[8].measure());
-        assertEquals(0, q[9].measure());
-        assertEquals(1, q[10].measure());
-        assertEquals(0, q[11].measure());
-    }
-  
  // @Test
   public void expmul3p4mod7s0() { // 3^4 = 81 -> mod 7 = 4
         int length = 3; 
