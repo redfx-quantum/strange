@@ -498,7 +498,7 @@ public class ArithmeticTests2 extends BaseGateTests {
     public void multiplyMod5x3andswapandcleans1() { // 5 x 3 mod 6 = 3
         Program p = new Program(9);
         Step prep = new Step();
-        int mul = 1;
+        int mul = 5;
         int N = 6;
         prep.addGates(new X(4), new X(5)); // 3 in high register
         p.addStep(prep);

@@ -330,12 +330,12 @@ public class Computations {
             int j = i;
             int x = (amask & i) /amask;
             int y = (bmask & i) /bmask;
-            System.err.println("x = "+x+", y = "+y);
+    //        System.err.println("x = "+x+", y = "+y);
             if (x != y) {
                j ^= amask;
                j ^= bmask;
             }
-            System.err.println("i = "+i+" and j = "+j);//+" and vj = "+vector[j]);
+        //    System.err.println("i = "+i+" and j = "+j);//+" and vj = "+vector[j]);
             answer[i] = vector[j];
         }
         return answer;

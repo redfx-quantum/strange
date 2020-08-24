@@ -58,6 +58,7 @@ public class Mul extends BlockGate<Mul> {
      */
     public Mul(int x0, int x1, int mul) {
         super();
+        setIndex(x0);
         this.idx = x0;
         this.block = createBlock(x0, x1,mul);
         setBlock(block);

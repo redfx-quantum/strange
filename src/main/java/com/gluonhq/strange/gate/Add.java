@@ -58,6 +58,7 @@ public class Add extends BlockGate<Add> {
      */
     public Add(int x0, int x1, int y0, int y1) {
         super();
+        this.setIndex(x0);
         int hash = 1000000 * x0 + 10000*x1+ 100*y0 + y1;
         System.err.println("hash for "+x0+", " + x1+", "+y0+", "+y1+" = "+hash);
         this.block = cache.get(hash);
