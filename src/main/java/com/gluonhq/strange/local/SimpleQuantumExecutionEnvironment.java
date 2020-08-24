@@ -107,10 +107,10 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 dbg("RUN STEP " + step + ", cnt = " + cnt);
                 cnt++;
                 dbg("before this step, probs = ");
-                printProbs(probs);
+          //      printProbs(probs);
                 probs = applyStep(step, probs, qubit);
                 dbg("after this step, probs = "+probs);
-                printProbs(probs);
+            //    printProbs(probs);
                 int idx = step.getComplexStep();
                 System.err.println("complex? "+idx);
                 if (idx > -1) {

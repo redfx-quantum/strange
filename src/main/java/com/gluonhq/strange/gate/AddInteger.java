@@ -57,6 +57,9 @@ public class AddInteger extends BlockGate<AddInteger> {
      */
     public AddInteger(int x0, int x1, int num) {
         super();
+        setIndex(x0);
+        x1 = x1 - x0;
+        x0 = 0;
           int hash = 1000000 * x0 + 10000*x1+ num;
         System.err.println("ADDnumhash for "+x0+", " + x1+", "+num+" = "+hash);
         this.block = cache.get(hash);
