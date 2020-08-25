@@ -189,7 +189,7 @@ public class ArithmeticTests3 extends BaseGateTests {
         assertEquals(0, q[8].measure());
     }
     
-        @Test // 
+  //      @Test // 
     public void expmul3p4mod7() { // 3^4 = 81 -> mod 7 = 4
         int length = 3; 
         // q0 -> q2: 4
@@ -235,7 +235,7 @@ public class ArithmeticTests3 extends BaseGateTests {
         assertEquals(0, q[11].measure());
     }
     
-    @Test // 
+  //  @Test // 
     public void expmul3p4mod7gen() { // 3^4 = 81 -> mod 7 = 4
         Qubit[] q = expmod(3,7,3);
         assertEquals(0, q[0].measure());
@@ -252,7 +252,7 @@ public class ArithmeticTests3 extends BaseGateTests {
         assertEquals(0, q[11].measure());
     }
     
- //   @Test // 
+    @Test // 
     public void expmul7p4mod15gen() { // 3^4 = 81 -> mod 7 = 4
         Qubit[] q = expmod(7,15,4);
     }
@@ -267,7 +267,10 @@ public class ArithmeticTests3 extends BaseGateTests {
         p.addStep(prep);
         p.addStep(prepAnc);
         for (int i = length - 1; i > -1; i--) {
-            int m = (int) Math.pow(a, 1 << i);
+           int m = 1;
+            for (int j = 0; j < 1 << i; j++) {
+                m = m*a %mod;
+            }
             System.err.println("M = "+m);
             MulModulus mul = new MulModulus(length, 2 * length, m, mod);
             ControlledBlockGate cbg = new ControlledBlockGate(mul, length, i);
