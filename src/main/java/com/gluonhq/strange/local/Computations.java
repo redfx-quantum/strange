@@ -290,6 +290,37 @@ public class Computations {
         return x;
     }
     
+    public static int fraction (double d, int max) {
+        double EPS = 1e-15;
+        int answer = -1;
+        int h = 0; int k = -1;
+        int a = (int)d;
+        double r = d - a;
+        int h_2 = 0;
+        int h_1 = 1;
+        int k_2 = 1;
+        int k_1 = 0;
+        System.err.println("ready to start, a = "+a+" and r = "+r);
+        while ((k < max) && (r > EPS )){
+            h = a*h_1+h_2;
+            k = a*k_1+k_2;
+            h_2 = h_1; h_1 = h;
+            k_2 = k_1; k_1 = k;
+            double rec = 1/r;
+            a = (int)rec;
+            r = rec - a;
+            System.err.println("r = "+r+" and a = "+a+" and rec = "+rec);
+//            if (r < EPS) {
+//                System.err.println("SMALL R!");
+//                k_2 = a*k_1+k_2;
+//            }
+            System.err.println("after this step, h = "+h+" and k = "+k+" and a = "+a+" and r = "+r);
+            System.err.println("k2 = "+k_2+" and h2 = "+h_2);
+        }
+        System.err.println("RETURN "+k_2);
+        return k_2;
+    }
+    
     
     public static Complex[][] createIdentity(int dim) {
         Complex[][] matrix = new Complex[dim][dim];

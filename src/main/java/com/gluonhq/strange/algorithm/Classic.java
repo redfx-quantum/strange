@@ -185,6 +185,46 @@ public class Classic {
      * @return period r
      */
     public static int findPeriod(int a, int mod) {
+        int p = 0;
+        int length = (int) Math.ceil(Math.log(mod) / Math.log(2));
+        int offset = length;
+        while (p == 0) {
+            p = measurePeriod(a, mod);
+        }
+        System.err.println("p");
+        int dim = 1 <<offset;
+        double r = (double)p/dim+.000001;
+        int period = Computations.fraction(r, mod);
+        System.err.println("got period: "+period);
+        return period;
+    }
+    
+    public static int qfactor (int N) {
+        System.out.println("We need to factor "+N);
+        int a = 1+ (int)((N-1) * Math.random());
+        System.out.println("Pick a random number a, a < N: "+a);
+        int gcdan = Computations.gcd(N,a);
+        System.out.println("calculate gcd(a, N):"+ gcdan); 
+        if (gcdan != 1) return gcdan;
+        int p = findPeriod (a, N); 
+        System.out.println("period of f = "+p);
+        if (p%2 == 1) { 
+            System.out.println("bummer, odd period, restart.");
+            return qfactor(N);
+        }
+        int md = (int)(Math.pow(a, p/2) +1);
+        int m2 = md%N; 
+        if (m2 == 0) { 
+            System.out.println("bummer, m^p/2 + 1 = 0 mod N, restart");
+            return qfactor(N);
+        }
+        int f2 = (int)Math.pow(a, p/2) -1;
+        int factor = Computations.gcd(N, f2);
+        return factor;
+    }
+    
+    private static int measurePeriod(int a, int mod) {
+            
         int length = (int) Math.ceil(Math.log(mod) / Math.log(2));
         int offset = length;
         Program p = new Program(2 * length + 3 + offset);
@@ -212,12 +252,9 @@ public class Classic {
         for (int i = 0; i < offset; i++) {
             answer = answer + q[i].measure()*(1<< i);
         }
-        int dim = 1 <<offset;
-        int gcd = Computations.gcd(answer, dim);
-        double cnum = answer/gcd;
-        double cden = dim/gcd;
-        
+        System.err.println("got answer: "+answer);
         return answer;
+
     }
           
     private static<T> Oracle createGroverOracle(int n, List<T> list, Function<T, Integer> function) {
