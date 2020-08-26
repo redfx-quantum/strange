@@ -60,6 +60,15 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class SingleTest extends BaseGateTests {
   
+    @Test
+    public void cf () {
+        double d = 340./1024;
+        System.err.println("Start with d = "+d);
+        int r = Computations.fraction(d, 5);
+        assertEquals(3, r);
+        r = Computations.fraction(.75000001, 15);
+        assertEquals(4, r);
+    }
       
    // @Test
     public void multiplyModGate5x3mod6p() { // 5 x 3 mod 6 = 3
@@ -90,7 +99,7 @@ public class SingleTest extends BaseGateTests {
         assertEquals(0, q[9].measure());  
     }
     
-    @Test // 
+  //  @Test // 
     public void expmul3p4mod7() { // 3^4 = 81 -> mod 7 = 4
         int length = 3; 
         // q0 -> q2: 4
@@ -137,80 +146,6 @@ public class SingleTest extends BaseGateTests {
         assertEquals(0, q[11].measure());
     }
     
-  //  @Test
-    public void addmod2() {
-        int n = 2;
-        int N = 3;
-        int dim = 2 * (n+1)+1;
-        Program p = new Program(dim);
-        Step prep = new Step();
-        prep.addGates(new X(0));
-        p.addStep(prep);
-        Add add = new Add(0,2,3,5);
-        p.addStep(new Step(add));
-        
-        AddInteger min = new AddInteger(0,2,N).inverse();
-        p.addStep(new Step(min));
-//        p.addStep(new Step(new Cnot(2,dim-1)));
-//        AddInteger addN = new AddInteger(0,2,N);
-//        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
-//        p.addStep(new Step(cbg));
-
-        Result result = runProgram(p);
-        System.err.println("RESULTPROB:");
-        Complex.printArray(result.getProbability());
-        result.getProbability();
-        Qubit[] q = result.getQubits();
-        for (int i = 0; i < 7; i++) {
-            System.err.println("q["+i+"]: "+q[i].measure());
-        }
-        assertEquals(7, q.length);
-        assertEquals(0, q[0].measure());
-        assertEquals(1, q[1].measure());
-        assertEquals(1, q[2].measure());
-        assertEquals(0, q[3].measure());
-        assertEquals(0, q[4].measure());
-        assertEquals(0, q[5].measure());
-        assertEquals(0, q[6].measure());
-    }
-    
-  //  @Test
-    public void addmod2p1() {
-        int n = 2;
-        int N = 3;
-        int dim = 2 * (n+1)+1;
-        Program p = new Program(dim+1);
-        Step prep = new Step();
-        prep.addGates(new X(1));
-        p.addStep(prep);
-        Add add = new Add(1,3,4,6);
-        p.addStep(new Step(add));
-//        
-        AddInteger min = new AddInteger(1,3,N).inverse();
-        p.addStep(new Step(min));
-//        p.addStep(new Step(new Cnot(3,dim)));
-//        AddInteger addN = new AddInteger(1,3,N);
-//        ControlledBlockGate cbg = new ControlledBlockGate(addN, 1,dim);
-//        p.addStep(new Step(cbg));
-
-        Result result = runProgram(p);
-        System.err.println("RESULTPROB:");
-        Complex.printArray(result.getProbability());
-        result.getProbability();
-        Qubit[] q = result.getQubits();
-                for (int i = 0; i < 8; i++) {
-            System.err.println("q["+i+"]: "+q[i].measure());
-        }
-        assertEquals(8, q.length);
-        assertEquals(0, q[0].measure());
-        assertEquals(0, q[1].measure());
-        assertEquals(1, q[2].measure());
-        assertEquals(1, q[3].measure());
-        assertEquals(0, q[4].measure());
-        assertEquals(0, q[5].measure());
-        assertEquals(0, q[6].measure());
-        assertEquals(0, q[7].measure());
-    }
     
 //    @Test // 
     public void expmul() {
