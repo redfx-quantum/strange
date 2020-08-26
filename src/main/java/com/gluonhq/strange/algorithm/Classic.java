@@ -47,6 +47,7 @@ import com.gluonhq.strange.gate.MulModulus;
 import com.gluonhq.strange.gate.Oracle;
 import com.gluonhq.strange.gate.ProbabilitiesGate;
 import com.gluonhq.strange.gate.X;
+import com.gluonhq.strange.local.Computations;
 import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
 import java.util.List;
 import java.util.function.Function;
@@ -211,6 +212,11 @@ public class Classic {
         for (int i = 0; i < offset; i++) {
             answer = answer + q[i].measure()*(1<< i);
         }
+        int dim = 1 <<offset;
+        int gcd = Computations.gcd(answer, dim);
+        double cnum = answer/gcd;
+        double cden = dim/gcd;
+        
         return answer;
     }
           
