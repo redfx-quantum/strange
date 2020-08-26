@@ -290,6 +290,17 @@ public class Computations {
         return x;
     }
     
+    public static int fraction (int p, int max) {
+        int length = (int) Math.ceil(Math.log(max) / Math.log(2));
+        int offset = length;
+        System.err.println("p");
+        int dim = 1 <<offset;
+        double r = (double)p/dim+.000001;
+        int period = Computations.fraction(r, max);
+        return period;
+    }
+        
+        
     public static int fraction (double d, int max) {
         double EPS = 1e-15;
         int answer = -1;

@@ -186,16 +186,10 @@ public class Classic {
      */
     public static int findPeriod(int a, int mod) {
         int p = 0;
-        int length = (int) Math.ceil(Math.log(mod) / Math.log(2));
-        int offset = length;
         while (p == 0) {
             p = measurePeriod(a, mod);
         }
-        System.err.println("p");
-        int dim = 1 <<offset;
-        double r = (double)p/dim+.000001;
-        int period = Computations.fraction(r, mod);
-        System.err.println("got period: "+period);
+        int period = Computations.fraction(p, mod);
         return period;
     }
     
