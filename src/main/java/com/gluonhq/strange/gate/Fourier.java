@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2018, Gluon Software
+ * Copyright (c) 2018, 2019, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,70 +31,57 @@
  */
 package com.gluonhq.strange.gate;
 
+import com.gluonhq.strange.Block;
+import com.gluonhq.strange.BlockGate;
 import com.gluonhq.strange.Complex;
-import com.gluonhq.strange.Gate;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-/**
- *
- * This class describe a Gate that operates on a single qubit only.
- * @author johan
- */
-public abstract class SingleQubitGate implements Gate {
-    
-    private int idx;
-    
-    public SingleQubitGate() {}
-    
-    public SingleQubitGate (int idx) {
-        this.idx = idx;
-    }
+public class Fourier extends BlockGate {
 
-    @Override
-    public int getMainQubitIndex() {
-        return this.idx;
+    protected Complex[][] matrix = null;
+    protected int dim;
+    protected int size;
+    
+    /**
+     * Create a Fourier gate with the given size (dimensions), starting at idx
+     * @param dim number of qubits affected by this gate
+     * @param idx the index of the first qubit in the circuit affected by this gate
+     */
+    public Fourier(int dim, int idx) {
+        super(new Block("Fourier", dim), idx);
+        this.dim = dim;
+        this.size = 1 <<dim;
     }
     
-    @Override
-    public void setMainQubitIndex(int idx) {
-        this.idx = idx;
-    }
     
     @Override
-    public void setAdditionalQubit(int idx, int cnt) {
-        throw new RuntimeException("A SingleQubitGate can not have additional qubits");
+    public Complex[][] getMatrix() {
+        if (matrix == null) {
+            double omega = Math.PI*2/size;
+            double den = Math.sqrt(size);
+            matrix = new Complex[size][size];
+            for (int i = 0; i < size; i++) {
+                for (int j = i; j < size; j++) {
+                    double alpha = omega *i *j;
+                    matrix[i][j] = new Complex(Math.cos(alpha)/den, Math.sin(alpha)/den);
+                }
+                for (int k = 0; k < i; k++) {
+                    matrix[i][k] = matrix[k][i];
+                }
+            }
+        }
+        return matrix;
     }
 
     @Override
     public List<Integer> getAffectedQubitIndexes() {
-        return Collections.singletonList(idx);
+        return IntStream.range(idx, idx+dim).boxed().collect(Collectors.toList());
     }
 
     @Override
     public int getHighestAffectedQubitIndex() {
-        return idx;
+        return dim+idx-1;
     }
-    
-    @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-    
-    @Override
-    public String getCaption() {
-        return getName();    
-    }
-    
-    @Override
-    public String getGroup() {
-        return "SingleQubit";
-    }
-    
-    public abstract Complex[][] getMatrix();
-    
-    @Override public String toString() {
-        return "Gate with index "+idx+" and caption "+getCaption();
-    }
-    
 }

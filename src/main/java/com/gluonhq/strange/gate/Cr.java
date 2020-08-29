@@ -29,78 +29,47 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange;
+package com.gluonhq.strange.gate;
+
+import com.gluonhq.strange.Complex;
 
 /**
  *
  * @author johan
  */
-public class Qubit {
-
-    private Complex alpha;
-    private Complex beta;
-
-    private double theta = 0;
-    private double phi = 0;
+public class Cr extends TwoQubitGate {
     
-    private boolean measured = false;
-    private boolean measuredValue;
+    private Complex[][] matrix =  new Complex[][]{
+        {Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO},
+        {Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
+        {Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO},
+        {Complex.ZERO,Complex.ZERO,Complex.ZERO,Complex.ONE.mul(-1)}
+    };
+    private int pow = -1;
     
-    private double prob;
-
-    /**
-     * Creates a qubit. The qubit will be in the |0&gt; state
-     */
-    public Qubit() {
-        this.alpha = Complex.ONE;
-        this.beta = Complex.ZERO;
+    public Cr() {    
+    }
+    
+    public Cr (int a, int b, double exp) {
+        super(a,b);
+        matrix =  new Complex[][]{
+                {Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO},
+        {Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
+        {Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO},
+        {Complex.ZERO,Complex.ZERO,Complex.ZERO,new Complex(Math.cos(exp), Math.sin(exp))}        
+        };
+    }
+    public Cr(int a, int b, int base, int pow) {
+        this(a,b, Math.PI*2/Math.pow(base, pow));
+        this.pow = pow;
+    }
+    
+    @Override
+    public Complex[][] getMatrix() {
+        return matrix;
     }
 
-    /**
-     * Creates a qubit with an initial value for alpha.
-     * The initial state of the qubit is ralpha |0&gt; + (1-ralpha^2)^(1/2) |1&gt;
-     * @param ralpha the real part of the alpha coefficient in alfa |0&gt; + beta |1&gt;
-     */
-    public Qubit (double ralpha) {
-        this.alpha = new Complex(ralpha,0);
-        this.beta = new Complex(Math.sqrt(1 - ralpha*ralpha), 0);
+    @Override public String getCaption() {
+        return "Cr" + ((pow> -1)? Integer.toString(pow): "th");
     }
-
-    private double calculate0() {
-        return Math.cos(theta/2);
-    }
-    
-    private Complex calculate1() {
-        double s = Math.sin(theta/2);
-        return new Complex(Math.cos(phi)*s, Math.sin(phi)*s);
-    }
-    
-    public void setProbability(double p) {
-        this.prob = p;
-    }
-    
-    /**
-     * Performs a measurement on this qubit.
-     * @return <code>0</code> or <code>1</code>
-     */
-    public int measure() {
-//        if (measured) {
-//            throw new IllegalStateException("Can't measure an already-measured qubit");
-//        }
-//        measured = true;
-//        measuredValue = Math.random()< prob;
-        return measuredValue ? 1 : 0;
-    }
-    
-    public void setMeasuredValue (boolean v) {
-        this.measuredValue = v;
-    }
-    
-    public double getProbability() {
-        return this.prob;
-    }
-    
-    
-    
-    
 }

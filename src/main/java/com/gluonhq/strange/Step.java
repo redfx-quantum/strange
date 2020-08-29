@@ -32,7 +32,9 @@
 package com.gluonhq.strange;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -46,7 +48,7 @@ public class Step {
     
     private final ArrayList<Gate> gates = new ArrayList<>();
     private int index;
-    private String name = "unknown";
+    private final String name;
 
     private Program program;
     
@@ -55,10 +57,13 @@ public class Step {
 
     private boolean informal = false;
 
-    public Step() {}
+    public Step(Gate... moreGates ) {
+        this("unknown", moreGates);
+    }
 
-    public Step(String name) {
+    public Step(String name, Gate... moreGates ) {
         this.name = name;
+        addGates(moreGates);
     }
 
     /**
@@ -71,23 +76,33 @@ public class Step {
     }
 
     /**
-     * Adds the supplied Gate to the list of gates for this step
-     * @param gate the Gate to be added
+     * Add gate to the list of gates for this step
+     * @param gate gate to add
      * @throws IllegalArgumentException in case the supplied Gate operates on a qubit that is already
      * been operated on in this step
      */
-
     public void addGate(Gate gate) throws IllegalArgumentException {
-        verifyUnique(gate);
+        verifyUnique(Objects.requireNonNull(gate));
         gates.add(gate);
     }
-    
+
+    /**
+     * Adds the multiple Gates to the list of gates for this step
+     * @param moreGates more gates
+     * @throws IllegalArgumentException in case the supplied Gate operates on a qubit that is already
+     * been operated on in this step
+     */
+    public void addGates(Gate... moreGates) throws IllegalArgumentException {
+        for( Gate g: moreGates ){
+            addGate(g);
+        }
+    }
+
     public List<Gate> getGates() {
-        return gates;
+        return Collections.unmodifiableList(gates);
     }
     
     public void setComplexStep(int idx) {
-        System.err.println("Set complex step to "+idx+" for "+this);
         this.complexStep = idx;
     }
     
@@ -122,9 +137,13 @@ public class Step {
 
     private void verifyUnique (Gate gate) {
         for (Gate g: gates) {
-            long overlap = g.getAffectedQubitIndex().stream().filter(gate.getAffectedQubitIndex()::contains).count();
+            long overlap = g.getAffectedQubitIndexes().stream().filter(gate.getAffectedQubitIndexes()::contains).count();
             if (overlap > 0) throw new IllegalArgumentException("Adding gate that affects a qubit already involved in this step");
         }
+    }
+
+    @Override public String toString() {
+        return "Step with gates "+this.gates;
     }
 
 }

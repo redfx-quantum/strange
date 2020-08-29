@@ -86,7 +86,7 @@ public class PermutationGate implements Gate {
     }
     
     @Override
-    public void setMainQubit(int idx) {
+    public void setMainQubitIndex(int idx) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -96,12 +96,12 @@ public class PermutationGate implements Gate {
     }
 
     @Override
-    public List<Integer> getAffectedQubitIndex() {
+    public List<Integer> getAffectedQubitIndexes() {
         return affected;
     }
 
     @Override
-    public int getHighestAffectedQubit() {
+    public int getHighestAffectedQubitIndex() {
         return Collections.max(affected);
     }
 

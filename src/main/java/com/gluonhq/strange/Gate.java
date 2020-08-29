@@ -31,6 +31,21 @@
  */
 package com.gluonhq.strange;
 
+import com.gluonhq.strange.gate.Cnot;
+import com.gluonhq.strange.gate.Cz;
+import com.gluonhq.strange.gate.Hadamard;
+import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.gate.InformalGate;
+import com.gluonhq.strange.gate.Measurement;
+import com.gluonhq.strange.gate.Oracle;
+import com.gluonhq.strange.gate.PermutationGate;
+import com.gluonhq.strange.gate.ProbabilitiesGate;
+import com.gluonhq.strange.gate.Swap;
+import com.gluonhq.strange.gate.Toffoli;
+import com.gluonhq.strange.gate.X;
+import com.gluonhq.strange.gate.Y;
+import com.gluonhq.strange.gate.Z;
+
 import java.util.List;
 
 /**
@@ -39,12 +54,27 @@ import java.util.List;
  * @author johan
  */
 public interface Gate {
-    
+
+    static Gate cnot(int a, int b) { return new Cnot(a, b); }
+    static Gate cz(int a, int b)   { return new Cz(a, b); }
+    static Gate hadamard(int idx)  { return new Hadamard(idx); }
+    static Gate identity(int idx) { return new Identity(idx); }
+    static Gate measurement(int idx) { return new Measurement(idx); }
+    static Gate oracle(int idx) { return new Oracle(idx); }
+    static Gate oracle(Complex[][] matrix) { return new Oracle(matrix); }
+    static Gate permutation(int a, int b, int n) { return new PermutationGate(a, b, n); }
+    static Gate probability(int idx) { return new ProbabilitiesGate(idx); }
+    static Gate swap(int a, int b) { return new Swap(a, b); }
+    static Gate toffoli(int a, int b, int c) { return new Toffoli(a, b, c); }
+    static Gate x(int idx)  { return new X(idx); }
+    static Gate y(int idx)  { return new Y(idx); }
+    static Gate z(int idx)  { return new Z(idx); }
+
     /**
      * Set the main qubit where this gate operates on.
      * @param idx the index of the main qubit
      */
-    public void setMainQubit(int idx);
+    public void setMainQubitIndex(int idx);
     
     /**
      * Return the index of the main qubit this gate acts upon
@@ -54,13 +84,13 @@ public interface Gate {
     
     public void setAdditionalQubit(int idx, int cnt);
     
-    public List<Integer> getAffectedQubitIndex();
+    public List<Integer> getAffectedQubitIndexes();
 
     /**
      * Get the highest index of the qubit that is affected by this gate
      * @return the index of the highest affected qubit
      */
-    public int getHighestAffectedQubit();
+    public int getHighestAffectedQubitIndex();
 
     public String getCaption();
     

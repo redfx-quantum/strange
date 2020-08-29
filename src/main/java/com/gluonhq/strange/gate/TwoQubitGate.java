@@ -56,7 +56,7 @@ public abstract class TwoQubitGate implements Gate {
     }
 
     @Override
-    public void setMainQubit(int idx) {
+    public void setMainQubitIndex(int idx) {
         this.first = idx;
     }
     
@@ -70,11 +70,8 @@ public abstract class TwoQubitGate implements Gate {
         this.second = idx;
     }
 
-    public int getMainQubit() {
-        return this.first;
-    }
-    
-    public int getSecondQubit() {
+
+    public int getSecondQubitIndex() {
         return this.second;
     }
 
@@ -83,12 +80,12 @@ public abstract class TwoQubitGate implements Gate {
     }
         
     @Override
-    public List<Integer> getAffectedQubitIndex() {
+    public List<Integer> getAffectedQubitIndexes() {
         return Arrays.asList(first, second);
     }
 
     @Override
-    public int getHighestAffectedQubit() {
+    public int getHighestAffectedQubitIndex() {
         return highest;
     }
 

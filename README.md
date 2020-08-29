@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.gluonhq:strange:0.0.10'
+    implementation 'com.gluonhq:strange:0.0.12'
 }
 
 mainClassName = 'SimpleStrangeDemo'
@@ -43,13 +43,15 @@ public class SimpleStrangeDemo {
 
     public static void main(String[] args) {
         Program p = new Program(2);
-        Step s = new Step();
-        s.addGate(new X(0));
-        p.addStep(s);
-        Step t = new Step();
-        t.addGate(new Hadamard(0));
-        t.addGate(new X(1));
-        p.addStep(t);
+        Gate xGate1 = new X(0); 
+        Step step1 = new Step();
+        step1.addGate(xGate1);
+        p.addStep(step1);
+        Gate hGate2 = new Hadamard(0);
+        Gate xGate2 = new X(1);
+        Step step2 = new Step();
+        step2.addGates(hGate2, xGate2);
+        p.addStep(step2);
         SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
         Result res = sqee.runProgram(p);
         Qubit[] qubits = res.getQubits();

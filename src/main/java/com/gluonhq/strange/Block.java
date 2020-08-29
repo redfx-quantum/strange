@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2018, Gluon Software
+ * Copyright (c) 2020, Gluon Software
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,72 +29,72 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.gluonhq.strange.gate;
+package com.gluonhq.strange;
 
-import com.gluonhq.strange.Complex;
-import com.gluonhq.strange.Gate;
+import com.gluonhq.strange.local.Computations;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
  *
- * This class describe a Gate that operates on a single qubit only.
  * @author johan
  */
-public abstract class SingleQubitGate implements Gate {
+public class Block {
+
+    List<Step> steps = new ArrayList<>();
+    private final int nqubits;
+    private Complex[][] matrix = null;
+    private final String name;
+
+    public Block(int size) {
+        this ("anonymous", size);
+    }
+    public Block(String name, int size) {
+        this.nqubits = size;
+        this.name = name;
+    }
     
-    private int idx;
+    public void addStep(Step step) {
+        this.steps.add(step);
+        matrix = null;
+    }
     
-    public SingleQubitGate() {}
+    public List<Step> getSteps() {
+        return this.steps;
+    }
     
-    public SingleQubitGate (int idx) {
-        this.idx = idx;
+    public int getNQubits() {
+        return this.nqubits;
+    }
+    
+    private void validateGate(Gate gate) {
+        gate.getAffectedQubitIndexes().stream().filter((idx) -> (idx > nqubits -1)).
+                forEachOrdered(item -> {
+            throw new IllegalArgumentException("Can't add a gate with qubit index larger than block size");
+        });
     }
 
-    @Override
-    public int getMainQubitIndex() {
-        return this.idx;
+    Complex[][] getMatrix() {
+        if (matrix == null) {
+            List<Step> simpleSteps = new ArrayList<>();
+            for (Step step : steps) {
+                simpleSteps.addAll(Computations.decomposeStep(step, nqubits));
+            }
+            Collections.reverse(simpleSteps);
+            for (Step step: simpleSteps) {
+                Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits);
+                if (matrix == null) {
+                    matrix = m;
+                } else {
+                    matrix = Complex.mmul(matrix, m);
+                }
+            }
+        }
+        return matrix;
     }
-    
-    @Override
-    public void setMainQubitIndex(int idx) {
-        this.idx = idx;
-    }
-    
-    @Override
-    public void setAdditionalQubit(int idx, int cnt) {
-        throw new RuntimeException("A SingleQubitGate can not have additional qubits");
-    }
-
-    @Override
-    public List<Integer> getAffectedQubitIndexes() {
-        return Collections.singletonList(idx);
-    }
-
-    @Override
-    public int getHighestAffectedQubitIndex() {
-        return idx;
-    }
-    
-    @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-    
-    @Override
-    public String getCaption() {
-        return getName();    
-    }
-    
-    @Override
-    public String getGroup() {
-        return "SingleQubit";
-    }
-    
-    public abstract Complex[][] getMatrix();
     
     @Override public String toString() {
-        return "Gate with index "+idx+" and caption "+getCaption();
+        return "Block named "+name+" at "+super.toString();
     }
-    
 }
