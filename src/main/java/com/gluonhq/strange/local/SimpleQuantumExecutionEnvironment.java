@@ -118,7 +118,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 }
             }
         }
-        dbg("DONE RUN, probs = " + probs);
+        dbg("DONE RUN, probability vector = " + probs);
         printProbs(probs);
         double[] qp = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < nQubits; i++) {

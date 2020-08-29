@@ -350,6 +350,7 @@ public class Computations {
         long tm = rt.totalMemory()/1024;
         long um = tm - fm;
         System.err.println("free = "+fm+", mm = "+mm+", tm = "+tm+", used = "+um);
+/*
         System.err.println("now gc...");
         System.gc();
         fm = rt.freeMemory()/1024;
@@ -357,6 +358,7 @@ public class Computations {
         tm = rt.totalMemory()/1024;
         um = tm - fm;
         System.err.println("free = "+fm+", mm = "+mm+", tm = "+tm+", used = "+um);
+*/
     }
 
     

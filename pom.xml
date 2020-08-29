@@ -4,7 +4,7 @@
   <groupId>com.gluonhq</groupId>
   <artifactId>strange</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.11-SNAPSHOT</version>
+  <version>0.0.13-SNAPSHOT</version>
   <name>Strange</name>
   <url>http://maven.apache.org</url>
   <parent>
