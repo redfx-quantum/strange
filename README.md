@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.gluonhq:strange:0.0.5'
+    compile 'com.gluonhq:strange:0.0.12'
 }
 
 mainClassName = 'SimpleStrangeDemo'
@@ -43,7 +43,7 @@ public class SimpleStrangeDemo {
 
     public static void main(String[] args) {
         Program p = new Program(2);
-        Gate xGate1 = new Gate(new X(0)); 
+        Gate xGate1 = new X(0); 
         Step step1 = new Step();
         step1.addGate(xGate1);
         p.addStep(step1);
