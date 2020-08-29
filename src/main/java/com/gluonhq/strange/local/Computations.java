@@ -384,6 +384,7 @@ public class Computations {
         }
         return answer;
     }
+<<<<<<< HEAD
 
     static Complex[] calculateNewState(List<Gate> gates, Complex[] vector, int length) {
         return getNextProbability(getAllGates(gates, length), vector);
@@ -514,6 +515,138 @@ public class Computations {
         System.err.println("ctr = " + control + ", idx = " + idx + ", gap = " + gap + " and bs = " + bs+", low = "+low);
       //      gate.correctHigh(low+bs);
 
+=======
+
+    static Complex[] calculateNewState(List<Gate> gates, Complex[] vector, int length) {
+        return getNextProbability(getAllGates(gates, length), vector);
+//        int dim = 1 << length;
+//        if (dim != vector.length) {
+//            throw new IllegalArgumentException ("probability vector has size "+
+//                    vector.length+" but we have only "+ length+" qubits.");
+//        }
+//        Complex[] result = new Complex[dim];
+//
+//        Complex[][] c = calculateStepMatrix(gates, length);
+//        for (int i = 0; i < vector.length; i++) {
+//            result[i] = Complex.ZERO;
+//            for (int j = 0; j < vector.length; j++) {
+//                result[i] = result[i].add(c[i][j].mul(vector[j]));
+//            }
+//        }
+//        return result;
+
+    }
+    
+    private static Complex[] getNextProbability(List<Gate> gates, Complex[] v) {
+         Gate gate = gates.get(0);
+      //  System.err.println("GNP, gate = "+gate);
+      //  System.err.println("v = ");
+   //     Complex.printArray(v);
+        Complex[][] matrix = gate.getMatrix();
+        int size = v.length;
+
+        if (gates.size() > 1) {
+            List<Gate> nextGates = gates.subList(1, gates.size());
+           // List<Gate> nextGates = gates.subList(0, gates.size()-1);
+            int gatedim = matrix.length;
+            int partdim = size/gatedim;
+            Complex[] answer = new Complex[size];
+            Complex[][] vsub = new Complex[gatedim][partdim];
+            for (int i = 0; i < gatedim; i++) {
+                Complex[] vorig = new Complex[partdim];
+                for (int j = 0; j < partdim; j++) {
+                    vorig[j] = v[j + i *partdim];
+                }
+                vsub[i] = getNextProbability(nextGates, vorig);
+            }
+//            System.err.println("Ok, we got the subv's: ");
+//                        for (int i = 0; i < gatedim; i++) {
+//                            Complex.printArray(vsub[i]);
+//                        }
+            for (int i = 0; i < gatedim; i++) {
+                for (int j = 0; j < partdim; j++) {
+                    answer[j + i * partdim] = Complex.ZERO;
+                    for (int k = 0; k < gatedim;k++) {
+                     //   System.err.println("i = "+i+", j = "+j+", k = "+k+" pd = "+partdim);
+                     //   System.err.println("mik = "+matrix[i][k]+", vsb = "+vsub[k][j]);
+                        answer[j + i * partdim] = answer[j + i * partdim].add(matrix[i][k].mul(vsub[k][j]));
+                    }
+                }
+            }
+         //   System.err.println("Will return prob");
+        //    Complex.printArray(answer);
+            return answer;
+        } else {
+            if (matrix.length != size) {
+                System.err.println("problem with matrix for gate "+gate);
+                throw new IllegalArgumentException ("wrong matrix size "+matrix.length+" vs vector size "+v.length);
+            }
+            Complex[] answer = new Complex[size];
+            for (int i = 0; i < size; i++) {
+                answer[i] = Complex.ZERO;
+                for (int j = 0; j < size; j++) {
+                    answer[i] = answer[i].add(matrix[i][j].mul(v[j]));
+                }
+            }
+       //     System.err.println("REturn v: ");
+       //     Complex.printArray(answer);
+            return answer;
+        }
+    }
+            
+    private static List<Gate> getAllGates(List<Gate> gates, int nQubits) {
+        dbg("getAllGates, orig = "+gates);
+        List<Gate> answer = new ArrayList<>();
+        int idx = nQubits -1;
+          while (idx >= 0) {
+            final int cnt = idx;
+            Gate myGate = gates.stream()
+                    .filter(
+                        gate -> gate.getHighestAffectedQubitIndex() == cnt )
+                    .findFirst()
+                    .orElse(new Identity(idx));
+            dbg("stepmatrix, cnt = "+cnt+", idx = "+idx+", myGate = "+myGate);
+                           answer.add(myGate);    
+           if (myGate instanceof BlockGate) {
+                BlockGate sqg = (BlockGate)myGate;
+                idx = idx - sqg.getSize()+1;
+                System.err.println("processed blockgate, size = "+sqg.getSize()+", idx = "+idx);
+            }           
+            if (myGate instanceof TwoQubitGate) {
+                idx--;
+            }
+            if (myGate instanceof ThreeQubitGate) {
+                idx = idx-2;
+            }
+            if (myGate instanceof PermutationGate) {
+                throw new RuntimeException("No perm allowed ");
+            }
+            if (myGate instanceof Oracle) {
+                idx = 0;
+            }
+            idx--;
+        }
+          System.err.println("AllGates will return "+answer);
+        return answer;
+    }
+
+    private static void processBlockGate(ControlledBlockGate gate, ArrayList<Step> answer) {
+        gate.calculateHighLow();
+        System.err.println("PROCESS BG: "+gate);
+        System.err.println("ANSWER = "+answer);
+        int low = gate.getLow();
+        int control = gate.getControlQubit();
+        int idx = gate.getMainQubitIndex();
+        int high = control;
+        int size = gate.getSize();
+        int gap = control - idx;
+        List<PermutationGate> perm = new LinkedList<>();
+        Block block = gate.getBlock();
+        int bs = block.getNQubits();
+        System.err.println("ctr = " + control + ", idx = " + idx + ", gap = " + gap + " and bs = " + bs+", low = "+low);
+      //      gate.correctHigh(low+bs);
+
+>>>>>>> c521e9a40e71e35b5bd5836d2ae524f5d0865bd3
         if (control > idx) {
             if (gap < bs) {
                 throw new IllegalArgumentException("Can't have control at " + control + " for gate with size " + bs + " starting at " + idx);
