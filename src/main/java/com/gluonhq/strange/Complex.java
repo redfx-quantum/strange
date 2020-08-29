@@ -218,7 +218,6 @@ Computations.printMemory();
                         br[k][j] = b[k][j].r;
                         bi[k][j] = b[k][j].i;
                     }
-<<<<<<< HEAD
                 }
                 if (zero) {
                     answer[i][j] = Complex.ZERO;
@@ -227,16 +226,7 @@ Computations.printMemory();
                     answer[i][j] = Complex.ZERO;
                     nzCount++;
                 }
-=======
-                }
-                if (zero) {
-                    answer[i][j] = Complex.ZERO;
-                    zCount++;
-                } else {
-                    answer[i][j] = Complex.ZERO;
-                    nzCount++;
-                }
->>>>>>> c521e9a40e71e35b5bd5836d2ae524f5d0865bd3
+
                 //      System.err.println("ANSWER["+i+"]["+j+"] = "+answer[i][j]);
 
             }
@@ -365,7 +355,6 @@ Computations.printMemory();
         ps.println("complex[" + ca.length + "]: ");
         for (Complex c : ca) {
             ps.println("-> " + c);
-<<<<<<< HEAD
         }
     }
 
@@ -396,38 +385,6 @@ Computations.printMemory();
         }
     }
 
-=======
-        }
-    }
-
-    public static void printMatrix(Complex[][] cm) {
-        printMatrix(cm, System.err);
-    }
-    
-    public static void dbg (String s) {
-        System.err.println("[DBG] " + System.currentTimeMillis()%1000000+": "+s);
-    }
-
-    static final boolean debug = false;
-
-    public static void printMatrix(Complex[][] cm, PrintStream ps) {
-        if (!debug) {
-            return;
-        }
-       // Thread.dumpStack();
-        ps.println("complex[" + cm.length + "]: ");
-        for (int idx = 0; idx < cm.length; idx++) {
-            String row = "row " + idx;
-            for (int jdx = 0; jdx < cm.length; jdx++) {
-                Complex c = cm[idx][jdx];
-                row = row + ":" + (c == null ? "NULL!!!!!!" : c.toString());
-            }
-            ps.println("-> " + row);
-            //   idx++;
-        }
-    }
-
->>>>>>> c521e9a40e71e35b5bd5836d2ae524f5d0865bd3
     @Override
     public String toString() {
         return "(" + this.r + ", " + this.i + ")";
