@@ -1,4 +1,4 @@
-# strange [![Build Status](https://travis-ci.org/qcjava/strange.svg?branch=master)](https://travis-ci.org/qcjava/strange)
+# strange [![Build Status](https://travis-ci.org/redfx-quantum/strange.svg?branch=master)](https://travis-ci.org/redfx-quantum/strange)
 Quantum Computing API for Java
 
 This project defines a Java API that can be used to create Quantum Programs.
