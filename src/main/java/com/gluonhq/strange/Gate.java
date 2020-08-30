@@ -99,6 +99,6 @@ public interface Gate {
     public String getGroup();
     
     public  Complex[][] getMatrix();
-    
+
     
 }

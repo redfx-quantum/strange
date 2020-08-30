@@ -72,45 +72,31 @@ public class MulModulus extends BlockGate<MulModulus> {
     
     public Block createBlock(int y0, int y1, int mul, int mod) {
         int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;
-        System.err.println("CreateBlock MulModus hash for "+y0+", " + y1+", mul = "+mul+", mod = "+mod+", hash = "+hash);
         this.block = cache.get(hash);
         if (block != null) {
-            System.err.println("cached, block = "+block);
             return block;
         }
-        System.err.println("not cached, let's create the block");
 
         int x0 = y0;
         int x1 = y1-y0;
         int size = 1 + x1-x0;
-     //   int dim = 1 << size;
         Block answer = new Block("MulModulus", 2 * size+1);
-    //    System.err.println("first blocks, add with "+x0+", "+x1+", size = "+size);
-
         for (int i = 0; i < mul; i++) {
-     //       System.err.println("CREATE ADD with "+x0+", "+x1+", "+(x1+1)+", "+(x1+size));
             AddModulus add = new AddModulus(x0, x1, x1+1, x1 + size, mod);
             answer.addStep(new Step(add));
         }
 
         for (int i = x0; i < x1+1; i++) {
-      //      System.err.println("swap "+i+" with "+(i+size));
             answer.addStep(new Step (new Swap(i, i + size)));
         }
 
         int invsteps = Computations.getInverseModulus(mul,mod);
-    //    System.err.println("invsteps = "+invsteps);
         for (int i = 0; i < invsteps; i++) {
             AddModulus add = new AddModulus(x0, x1, x1+1, x1 + size, mod).inverse();
-      //      System.err.println("CREATE ADDmod with "+x0+", "+x1+", "+(x1+1)+", "+(x1+size));
-
             answer.addStep(new Step(add));
         }
-cache.put(hash, answer);
-        System.err.println("CREATED MulModus hash for "+y0+", " + y1+", mul = "+mul+", mod = "+mod+", block = "+block);
-
+        cache.put(hash, answer);
         return answer;
     }
   
-    
 }

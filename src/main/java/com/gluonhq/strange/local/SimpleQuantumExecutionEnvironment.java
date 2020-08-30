@@ -57,11 +57,10 @@ import java.util.function.Consumer;
  * @author johan
  */
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
-    
     static void dbg (String s) {
         Complex.dbg(s);
     }
-    
+
     @Override
     public Result runProgram(Program p) {
         dbg("runProgram ");

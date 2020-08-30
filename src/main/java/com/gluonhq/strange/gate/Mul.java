@@ -71,8 +71,6 @@ public class Mul extends BlockGate<Mul> {
         int size = 1 + x1-x0;
         int dim = 1 << size;
         Block answer = new Block("Mul", 2 * size);
-        System.err.println("first blocks, add with "+x0+", "+x1+", size = "+size);
-        System.err.println("dim = "+dim+", mul = "+mul);
 
         for (int i = 0; i < mul; i++) {
             Add add = new Add(x0, x1, x1+1, x1 + size);
@@ -85,14 +83,11 @@ public class Mul extends BlockGate<Mul> {
         }
 
         int invsteps = Computations.getInverseModulus(mul,dim);
-        System.err.println("invsteps = "+invsteps);
         for (int i = 0; i < invsteps; i++) {
             Add add = new Add(x0, x1, x1+1, x1 + size).inverse();
             answer.addStep(new Step(add));
         }
-
         return answer;
     }
   
-    
 }

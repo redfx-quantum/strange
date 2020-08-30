@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Gluon Software
+ * Copyright (c) 2020, Johan Vos
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,11 +81,7 @@ public class Block {
         });
     }
 
-    static long totmatrixtime = 0;
-    
     Complex[][] getMatrix() {
-       // System.err.println("Need to get MATRIX for "+this);
-     //   long l0 = System.currentTimeMillis();
         if (matrix == null) {
             matrix = Complex.identityMatrix(1<<nqubits);
             List<Step> simpleSteps = new ArrayList<>();
@@ -94,16 +90,10 @@ public class Block {
             }
             Collections.reverse(simpleSteps);
             for (Step step: simpleSteps) {
-             //   System.err.println(System.currentTimeMillis()%100000+" Matrix for block "+this+" will process step "+step);
                 List<Gate> gates = step.getGates();
-              //  System.err.println("gates = "+gates+", matrix = "+matrix);
                 if ((matrix != null) && (gates.size() == 1) && (gates.get(0) instanceof PermutationGate)) {
-                  //  System.err.println("PERM!");
-                 //   Complex.printMatrix(matrix);
                     matrix = Complex.permutate((PermutationGate)gates.get(0), matrix);
 
-                 //   Complex.printMatrix(matrix);
-                //    System.err.println("PERM done!");
                 } else {
                     Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits);
                     if (matrix == null) {
@@ -112,15 +102,8 @@ public class Block {
                         matrix = Complex.mmul(matrix, m);
                     }
                 }
-             //   System.err.println(System.currentTimeMillis()%100000+" Matrix for block "+this+" DID process step "+step);
             }
-        } else {
-          //  System.err.println("MATRIX CACHED!");
-        }
-      //  long l1 = System.currentTimeMillis();
-        //totmatrixtime = totmatrixtime+ (l1 - l0);
-       // System.err.println("mymatrixtime for "+this+" = "+(l1 -l0));
-      //  System.err.println("totmatrixtime for "+this+" = "+totmatrixtime);
+        } 
         return matrix;
     }
     

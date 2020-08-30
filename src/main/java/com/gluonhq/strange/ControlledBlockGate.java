@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Gluon Software
+ * Copyright (c) 2020, Johan Vos
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,25 +75,16 @@ public class ControlledBlockGate<T> extends BlockGate {
     public ControlledBlockGate (Block block, int idx, int control) {
         super(block, idx);
         this.control = control;
-      //  this.haq = idx + control;
-      if (control > idx) {
-        this.haq = idx + block.getNQubits();
-     //   this.haq = control;
-      } else {
-          this.haq = idx+block.getNQubits() -1;
-      }
+        if (control > idx) {
+            this.haq = idx + block.getNQubits();
+        } else {
+            this.haq = idx+block.getNQubits() -1;
+        }
     }
-//
-//    @Override
-//    public int getMainQubitIndex() {
-//        System.err.println("GET MQI asked, return "+control);
-//        return control;
-//    }
 
     @Override
     public List<Integer> getAffectedQubitIndexes() {
         ArrayList answer = new ArrayList(super.getAffectedQubitIndexes());
-        System.err.println("AQI asked for "+this+" currently "+answer+" add ctrl at "+control);
         answer.add(control);
         return answer;
     }
@@ -101,7 +92,6 @@ public class ControlledBlockGate<T> extends BlockGate {
     @Override
     public int getHighestAffectedQubitIndex() {
         if (high < 0) calculateHighLow();
-        System.err.println("GetHighestAffectedQI asked, return "+this.haq+" and not " +this.high);
         return this.haq;
     }
 
@@ -154,19 +144,13 @@ public class ControlledBlockGate<T> extends BlockGate {
     
     @Override
     public Complex[][] getMatrix() {
-        System.err.println("GetMatrix asked for "+this);
         if (matrix == null) {
-            System.err.println("Matrix is null, calculate now");
             int low = 0;
             this.high = control;
             this.size = super.getSize() + 1;
             int gap = control - idx;
             List<PermutationGate> perm = new LinkedList<>();
-            System.err.println("BLOCK = "+block);
             int bs = block.getNQubits();
-            System.err.println("control = " + control + ", idx = " + idx + ", gap = " + gap + " and bs = " + bs);
-                         printMemory();
-
             if (control > idx) {
                 if (gap < bs) {
                     throw new IllegalArgumentException("Can't have control at " + control + " for gate with size " + bs + " starting at " + idx);
@@ -175,7 +159,6 @@ public class ControlledBlockGate<T> extends BlockGate {
                 if (gap > bs) {
                     high = control;
                     size = high - low + 1;
-                    System.err.println("PG, control = " + control + ", gap = " + gap + ", bs = " + bs);
                     PermutationGate pg = new PermutationGate(control-low, control-low - gap + bs, size);
                     perm.add(pg);
                 }
@@ -188,8 +171,6 @@ public class ControlledBlockGate<T> extends BlockGate {
                     perm.add(0,pg);
                 }
             }
-            System.err.println("GetMatrix called for CBG, perm = "+perm);
-
             Complex[][] part = block.getMatrix();
           
             int dim = part.length;
@@ -199,22 +180,6 @@ public class ControlledBlockGate<T> extends BlockGate {
                     matrix[i + dim][j + dim] = part[i][j];
                 }
             }
-
-        
-            
-//            if (gap > bs) {
-//                matrix = Complex.tensor(Computations.createIdentity(1 << (gap - bs)), matrix);
-//            }
-//            if ((gap < 0) && (-1 * gap > 1)) {
-//                matrix = Complex.tensor(matrix,Computations.createIdentity(1 << (-1 * gap -1 )));
-//            }
-//
-//            for (PermutationGate pg : perm) {
-//                printMemory();
-//                matrix = Complex.permutate(pg, matrix);
-//                matrix = Complex.permutate(matrix, pg);
-//            }
-
         } else {
             System.err.println("Matrix was cached");
         }
@@ -222,8 +187,7 @@ public class ControlledBlockGate<T> extends BlockGate {
     }
 
     public int getSize() {
- return       block.getNQubits()+1;
-       // return size;
+        return block.getNQubits()+1;
     }
     
     @Override public String toString() {

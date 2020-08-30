@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2018, Gluon Software
+ * Copyright (c) 2020, Johan Vos
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,17 +60,12 @@ public class AddInteger extends BlockGate<AddInteger> {
         setIndex(x0);
         x1 = x1 - x0;
         x0 = 0;
-          int hash = 1000000 * x0 + 10000*x1+ num;
-        System.err.println("ADDnumhash for "+x0+", " + x1+", "+num+" = "+hash);
+        int hash = 1000000 * x0 + 10000*x1+ num;
         this.block = cache.get(hash);
         if (this.block == null) {
-            System.err.println("not cached");
             this.block = createBlock(x0, x1, num);
             cache.put(hash, block);
-        } else {
-            System.err.println("ADDnum block cached!");
         }
-        
         setBlock(block);
        
     }
@@ -83,7 +78,6 @@ public class AddInteger extends BlockGate<AddInteger> {
            for (int j = 0; j < m-i ; j++) {
                 int cr0 = m-j-i-1; System.err.println("addnum, createblock num = "+num+", cr = "+cr0);
                 if ((num >> cr0 & 1 ) == 1) {
-                    System.err.println("YES add step");
                     Step s = new Step(new R(2,1+j,i));
                     answer.addStep(s);
                 }
@@ -92,8 +86,5 @@ public class AddInteger extends BlockGate<AddInteger> {
         answer.addStep(new Step(new InvFourier(m, 0)));
         return answer;
     }
-    
-    
 
-    
 }

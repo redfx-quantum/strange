@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2018, Gluon Software
+ * Copyright (c) 2020, Johan Vos
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,14 +75,10 @@ public class AddModulus extends BlockGate<AddModulus> {
         x0 = 0;
         assert(y0 == x1+1);
         int hash = 1000000 * x0 + 10000*x1+ 100*y0 + 10 * y1 + N;
-        System.err.println("AddModulus, hash for "+x0+", " + x1+", "+y0+", "+y1+" = "+hash);
         this.block = cache.get(hash);
         if (this.block == null) {
-            System.err.println("not cached");
             this.block = createBlock(x0, x1, y0, y1, N);
             cache.put(hash, block);
-        } else {
-        //    System.err.println("ADD block cached!");
         }
         setBlock(block);
     }
@@ -116,5 +112,5 @@ public class AddModulus extends BlockGate<AddModulus> {
        
         return answer;
     }
-    
+
 }

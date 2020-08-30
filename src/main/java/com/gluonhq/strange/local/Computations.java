@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Gluon Software
+ * Copyright (c) 2020, Johan Vos
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,8 +67,6 @@ public class Computations {
         Complex[][] a = new Complex[1][1];
         a[0][0] = Complex.ONE;
         int idx = nQubits-1;
-        System.err.println("Calculate stepMatrix for "+nQubits+" qubits, gates = "+gates);
-        printMemory();
         while (idx >= 0) {
             final int cnt = idx;
             Gate myGate = gates.stream()
@@ -85,13 +83,10 @@ public class Computations {
                 dbg("calculateStepMatrix for blockgate calculated "+myGate);
 
                 idx = idx - sqg.getSize()+1;
-                System.err.println("now, idx = "+idx);
             }
             if (myGate instanceof SingleQubitGate) {
-                dbg("sqg");
                 SingleQubitGate sqg = (SingleQubitGate)myGate;
                 a = tensor(a, sqg.getMatrix());
-                dbg("sqgdone");
             }
             if (myGate instanceof TwoQubitGate) {
                 TwoQubitGate tqg = (TwoQubitGate)myGate;
@@ -105,8 +100,6 @@ public class Computations {
             }
             if (myGate instanceof PermutationGate) {
                 throw new RuntimeException("No perm allowed ");
-//                a = tensor(a, myGate.getMatrix());
-  //              idx = 0;
             }
             if (myGate instanceof Oracle) {
                 a = myGate.getMatrix();
@@ -114,9 +107,7 @@ public class Computations {
             }
             idx--;
         }
-      //  printMatrix(a);
         long l1 = System.currentTimeMillis();
-        System.err.println("COMPCOUT calculateStepMatrix for "+gates+" and "+nQubits+" took "+ (l1 -l0) +" ms");
         return a;
     }
     
@@ -126,7 +117,6 @@ public class Computations {
      * @return 
      */
     public static List<Step> decomposeStep(Step s, int nqubit) {
-        dbg("I NEED DO DECOMPOSE STEP "+s);
         ArrayList<Step> answer = new ArrayList<>();
         answer.add(s);
         List<Gate> gates = s.getGates();
@@ -157,7 +147,6 @@ public class Computations {
                 if ((first >= nqubit) || (second >= nqubit)) {
                     throw new IllegalArgumentException ("Step "+s+" uses a gate with invalid index "+first+" or "+second);
                 }
-                System.err.println("TQG: "+tqg+", first = "+first+" and second = "+second+", nq = "+nqubit);
                 if (first == second + 1) {
                     firstGates.add(gate);
                 } else {
@@ -247,11 +236,10 @@ public class Computations {
                 throw new RuntimeException("Gate must be SingleQubit or TwoQubit");
             }
         }
-        dbg("Step "+s+" decomposed into "+answer);
         return answer;
     }
     
-    public static void dontprintMatrix(Complex[][] a) {
+    public static void printMatrix(Complex[][] a) {
         for (int i = 0; i < a.length; i++) {
             StringBuilder sb = new StringBuilder();
             for (int j = 0; j < a[i].length; j++) {
@@ -262,7 +250,6 @@ public class Computations {
     }
     
     public static int getInverseModulus(int a, int b) {
-        System.err.println("invmodus asked for a = "+a+" and b = "+b);
         int r0 = a;
         int r1 = b;
         int r2 = 0;
@@ -296,7 +283,6 @@ public class Computations {
     public static int fraction (int p, int max) {
         int length = (int) Math.ceil(Math.log(max) / Math.log(2));
         int offset = length;
-        System.err.println("p");
         int dim = 1 <<offset;
         double r = (double)p/dim+.000001;
         int period = Computations.fraction(r, max);
@@ -314,7 +300,6 @@ public class Computations {
         int h_1 = 1;
         int k_2 = 1;
         int k_1 = 0;
-        System.err.println("ready to start, a = "+a+" and r = "+r);
         while ((k < max) && (r > EPS )){
             h = a*h_1+h_2;
             k = a*k_1+k_2;
@@ -323,15 +308,7 @@ public class Computations {
             double rec = 1/r;
             a = (int)rec;
             r = rec - a;
-            System.err.println("r = "+r+" and a = "+a+" and rec = "+rec);
-//            if (r < EPS) {
-//                System.err.println("SMALL R!");
-//                k_2 = a*k_1+k_2;
-//            }
-            System.err.println("after this step, h = "+h+" and k = "+k+" and a = "+a+" and r = "+r);
-            System.err.println("k2 = "+k_2+" and h2 = "+h_2);
         }
-        System.err.println("RETURN "+k_2);
         return k_2;
     }
     
@@ -430,8 +407,6 @@ public class Computations {
                     answer[i] = answer[i].add(matrix[i][j].mul(v[j]));
                 }
             }
-       //     System.err.println("REturn v: ");
-       //     Complex.printArray(answer);
             return answer;
         }
     }
@@ -468,7 +443,6 @@ public class Computations {
             }
             idx--;
         }
-   //       System.err.println("AllGates will return "+answer);
         return answer;
     }
 
@@ -514,6 +488,5 @@ public class Computations {
             answer.add(lpg);
             answer.add(0, new Step(pg));
         }
-      //  System.err.println("finally, answer = "+answer);
     }
 }

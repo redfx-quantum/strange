@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Gluon Software
+ * Copyright (c) 2020, Johan Vos
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -114,12 +114,10 @@ public class BlockGate<T> implements Gate {
 
     @Override
     public Complex[][] getMatrix() {
-        long l0 = System.currentTimeMillis();
         Complex[][] answer = block.getMatrix();
         if (inverse) {
             answer = Complex.conjugateTranspose(answer);
         }
-        long l1 = System.currentTimeMillis();
         return answer;
     }
     
