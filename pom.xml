@@ -153,6 +153,17 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>2.0.0</version>
+        <configuration>
+        <organizationName>Johan Vos</organizationName>
+          <inceptionYear>2020</inceptionYear>
+          <licenseName>bsd_3</licenseName>
+          <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>`
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <distributionManagement>
@@ -228,13 +239,12 @@
     </profile>
   </profiles>
 
-
-<scm>
-<connection>scm:git:git://github.com/qcjava/strange.git</connection>
-<developerConnection>scm:git:git@github.com:qcjava/strange.git</developerConnection>
-<url>https://github.com/qcjava/strange</url>
-<tag>HEAD</tag>
-</scm>
+  <scm>
+    <connection>scm:git:git://github.com/qcjava/strange.git</connection>
+    <developerConnection>scm:git:git@github.com:qcjava/strange.git</developerConnection>
+    <url>https://github.com/qcjava/strange</url>
+    <tag>HEAD</tag>
+  </scm>
 
 </project>
 
