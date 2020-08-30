@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Gluon Software
+ * Copyright (c) 2020, Johan Vos
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@
  */
 package com.gluonhq.strange;
 
+import com.gluonhq.strange.gate.PermutationGate;
 import com.gluonhq.strange.local.Computations;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,9 +48,14 @@ public class Block {
     private Complex[][] matrix = null;
     private final String name;
 
+    /**
+     * Create a block spanning size qubits
+     * @param size the number of (adjacent) qubits in this block
+     */
     public Block(int size) {
         this ("anonymous", size);
     }
+    
     public Block(String name, int size) {
         this.nqubits = size;
         this.name = name;
@@ -77,20 +83,27 @@ public class Block {
 
     Complex[][] getMatrix() {
         if (matrix == null) {
+            matrix = Complex.identityMatrix(1<<nqubits);
             List<Step> simpleSteps = new ArrayList<>();
             for (Step step : steps) {
                 simpleSteps.addAll(Computations.decomposeStep(step, nqubits));
             }
             Collections.reverse(simpleSteps);
             for (Step step: simpleSteps) {
-                Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits);
-                if (matrix == null) {
-                    matrix = m;
+                List<Gate> gates = step.getGates();
+                if ((matrix != null) && (gates.size() == 1) && (gates.get(0) instanceof PermutationGate)) {
+                    matrix = Complex.permutate((PermutationGate)gates.get(0), matrix);
+
                 } else {
-                    matrix = Complex.mmul(matrix, m);
+                    Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits);
+                    if (matrix == null) {
+                        matrix = m;
+                    } else {
+                        matrix = Complex.mmul(matrix, m);
+                    }
                 }
             }
-        }
+        } 
         return matrix;
     }
     

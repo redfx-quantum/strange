@@ -57,9 +57,13 @@ import java.util.function.Consumer;
  * @author johan
  */
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
-    
+    static void dbg (String s) {
+        Complex.dbg(s);
+    }
+
     @Override
     public Result runProgram(Program p) {
+        dbg("runProgram ");
         int nQubits = p.getNumberQubits();
         Qubit[] qubit = new Qubit[nQubits];
         for (int i = 0; i < nQubits; i++) {
@@ -96,17 +100,25 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         if (simpleSteps.isEmpty()) {
             result.setIntermediateProbability(0, probs);
         }
-        for (Step step: simpleSteps) {
+        dbg("START RUN, number of steps = " + simpleSteps.size());
+        for (Step step : simpleSteps) {
             if (!step.getGates().isEmpty()) {
+                dbg("RUN STEP " + step + ", cnt = " + cnt);
                 cnt++;
+                dbg("before this step, probs = ");
+          //      printProbs(probs);
                 probs = applyStep(step, probs, qubit);
-                // printProbs(probs);
+                dbg("after this step, probs = "+probs);
+            //    printProbs(probs);
                 int idx = step.getComplexStep();
+         //       System.err.println("complex? "+idx);
                 if (idx > -1) {
                     result.setIntermediateProbability(idx, probs);
                 }
             }
         }
+        dbg("DONE RUN, probability vector = " + probs);
+        printProbs(probs);
         double[] qp = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < nQubits; i++) {
             qubit[i].setProbability(qp[i]);
@@ -123,9 +135,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
 
     private void printProbs(Complex[] p) {
-        for (int i = 0; i < p.length; i++) {
-            System.err.println("Probabiliy["+i+"]: "+p[i]);
-        }
+        Complex.printArray(p);
     }
 
 
@@ -134,21 +144,42 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
     
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
+        dbg("start applystep");
+        long s0 = System.currentTimeMillis();
         List<Gate> gates = step.getGates();
         if (!gates.isEmpty() && gates.get(0) instanceof ProbabilitiesGate ) {
             return vector;
         }
-        Complex[][] a = calculateStepMatrix(gates, qubits.length);
-        Complex[] result = new Complex[vector.length];
-        if (a.length != result.length) {
-            throw new RuntimeException ("Wrong length of matrix or probability vector: expected "+result.length+" but got "+a.length);
+        if (gates.size() == 1 && gates.get(0) instanceof PermutationGate) {
+            PermutationGate pg = (PermutationGate)gates.get(0);
+            return Computations.permutateVector (vector, pg.getIndex1(), pg.getIndex2());
         }
-        for (int i = 0; i < vector.length; i++) {
-            result[i] = Complex.ZERO;
-            for (int j = 0; j < vector.length; j++) {
-                result[i] = result[i].add(a[i][j].mul(vector[j]));
+      
+        Complex[] result = new Complex[vector.length];
+        boolean vdd = true;
+        if (vdd) {
+            result = Computations.calculateNewState(gates, vector, qubits.length);
+        } else {
+            dbg("start calcstepmatrix with gates " + gates);
+            Complex[][] a = calculateStepMatrix(gates, qubits.length);
+            dbg("done calcstepmatrix");
+            dbg("vector");
+            // printProbs(vector);
+            if (a.length != result.length) {
+                System.err.println("fatal issue calculating step for gates " + gates);
+                throw new RuntimeException("Wrong length of matrix or probability vector: expected " + result.length + " but got " + a.length);
+            }
+            dbg("start matrix-vector multiplication for vector size = " + vector.length);
+            for (int i = 0; i < vector.length; i++) {
+                result[i] = Complex.ZERO;
+                for (int j = 0; j < vector.length; j++) {
+                    result[i] = result[i].add(a[i][j].mul(vector[j]));
+                }
             }
         }
+        long s1 = System.currentTimeMillis();
+        dbg("done applystep took "+ (s1-s0));
+
         return result;
     }
     
@@ -213,14 +244,6 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         return answer;
     }
 
-    private void printMatrix(Complex[][] a) {
-        for (int i = 0; i < a.length; i++) {
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < a[i].length; j++) {
-                sb.append(a[i][j]).append("    ");
-            }
-            System.err.println("m["+i+"]: "+sb);
-        }
-    }
+    
     
 }

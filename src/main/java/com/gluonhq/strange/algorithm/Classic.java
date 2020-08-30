@@ -32,6 +32,7 @@
 package com.gluonhq.strange.algorithm;
 
 import com.gluonhq.strange.Complex;
+import com.gluonhq.strange.ControlledBlockGate;
 import com.gluonhq.strange.Gate;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.QuantumExecutionEnvironment;
@@ -42,9 +43,11 @@ import com.gluonhq.strange.gate.Cr;
 import com.gluonhq.strange.gate.Fourier;
 import com.gluonhq.strange.gate.Hadamard;
 import com.gluonhq.strange.gate.InvFourier;
+import com.gluonhq.strange.gate.MulModulus;
 import com.gluonhq.strange.gate.Oracle;
 import com.gluonhq.strange.gate.ProbabilitiesGate;
 import com.gluonhq.strange.gate.X;
+import com.gluonhq.strange.local.Computations;
 import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
 import java.util.List;
 import java.util.function.Function;
@@ -175,6 +178,79 @@ public class Classic {
         return list.get(winner);
     }
 
+    /**
+     * Find the periodicity of a^x mod N
+     * @param a
+     * @param mod N
+     * @return period r
+     */
+    public static int findPeriod(int a, int mod) {
+        int p = 0;
+        while (p == 0) {
+            p = measurePeriod(a, mod);
+        }
+        int period = Computations.fraction(p, mod);
+        return period;
+    }
+    
+    public static int qfactor (int N) {
+        System.out.println("We need to factor "+N);
+        int a = 1+ (int)((N-1) * Math.random());
+        System.out.println("Pick a random number a, a < N: "+a);
+        int gcdan = Computations.gcd(N,a);
+        System.out.println("calculate gcd(a, N):"+ gcdan); 
+        if (gcdan != 1) return gcdan;
+        int p = findPeriod (a, N); 
+        System.out.println("period of f = "+p);
+        if (p%2 == 1) { 
+            System.out.println("bummer, odd period, restart.");
+            return qfactor(N);
+        }
+        int md = (int)(Math.pow(a, p/2) +1);
+        int m2 = md%N; 
+        if (m2 == 0) { 
+            System.out.println("bummer, m^p/2 + 1 = 0 mod N, restart");
+            return qfactor(N);
+        }
+        int f2 = (int)Math.pow(a, p/2) -1;
+        int factor = Computations.gcd(N, f2);
+        return factor;
+    }
+    
+    private static int measurePeriod(int a, int mod) {
+            
+        int length = (int) Math.ceil(Math.log(mod) / Math.log(2));
+        int offset = length;
+        Program p = new Program(2 * length + 3 + offset);
+        Step prep = new Step();
+        for (int i = 0; i < offset; i++) {
+            prep.addGate(new Hadamard(i));
+        }
+        Step prepAnc = new Step(new X(length + 1 + offset));
+        p.addStep(prep);
+        p.addStep(prepAnc);
+        for (int i = length - 1; i > length - 1 - offset; i--) {
+            int m = 1;
+            for (int j = 0; j < 1 << i; j++) {
+                m = m * a % mod;
+            }
+            MulModulus mul = new MulModulus(length, 2 * length, m, mod);
+            ControlledBlockGate cbg = new ControlledBlockGate(mul, offset, i);
+            p.addStep(new Step(cbg));
+        }
+        p.addStep(new Step(new InvFourier(offset, 0)));
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Result result = sqee.runProgram(p);
+        Qubit[] q = result.getQubits();
+        int answer = 0;
+        for (int i = 0; i < offset; i++) {
+            answer = answer + q[i].measure()*(1<< i);
+        }
+        System.err.println("got answer: "+answer);
+        return answer;
+
+    }
+          
     private static<T> Oracle createGroverOracle(int n, List<T> list, Function<T, Integer> function) {
         int N = 1 << n;
         Complex[][] matrix = new Complex[N][N];

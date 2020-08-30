@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class BlockTests extends BaseGateTests {
 
-    @Test
+   @Test
     public void empty() {
     }
 
@@ -88,7 +88,7 @@ public class BlockTests extends BaseGateTests {
         assertEquals(0, qubits[0].measure());
     }
     
-    @Test
+   @Test
     public void createXBlockInProgram() {
         Block block = new Block(1);
         Step bs = new Step(Gate.x(0));

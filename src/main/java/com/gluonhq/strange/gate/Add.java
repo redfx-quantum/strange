@@ -31,61 +31,60 @@
  */
 package com.gluonhq.strange.gate;
 
-import com.gluonhq.strange.Complex;
+import com.gluonhq.strange.Block;
+import com.gluonhq.strange.BlockGate;
+import com.gluonhq.strange.Step;
+import java.util.HashMap;
 
 /**
  *
  * @author johan
  */
-public class Cr extends TwoQubitGate {
-    
-    private Complex[][] matrix =  new Complex[][]{
-        {Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO},
-        {Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
-        {Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO},
-        {Complex.ZERO,Complex.ZERO,Complex.ZERO,Complex.ONE.mul(-1)}
-    };
-    private int pow = -1;
-    
-    public Cr() {    
-    }
+public class Add extends BlockGate<Add> {
+
+    Block block;
+    static HashMap<Integer, Block> cache = new HashMap<>();
     
     /**
-     * Control-R gate
-     * @param a target qubit
-     * @param b control qubit
-     * @param exp exp
+     * Add the qubit in the x register and the y register, result is in x
+     * @param x0 start idx x register
+     * @param x1 end idx x register
+     * @param y0 start idx y register
+     * @param y1 end idx y register
+     * x_0 ----- y_0 + x_0
+     * x_1 ----- y+1 + x_1
+     * y_0 ----- y_0
+     * y_1 ----- y_1
      */
-    public Cr (int a, int b, double exp) {
-        super(a,b);
-        double ar = Math.cos(exp);
-        double ai = Math.sin(exp);
-        if (Math.abs(Math.PI -exp)  < 1e-6) {
-            ar = -1;
-            ai = 0;
-        } else if (Math.abs(Math.PI/2 -exp)  < 1e-6) {
-            ar = 0;
-            ai = 1;
-        }
-        matrix =  new Complex[][]{
-                {Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO},
-        {Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
-        {Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO},
-        {Complex.ZERO,Complex.ZERO,Complex.ZERO,new Complex(ar, ai)}        
-        };
-       // Complex.printMatrix(matrix);
-    }
-    public Cr(int a, int b, int base, int pow) {
-        this(a,b, Math.PI*2/Math.pow(base, pow));
-        this.pow = pow;
+    public Add(int x0, int x1, int y0, int y1) {
+        super();
+        this.setIndex(x0);
+        int hash = 1000000 * x0 + 10000*x1+ 100*y0 + y1;
+        this.block = cache.get(hash);
+        if (this.block == null) {
+            this.block = createBlock(x0, x1, y0, y1);
+            cache.put(hash, block);
+        } 
+        setBlock(block);
+       
     }
     
-    @Override
-    public Complex[][] getMatrix() {
-        return matrix;
+    public Block createBlock(int x0, int x1, int y0, int y1) {
+        Block answer = new Block("Add", y1-x0+1);
+        int m = x1-x0+1;
+        int n = y1 - y0 + 1;
+        answer.addStep(new Step(new Fourier(m, 0)));
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m-i ; j++) {
+                int cr0 = 2 *m-j-i-1;
+                if (cr0 < m + n) {
+                    Step s = new Step(new Cr(i, cr0,2,1+j));
+                    answer.addStep(s);
+                }
+            }
+        }
+        answer.addStep(new Step(new InvFourier(m, 0)));
+        return answer;
     }
 
-    @Override public String getCaption() {
-        return "Cr" + ((pow> -1)? Integer.toString(pow): "th");
-    }
 }

@@ -31,93 +31,63 @@
  */
 package com.gluonhq.strange.gate;
 
+import com.gluonhq.strange.Block;
+import com.gluonhq.strange.BlockGate;
 import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Gate;
-
-import java.util.Collections;
-import java.util.LinkedList;
+import com.gluonhq.strange.Step;
+import com.gluonhq.strange.local.Computations;
 import java.util.List;
 
 /**
  *
  * @author johan
  */
-public class PermutationGate implements Gate {
+public class Mul extends BlockGate<Mul> {
 
-    private int a;
-    private int b;
-    private int n;
+    final Block block;
     
-    private Complex[][] m;
-    private List<Integer> affected = new LinkedList<>();
-    
-    @Override
-    public int getMainQubitIndex() {
-        return this.a;
+    /**
+     * Multiply the qubit in the x register with an integer mul
+     * @param x0 start idx x register
+     * @param x1 end idx x register
+     * x_0 ----- y_0 + x_0
+     * x_1 ----- y+1 + x_1
+     * y_0 ----- 0
+     * y_1 ----- 0
+     */
+    public Mul(int x0, int x1, int mul) {
+        super();
+        setIndex(x0);
+        this.idx = x0;
+        this.block = createBlock(x0, x1,mul);
+        setBlock(block);
+       
     }
     
-    public PermutationGate(int a, int b, int n) {
-        assert(a < n);
-        assert(b < n);
-        this.a = a;
-        this.b = b;
-        this.n = n;
-        for (int i =0 ; i < n; i++) {
-            affected.add(i);
+    public Block createBlock(int y0, int y1, int mul) {
+        int x0 = 0;
+        int x1 = y1-y0;
+        int size = 1 + x1-x0;
+        int dim = 1 << size;
+        Block answer = new Block("Mul", 2 * size);
+
+        for (int i = 0; i < mul; i++) {
+            Add add = new Add(x0, x1, x1+1, x1 + size);
+            answer.addStep(new Step(add));
         }
-    }
-    
-    public int getIndex1() {
-        return a;
-    }
-    
-    public int getIndex2() {
-        return b;
-    }
-    
-    @Override
-    public void setMainQubitIndex(int idx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
-    @Override
-    public void setAdditionalQubit(int idx, int cnt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        for (int i = x0; i < x1+1; i++) {
+            System.err.println("swap "+i+" with "+(i+size));
+            answer.addStep(new Step (new Swap(i, i + size)));
+        }
 
-    @Override
-    public List<Integer> getAffectedQubitIndexes() {
-        return affected;
+        int invsteps = Computations.getInverseModulus(mul,dim);
+        for (int i = 0; i < invsteps; i++) {
+            Add add = new Add(x0, x1, x1+1, x1 + size).inverse();
+            answer.addStep(new Step(add));
+        }
+        return answer;
     }
-
-    @Override
-    public int getHighestAffectedQubitIndex() {
-        return Collections.max(affected);
-    }
-
-    @Override
-    public String getCaption() {
-        return "P";
-    }
-
-    @Override
-    public String getName() {
-        return "permutation gate";
-    }
-
-    @Override
-    public String getGroup() {
-        return "permutation";
-    }
-
-    @Override
-    public Complex[][] getMatrix() {
-        throw new RuntimeException ("No matrix required for Permutation");
-//        return m;
-    }
-    
-    @Override
-    public String toString() {
-        return "Perm "+a+", "+b;
-    }
+  
 }
