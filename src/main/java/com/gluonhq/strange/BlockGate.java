@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Gluon Software
+ * Copyright (c) 2020, Johan Vos
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,9 +31,6 @@
  */
 package com.gluonhq.strange;
 
-import com.gluonhq.strange.local.Computations;
-import java.util.ArrayList;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -43,10 +40,14 @@ import java.util.stream.IntStream;
  * A Gate describes an operation on one or more qubits.
  * @author johan
  */
-public class BlockGate implements Gate {
+public class BlockGate<T> implements Gate {
 
-    private final Block block;
-    protected final int idx;
+    protected Block block;
+    protected int idx;
+    private boolean inverse = false;
+    
+    protected BlockGate() {
+    }
     
     /**
      * Create a block 
@@ -55,6 +56,18 @@ public class BlockGate implements Gate {
      */
     public BlockGate (Block block, int idx) {
         this.block = block;
+        this.idx = idx;
+    }
+    
+    protected final void setBlock(Block b) {
+        this.block = b;
+    }
+    
+    public final Block getBlock() {
+        return this.block;
+    }
+    
+    protected final void setIndex(int idx) {
         this.idx = idx;
     }
     
@@ -80,7 +93,8 @@ public class BlockGate implements Gate {
 
     @Override
     public int getHighestAffectedQubitIndex() {
-        return block.getNQubits()+idx-1;
+        int answer = block.getNQubits()+idx-1;
+        return answer;
     }
 
     @Override
@@ -101,7 +115,15 @@ public class BlockGate implements Gate {
     @Override
     public Complex[][] getMatrix() {
         Complex[][] answer = block.getMatrix();
+        if (inverse) {
+            answer = Complex.conjugateTranspose(answer);
+        }
         return answer;
+    }
+    
+    public T inverse() {
+        this.inverse = !inverse;
+        return (T)this;
     }
     
     public int getSize() {
@@ -109,7 +131,7 @@ public class BlockGate implements Gate {
     }
     
     @Override public String toString() {
-        return "Gate for block "+block;
+        return "Gate for block "+block+", size = "+getSize();
     }
 
     

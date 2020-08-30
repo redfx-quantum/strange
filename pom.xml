@@ -4,7 +4,7 @@
   <groupId>com.gluonhq</groupId>
   <artifactId>strange</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.11-SNAPSHOT</version>
+  <version>0.0.13-SNAPSHOT</version>
   <name>Strange</name>
   <url>http://maven.apache.org</url>
   <parent>
@@ -23,6 +23,7 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>5.5.2</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -56,6 +57,17 @@
       <artifactId>charm-down-plugin-storage-desktop</artifactId>
       <version>3.6.0</version>
     </dependency>
+    <dependency>
+        <groupId>org.nd4j</groupId>
+        <artifactId>nd4j-native</artifactId>
+        <version>1.0.0-beta7</version>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-nop</artifactId>
+        <version>1.7.26</version>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>

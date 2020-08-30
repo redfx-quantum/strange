@@ -31,13 +31,16 @@
  */
 package com.gluonhq.strange.test;
 
+import com.gluonhq.strange.Complex;
 import com.gluonhq.strange.Program;
 import com.gluonhq.strange.Step;
 import com.gluonhq.strange.gate.Hadamard;
 import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.gate.PermutationGate;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 public class SyntaxTests {
 
     @Test
@@ -58,5 +61,32 @@ public class SyntaxTests {
         Step s0 = new Step("Hello!");
         Step s1 = new Step("foo", new Identity(0));
         Step s2 = new Step(new Identity(0), new Identity(1));
+    }
+    
+    @Test
+    public void permutation() {
+        int dim = 4;
+        Complex[][] a = new Complex[dim][dim];
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                a[i][j] = new Complex(i*dim+j,0);
+            }
+        }
+        assertEquals(a[0][0].r , 0 );
+        assertEquals(a[0][1].r , 1 );
+        assertEquals(a[0][2].r , 2 );
+        assertEquals(a[1][0].r , 4 );
+        assertEquals(a[1][1].r , 5 );
+        assertEquals(a[1][2].r , 6 );
+        PermutationGate pg = new PermutationGate(0,1,2);
+     //   Complex.printMatrix(pg.getMatrix());
+        Complex[][] res = Complex.permutate(pg, a);
+      //  Complex.printMatrix(res);
+        assertEquals(res[0][0].r , 0 );
+        assertEquals(res[0][1].r , 2 );
+        assertEquals(res[0][2].r , 1 );
+        assertEquals(res[1][0].r , 4 );
+        assertEquals(res[1][1].r , 6 );
+        assertEquals(res[1][2].r , 5 );
     }
 }

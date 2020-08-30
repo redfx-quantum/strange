@@ -1,4 +1,4 @@
 language: java
 jdk: oraclejdk11
 
-script: ./gradlew build
+script: mvn test

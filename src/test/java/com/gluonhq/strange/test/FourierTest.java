@@ -51,23 +51,23 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class FourierTest extends BaseGateTests {
 
-    static final double D = 0.000000001d;
+    static final double D = 0.000001d;
 
     @Test
     public void createFourierOne() {
         Fourier f = new Fourier(1,0);
-        double den = Math.sqrt(2);
+        float den = (float) Math.sqrt(2);
         Complex[][] a = f.getMatrix();
         assertEquals(2, a.length);
         Complex val = a[0][0];
         assertEquals(val.i, 0);
-        assertEquals(val.r, 1/den);
+        assertEquals(val.r, 1/den,D);
         val = a[1][0];
         assertEquals(val.i, 0);
-        assertEquals(val.r, 1/den);
+        assertEquals(val.r, 1/den,D);
         val = a[0][1];
         assertEquals(val.i, 0);
-        assertEquals(val.r, 1/den);
+        assertEquals(val.r, 1/den,D);
         val = a[1][1];
         assertEquals(val.i,0, D);
         assertEquals(val.r,-1/den, D);

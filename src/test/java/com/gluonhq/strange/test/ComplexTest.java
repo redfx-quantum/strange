@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2018, Gluon Software
+ * Copyright (c) 2020, Johan Vos
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,29 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-module com.gluonhq.strange {
-    exports com.gluonhq.strange;
-    exports com.gluonhq.strange.algorithm;
-    exports com.gluonhq.strange.gate;
-    exports com.gluonhq.strange.local;
+package com.gluonhq.strange.test;
+
+import com.gluonhq.strange.Complex;
+import com.gluonhq.strange.Program;
+import com.gluonhq.strange.Step;
+import com.gluonhq.strange.gate.Hadamard;
+import com.gluonhq.strange.gate.Identity;
+import com.gluonhq.strange.gate.PermutationGate;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+public class ComplexTest {
+
+    @Test
+    public void addrTest() {
+        Complex zero = new Complex(0,0);
+        assertTrue(zero.r == 0);
+
+        Complex a = new Complex(1,2);
+        zero.addr(a);
+        assertTrue(zero.r == 1);
+        Complex z2 = new Complex(0.,0.);
+        assertTrue(z2.r == 0);
+    }
+
 }
