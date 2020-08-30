@@ -108,7 +108,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>com.gluonhq.strange.demo.Demo</mainClass>
+          <mainClass>org.redfx.strange.demo.Demo</mainClass>
         </configuration>
       </plugin>
       <plugin>
