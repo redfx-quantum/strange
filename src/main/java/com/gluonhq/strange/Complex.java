@@ -157,10 +157,10 @@ public final class Complex {
         Complex.printMatrix(b);
         int d1 = a.length;
         int d2 = b.length;
-        System.err.println("tensor for "+d1+" and "+d2+", new dim will be "+(d1*d2));
-Computations.printMemory();
+       // System.err.println("tensor for "+d1+" and "+d2+", new dim will be "+(d1*d2));
+        //Computations.printMemory();
         Complex[][] result = new Complex[d1 * d2][d1 * d2];
-        System.err.println("allocated memory");
+        //System.err.println("allocated memory");
 // Computations.printMemory();
         for (int rowa = 0; rowa < d1; rowa++) {
             for (int cola = 0; cola < d1; cola++) {
@@ -175,8 +175,8 @@ Computations.printMemory();
                 }
             }
         }
-        System.err.println("tensor created new matrix");
-        Computations.printMemory();
+        //System.err.println("tensor created new matrix");
+        //Computations.printMemory();
 
         return result;
     }
@@ -319,7 +319,7 @@ Computations.printMemory();
         int amask = 1 << a;
         int bmask = 1 << b;
         int dim = matrix.length;
-               System.err.println("permutate "+a+" and "+b+" on matrix sized "+dim);
+   //            System.err.println("permutate "+a+" and "+b+" on matrix sized "+dim);
 
         List<Integer> swapped = new LinkedList<>();
         for (int i = 0; i < dim; i++) {
@@ -348,7 +348,9 @@ Computations.printMemory();
     }
 
     public static void printArray(Complex[] ca) {
-        printArray(ca, System.err);
+        if (debug) {
+            printArray(ca, System.err);
+        }
     }
 
     public static void printArray(Complex[] ca, PrintStream ps) {
@@ -361,12 +363,15 @@ Computations.printMemory();
     public static void printMatrix(Complex[][] cm) {
         printMatrix(cm, System.err);
     }
-    
-    public static void dbg (String s) {
-        System.err.println("[DBG] " + System.currentTimeMillis()%1000000+": "+s);
-    }
 
     static final boolean debug = false;
+    
+    public static void dbg (String s) {
+        if (debug) {
+        System.err.println("[DBG] " + System.currentTimeMillis()%1000000+": "+s);
+        }
+    }
+
 
     public static void printMatrix(Complex[][] cm, PrintStream ps) {
         if (!debug) {

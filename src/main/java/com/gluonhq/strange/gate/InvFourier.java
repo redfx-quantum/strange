@@ -59,7 +59,6 @@ public class InvFourier extends Fourier {
                     if (tpd > 0) {
                         alpha = alpha - (Math.PI*2 * tpd);
                     }
-                    System.err.println("i = "+i+", j = "+j+", alpha = "+alpha);
                     double ar = Math.cos(alpha);
                     double ai = Math.sin(alpha);
                     if (Math.abs(alpha) < 1e-6) {
@@ -75,7 +74,6 @@ public class InvFourier extends Fourier {
                         ar = 0;
                         ai = -1;
                     }
-                    System.err.println("ar = "+ar+", ai = "+ai);
                     matrix[i][j] = new Complex(ar/den, -1*ai/den);
                 }
                 for (int k = 0; k < i; k++) {

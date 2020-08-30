@@ -88,14 +88,12 @@ public class BlockGate<T> implements Gate {
 
     @Override
     public List<Integer> getAffectedQubitIndexes() {
-        System.err.println("Blockgate, afqi asked, idx = "+idx+" and nq = "+block.getNQubits());
         return IntStream.range(idx, idx+block.getNQubits()).boxed().collect(Collectors.toList());
     }
 
     @Override
     public int getHighestAffectedQubitIndex() {
         int answer = block.getNQubits()+idx-1;
-        System.err.println("highest qi asked for "+this+" will return "+answer);
         return answer;
     }
 
@@ -117,13 +115,11 @@ public class BlockGate<T> implements Gate {
     @Override
     public Complex[][] getMatrix() {
         long l0 = System.currentTimeMillis();
-        System.err.println("BLOCKGATE, get matrix asked for "+this);
         Complex[][] answer = block.getMatrix();
         if (inverse) {
             answer = Complex.conjugateTranspose(answer);
         }
         long l1 = System.currentTimeMillis();
-        System.err.println("BLOCKGATE, got matrix took "+ (l1 - l0) +" ms for "+this);
         return answer;
     }
     

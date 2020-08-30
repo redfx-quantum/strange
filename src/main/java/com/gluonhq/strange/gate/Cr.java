@@ -58,7 +58,6 @@ public class Cr extends TwoQubitGate {
      */
     public Cr (int a, int b, double exp) {
         super(a,b);
-        System.err.println("CR: EXP2 = "+exp);
         double ar = Math.cos(exp);
         double ai = Math.sin(exp);
         if (Math.abs(Math.PI -exp)  < 1e-6) {

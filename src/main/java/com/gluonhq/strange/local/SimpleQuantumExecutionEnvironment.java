@@ -112,7 +112,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 dbg("after this step, probs = "+probs);
             //    printProbs(probs);
                 int idx = step.getComplexStep();
-                System.err.println("complex? "+idx);
+         //       System.err.println("complex? "+idx);
                 if (idx > -1) {
                     result.setIntermediateProbability(idx, probs);
                 }
@@ -136,9 +136,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
 
     private void printProbs(Complex[] p) {
-        for (int i = 0; i < p.length; i++) {
-            System.err.println("Probabiliy["+i+"]: "+p[i]);
-        }
+        Complex.printArray(p);
     }
 
 

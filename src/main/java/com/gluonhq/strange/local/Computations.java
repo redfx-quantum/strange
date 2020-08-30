@@ -55,8 +55,11 @@ import java.util.List;
  */
 public class Computations {
         
+    private static boolean debug = false;
     static void dbg (String s) {
-        System.err.println("[DBG] " + System.currentTimeMillis()%100000+": "+s);
+        if (debug) {
+            System.err.println("[DBG] " + System.currentTimeMillis()%100000+": "+s);
+        }
     }
     
     public static Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits) {
@@ -123,7 +126,7 @@ public class Computations {
      * @return 
      */
     public static List<Step> decomposeStep(Step s, int nqubit) {
-        System.err.println("I NEED DO DECOMPOSE STEP "+s);
+        dbg("I NEED DO DECOMPOSE STEP "+s);
         ArrayList<Step> answer = new ArrayList<>();
         answer.add(s);
         List<Gate> gates = s.getGates();
@@ -244,7 +247,7 @@ public class Computations {
                 throw new RuntimeException("Gate must be SingleQubit or TwoQubit");
             }
         }
-        System.err.println("Step "+s+" decomposed into "+answer);
+        dbg("Step "+s+" decomposed into "+answer);
         return answer;
     }
     
@@ -344,6 +347,7 @@ public class Computations {
     }
 
     public static void printMemory() {
+        if (!debug) return;
         Runtime rt = Runtime.getRuntime();
         long fm = rt.freeMemory()/1024;
         long mm = rt.maxMemory()/1024;
@@ -364,22 +368,18 @@ public class Computations {
     
     
     static Complex[] permutateVector(Complex[] vector, int a, int b) {
-        System.err.println("permutate vector, a = "+a+" and b = "+b);
         int amask = 1 << a;
         int bmask = 1 << b;
         int dim = vector.length;
-        System.err.println("amask = "+amask+", bmask = "+bmask);
         Complex[] answer = new Complex[dim];
         for (int i = 0; i < dim; i++) {
             int j = i;
             int x = (amask & i) /amask;
             int y = (bmask & i) /bmask;
-    //        System.err.println("x = "+x+", y = "+y);
             if (x != y) {
                j ^= amask;
                j ^= bmask;
             }
-        //    System.err.println("i = "+i+" and j = "+j);//+" and vj = "+vector[j]);
             answer[i] = vector[j];
         }
         return answer;
@@ -387,35 +387,16 @@ public class Computations {
 
     static Complex[] calculateNewState(List<Gate> gates, Complex[] vector, int length) {
         return getNextProbability(getAllGates(gates, length), vector);
-//        int dim = 1 << length;
-//        if (dim != vector.length) {
-//            throw new IllegalArgumentException ("probability vector has size "+
-//                    vector.length+" but we have only "+ length+" qubits.");
-//        }
-//        Complex[] result = new Complex[dim];
-//
-//        Complex[][] c = calculateStepMatrix(gates, length);
-//        for (int i = 0; i < vector.length; i++) {
-//            result[i] = Complex.ZERO;
-//            for (int j = 0; j < vector.length; j++) {
-//                result[i] = result[i].add(c[i][j].mul(vector[j]));
-//            }
-//        }
-//        return result;
-
     }
     
     private static Complex[] getNextProbability(List<Gate> gates, Complex[] v) {
          Gate gate = gates.get(0);
-      //  System.err.println("GNP, gate = "+gate);
-      //  System.err.println("v = ");
-   //     Complex.printArray(v);
+
         Complex[][] matrix = gate.getMatrix();
         int size = v.length;
 
         if (gates.size() > 1) {
             List<Gate> nextGates = gates.subList(1, gates.size());
-           // List<Gate> nextGates = gates.subList(0, gates.size()-1);
             int gatedim = matrix.length;
             int partdim = size/gatedim;
             Complex[] answer = new Complex[size];
@@ -427,22 +408,15 @@ public class Computations {
                 }
                 vsub[i] = getNextProbability(nextGates, vorig);
             }
-//            System.err.println("Ok, we got the subv's: ");
-//                        for (int i = 0; i < gatedim; i++) {
-//                            Complex.printArray(vsub[i]);
-//                        }
+
             for (int i = 0; i < gatedim; i++) {
                 for (int j = 0; j < partdim; j++) {
                     answer[j + i * partdim] = Complex.ZERO;
                     for (int k = 0; k < gatedim;k++) {
-                     //   System.err.println("i = "+i+", j = "+j+", k = "+k+" pd = "+partdim);
-                     //   System.err.println("mik = "+matrix[i][k]+", vsb = "+vsub[k][j]);
                         answer[j + i * partdim] = answer[j + i * partdim].add(matrix[i][k].mul(vsub[k][j]));
                     }
                 }
             }
-         //   System.err.println("Will return prob");
-        //    Complex.printArray(answer);
             return answer;
         } else {
             if (matrix.length != size) {
@@ -478,7 +452,7 @@ public class Computations {
            if (myGate instanceof BlockGate) {
                 BlockGate sqg = (BlockGate)myGate;
                 idx = idx - sqg.getSize()+1;
-                System.err.println("processed blockgate, size = "+sqg.getSize()+", idx = "+idx);
+                dbg("processed blockgate, size = "+sqg.getSize()+", idx = "+idx);
             }           
             if (myGate instanceof TwoQubitGate) {
                 idx--;
@@ -494,14 +468,12 @@ public class Computations {
             }
             idx--;
         }
-          System.err.println("AllGates will return "+answer);
+   //       System.err.println("AllGates will return "+answer);
         return answer;
     }
 
     private static void processBlockGate(ControlledBlockGate gate, ArrayList<Step> answer) {
         gate.calculateHighLow();
-        System.err.println("PROCESS BG: "+gate);
-        System.err.println("ANSWER = "+answer);
         int low = gate.getLow();
         int control = gate.getControlQubit();
         int idx = gate.getMainQubitIndex();
@@ -511,9 +483,6 @@ public class Computations {
         List<PermutationGate> perm = new LinkedList<>();
         Block block = gate.getBlock();
         int bs = block.getNQubits();
-        System.err.println("ctr = " + control + ", idx = " + idx + ", gap = " + gap + " and bs = " + bs+", low = "+low);
-      //      gate.correctHigh(low+bs);
-
 
         if (control > idx) {
             if (gap < bs) {
@@ -523,10 +492,6 @@ public class Computations {
             if (gap > bs) {
                 high = control;
                 size = high - low + 1;
-                System.err.println("PG, control = " + control + ", gap = " + gap + ", bs = " + bs+", size = "+size);
-                System.err.println("new high at "+(low+ bs));
-           //     gate.correctHigh(low+bs+1);
-           //     PermutationGate pg = new PermutationGate(control - low, control - low - gap + bs, size);
                 PermutationGate pg = new PermutationGate(control , control  - gap + bs,low + size);
 
                 perm.add(pg);
@@ -542,13 +507,13 @@ public class Computations {
             }
         }
      //   answer.add(new Step(gate));
-        System.err.println("processing cbg, will need to add those perms: "+perm);
+      //  dbg("processing cbg, will need to add those perms: "+perm);
         for (PermutationGate pg :  perm) {
             Step lpg = new Step(pg);
             lpg.setComplexStep(1);
             answer.add(lpg);
             answer.add(0, new Step(pg));
         }
-        System.err.println("finally, answer = "+answer);
+      //  System.err.println("finally, answer = "+answer);
     }
 }
