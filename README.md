@@ -2,8 +2,8 @@
 Quantum Computing API for Java
 
 This project defines a Java API that can be used to create Quantum Programs.
-A Quantum Program, defined by <code>com.gluonhq.strange.Program</code> can be executed on an implementation of the 
-<code>com.gluonhq.strange.QuantumExecutionEnvironment</code>.
+A Quantum Program, defined by <code>org.redfx.strange.Program</code> can be executed on an implementation of the 
+<code>org.redfx.strange.QuantumExecutionEnvironment</code>.
 
 You can read more about Java and QuantumComputing in [Quantum Computing for Java Developers](https://www.manning.com/books/quantum-computing-for-java-developers?a_aid=quantumjava&a_bid=e5166ab9)
 
@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.gluonhq:strange:0.0.12'
+    implementation 'org.redfx:strange:0.0.14'
 }
 
 mainClassName = 'SimpleStrangeDemo'
@@ -34,9 +34,9 @@ mainClassName = 'SimpleStrangeDemo'
 
 The sample application contains a single Java file:
 ```java
-import com.gluonhq.strange.*;
-import com.gluonhq.strange.gate.*;
-import com.gluonhq.strange.local.SimpleQuantumExecutionEnvironment;
+import org.redfx.strange.*;
+import org.redfx.strange.gate.*;
+import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
 import java.util.Arrays;
 
 public class SimpleStrangeDemo {
@@ -76,6 +76,6 @@ Running this application a number of times will consistently give the same proba
 
 # Visualisation
 
-The Strange API's allow to create and simulate quantum programs. A companion project, [StrangeFX](https://github.com/gluonhq/strangefx) , allows to visualise programs, and create them with a simple drag and drop interface. The sample program above rendered via StrangeFX looks as follows:
-![StrangeFX rendering](https://github.com/gluonhq/strangefx/blob/master/docs/images/simpleview.png)
+The Strange API's allow to create and simulate quantum programs. A companion project, [StrangeFX](https://github.com/redfx-quantum/strangefx) , allows to visualise programs, and create them with a simple drag and drop interface. The sample program above rendered via StrangeFX looks as follows:
+![StrangeFX rendering](https://github.com/redfx-quantum/strangefx/blob/master/docs/images/simpleview.png)
 
