@@ -4,7 +4,7 @@
   <groupId>org.redfx</groupId>
   <artifactId>strange</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.15</version>
+  <version>0.0.16</version>
   <name>Strange</name>
   <url>http://maven.apache.org</url>
 
@@ -12,16 +12,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <javadoc.plugin.version>3.1.0</javadoc.plugin.version>
+    <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
     <gpg.plugin.version>1.6</gpg.plugin.version>
-    <substrate.version>0.0.30-SNAPSHOT</substrate.version>
   </properties>
 
-  <parent>
-    <groupId>org.openjfx</groupId>
-    <artifactId>javafx</artifactId>
-    <version>11.0.2</version>
-  </parent>
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -38,18 +32,6 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>5.5.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-controls</artifactId>
-      <version>11-ea+24</version>
-      <classifier>${javafx.platform}</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-swing</artifactId>
-      <version>11-ea+24</version>
-      <classifier>${javafx.platform}</classifier>
     </dependency>
     <dependency>
         <groupId>org.nd4j</groupId>
@@ -224,9 +206,9 @@
   </profiles>
 
   <scm>
-    <connection>scm:git:git://github.com/qcjava/strange.git</connection>
-    <developerConnection>scm:git:git@github.com:qcjava/strange.git</developerConnection>
-    <url>https://github.com/qcjava/strange</url>
+    <connection>scm:git:git://github.com/redfx-quantum/strange.git</connection>
+    <developerConnection>scm:git:git@github.com:redfx-quantum/strange.git</developerConnection>
+    <url>https://github.com/redfx-quantum/strange</url>
     <tag>HEAD</tag>
   </scm>
 
