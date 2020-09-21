@@ -22,12 +22,6 @@
     <artifactId>javafx</artifactId>
     <version>11.0.2</version>
   </parent>
-  <repositories>
-    <repository>
-      <id>java.net</id>
-      <url>https://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -56,16 +50,6 @@
       <artifactId>javafx-swing</artifactId>
       <version>11-ea+24</version>
       <classifier>${javafx.platform}</classifier>
-    </dependency>
-    <dependency>
-      <groupId>com.gluonhq</groupId>
-      <artifactId>charm-cloudlink-client</artifactId>
-      <version>4.4.7</version>
-    </dependency>
-    <dependency>
-      <groupId>com.gluonhq</groupId>
-      <artifactId>charm-down-plugin-storage-desktop</artifactId>
-      <version>3.6.0</version>
     </dependency>
     <dependency>
         <groupId>org.nd4j</groupId>
