@@ -6,6 +6,7 @@
   <packaging>jar</packaging>
   <version>0.0.16</version>
   <name>Strange</name>
+  <description>Strange Quantum Simulator</description>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -204,6 +205,22 @@
       </build>
     </profile>
   </profiles>
+
+  <licenses>
+    <license>
+      <name>BSD 3</name>
+      <url>https://opensource.org/licenses/BSD-3-Clause</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>johanvos</id>
+      <name>Johan Vos</name>
+    </developer>
+  </developers>
+
 
   <scm>
     <connection>scm:git:git://github.com/redfx-quantum/strange.git</connection>
