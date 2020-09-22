@@ -17,7 +17,6 @@ A typical build.gradle file looks as follows:
 ```gradle
 plugins {
     id 'application'
-    id 'org.javamodularity.moduleplugin' version '1.2.1'
 }
 
 repositories {
@@ -25,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.redfx:strange:0.0.14'
+    implementation 'org.redfx:strange:0.0.16'
 }
 
 mainClassName = 'SimpleStrangeDemo'
