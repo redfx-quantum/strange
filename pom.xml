@@ -4,7 +4,7 @@
   <groupId>org.redfx</groupId>
   <artifactId>strange</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.17-SNAPSHOT</version>
+  <version>0.0.17</version>
   <name>Strange</name>
   <description>Strange Quantum Simulator</description>
   <url>http://maven.apache.org</url>
@@ -34,6 +34,7 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>5.5.2</version>
     </dependency>
+<!--
     <dependency>
         <groupId>org.nd4j</groupId>
         <artifactId>nd4j-native</artifactId>
@@ -44,6 +45,7 @@
         <artifactId>slf4j-nop</artifactId>
         <version>1.7.26</version>
     </dependency>
+-->
 
   </dependencies>
   <build>
