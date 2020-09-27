@@ -37,10 +37,10 @@ import org.redfx.strange.local.Computations;
 import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
-import org.nd4j.linalg.api.buffer.DataType;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.cpu.nativecpu.NDArray;
-import org.nd4j.linalg.factory.Nd4j;
+//import org.nd4j.linalg.api.buffer.DataType;
+//import org.nd4j.linalg.api.ndarray.INDArray;
+//import org.nd4j.linalg.cpu.nativecpu.NDArray;
+//import org.nd4j.linalg.factory.Nd4j;
 
 public final class Complex {
 
@@ -185,8 +185,34 @@ public final class Complex {
     static int nzCount = 0;
 
     public static Complex[][] mmul(Complex[][] a, Complex[][] b) {
-        //     Thread.dumpStack();
-        INDArray xyGrid = null;
+        return slowmmul (a, b);
+    }
+    
+    public static Complex[][] slowmmul(Complex[][] a, Complex[][] b) {
+
+        int arow = a.length;
+        int acol = a[0].length;
+        int brow = b.length;
+        int bcol = b[0].length;
+        if (acol != brow) {
+            throw new RuntimeException("#cols a " + acol + " != #rows b " + brow);
+        }
+        Complex[][] answer = new Complex[arow][bcol];
+        for (int i = 0; i < arow; i++) {
+            for (int j = 0; j < bcol; j++) {
+                Complex el = Complex.ZERO;
+                for (int k = 0; k < acol;k++) {
+                    el = el.add(a[i][k].mul(b[k][j]));
+                }
+                answer[i][j] = el;
+            }
+        }
+
+        return answer;
+    }
+        
+    private static Complex[][] fastmmul(Complex[][] a, Complex[][] b) {
+        /*
         long l0 = System.currentTimeMillis();
         int arow = a.length;
         int acol = a[0].length;
@@ -196,8 +222,6 @@ public final class Complex {
         if (acol != brow) {
             throw new RuntimeException("#cols a " + acol + " != #rows b " + brow);
         }
-        printMatrix(a);
-        printMatrix(b);
         Complex[][] answer = new Complex[arow][bcol];
         double[][] ar = new double[arow][acol];
         double[][] ai = new double[arow][acol];
@@ -253,6 +277,8 @@ public final class Complex {
             }
         }
         return answer;
+*/
+        throw new RuntimeException ("Fast multiplication not available");
     }
 
     static Complex[][] conjugateTranspose(Complex[][] src) {
@@ -395,19 +421,5 @@ public final class Complex {
     public String toString() {
         return "(" + this.r + ", " + this.i + ")";
     }
-
-    public static void calcGrid() {
-        System.err.println("CALC GRID");
-        System.out.println(Nd4j.zeros(2));
-        int nPointsPerAxis = 100;
-        // x coordinates of the pixels for the NN.
-        INDArray xPixels = Nd4j.linspace(0, 1.0, nPointsPerAxis, DataType.DOUBLE);
-        // y coordinates of the pixels for the NN.
-        INDArray yPixels = Nd4j.linspace(0, 1.0, nPointsPerAxis, DataType.DOUBLE);
-        //create the mesh:
-        INDArray[] mesh = Nd4j.meshgrid(xPixels, yPixels);
-        INDArray xyGrid = Nd4j.vstack(mesh[0].ravel(), mesh[1].ravel()).transpose();
-        System.err.println("Done calculating grid, xyGrid = " + xyGrid);
-    }
-
+    
 }
