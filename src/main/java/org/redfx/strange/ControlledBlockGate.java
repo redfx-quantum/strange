@@ -145,6 +145,11 @@ public class ControlledBlockGate<T> extends BlockGate {
     
     @Override
     public Complex[][] getMatrix() {
+        return getMatrix(null);
+    }
+    
+    @Override
+    public Complex[][] getMatrix(QuantumExecutionEnvironment qee) {
         if (matrix == null) {
             int low = 0;
             this.high = control;

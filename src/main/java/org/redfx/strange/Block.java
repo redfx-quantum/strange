@@ -83,7 +83,12 @@ public class Block {
     }
 
     Complex[][] getMatrix() {
+        return getMatrix(null);
+    }
+    Complex[][] getMatrix(QuantumExecutionEnvironment qee) {
         if (matrix == null) {
+            System.err.println("[JVDBG] need to get Matrix for "+nqubits+" qubits");
+            Thread.dumpStack();
             matrix = Complex.identityMatrix(1<<nqubits);
             List<Step> simpleSteps = new ArrayList<>();
             for (Step step : steps) {

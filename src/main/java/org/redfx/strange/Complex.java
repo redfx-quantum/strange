@@ -189,7 +189,7 @@ public final class Complex {
     }
     
     public static Complex[][] slowmmul(Complex[][] a, Complex[][] b) {
-
+        System.err.println("slowmul");
         int arow = a.length;
         int acol = a[0].length;
         int brow = b.length;
