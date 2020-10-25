@@ -249,7 +249,7 @@ public class Classic {
         for (int i = 0; i < offset; i++) {
             answer = answer + q[i].measure()*(1<< i);
         }
-        System.err.println("measure period for a = " + a +" and N = " +mod+" got answer: "+answer);
+     //   System.err.println("measure period for a = " + a +" and N = " +mod+" got answer: "+answer);
         return answer;
     }
           

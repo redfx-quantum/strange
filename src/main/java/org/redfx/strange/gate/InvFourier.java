@@ -33,6 +33,7 @@
 package org.redfx.strange.gate;
 
 import org.redfx.strange.Complex;
+import org.redfx.strange.QuantumExecutionEnvironment;
 
 public class InvFourier extends Fourier {
     
@@ -46,9 +47,13 @@ public class InvFourier extends Fourier {
       //  super(new Block("Fourier", size), idx);
     }
     
-    
     @Override
     public Complex[][] getMatrix() {
+        return getMatrix(null);
+    }
+    
+    @Override
+    public Complex[][] getMatrix(QuantumExecutionEnvironment eqq) {
         if (matrix == null) {
             double omega = Math.PI*2/size;
             double den = Math.sqrt(size);
