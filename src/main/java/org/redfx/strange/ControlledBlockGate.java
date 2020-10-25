@@ -177,7 +177,7 @@ public class ControlledBlockGate<T> extends BlockGate {
                     perm.add(0,pg);
                 }
             }
-            Complex[][] part = block.getMatrix();
+            Complex[][] part = block.getMatrix(qee);
           
             int dim = part.length;
             matrix = Computations.createIdentity(2 * dim);

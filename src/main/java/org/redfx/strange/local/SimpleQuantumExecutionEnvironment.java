@@ -185,7 +185,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
     
     private Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits) {
-        return Computations.calculateStepMatrix(gates, nQubits);
+        return Computations.calculateStepMatrix(gates, nQubits, this);
 
     }
 
