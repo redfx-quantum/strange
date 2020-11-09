@@ -55,8 +55,21 @@ import org.redfx.strange.local.Computations;
  * @author johan
  */
 public class SingleTest extends BaseGateTests {
-  
-    @Test
+  @Test
+    public void add01() {
+        Program p = new Program(2);
+        Step prep = new Step();
+        prep.addGate(new X(1));
+        p.addStep(prep);
+        Add add = new Add(0,0,1,1);
+        p.addStep(new Step(add));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(2, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());   
+    }
+//    @Test
     public void cf () {
         double d = 340./1024;
         System.err.println("Start with d = "+d);

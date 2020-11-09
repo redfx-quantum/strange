@@ -59,6 +59,10 @@ public interface QuantumExecutionEnvironment {
 
     void runProgram (Program p, Consumer<Result> result);
     
+    default public Complex[][] mmul(Complex[][] a, Complex[][] b) {
+        return Complex.mmul(a, b);
+    }
+    
    // Future<Result> runProgram(Program p);
 
 }

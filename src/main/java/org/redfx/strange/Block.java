@@ -83,7 +83,11 @@ public class Block {
     }
 
     Complex[][] getMatrix() {
+        return getMatrix(null);
+    }
+    Complex[][] getMatrix(QuantumExecutionEnvironment qee) {
         if (matrix == null) {
+       //     System.err.println("[JVDBG] need to get Matrix for "+nqubits+" qubits for block " +this);
             matrix = Complex.identityMatrix(1<<nqubits);
             List<Step> simpleSteps = new ArrayList<>();
             for (Step step : steps) {
@@ -96,11 +100,15 @@ public class Block {
                     matrix = Complex.permutate((PermutationGate)gates.get(0), matrix);
 
                 } else {
-                    Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits);
+                    Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits, qee);
                     if (matrix == null) {
                         matrix = m;
                     } else {
-                        matrix = Complex.mmul(matrix, m);
+                        if (qee != null) {
+                            matrix = qee.mmul(matrix, m);
+                        } else {
+                            matrix = Complex.mmul(matrix, m);
+                        }
                     }
                 }
             }

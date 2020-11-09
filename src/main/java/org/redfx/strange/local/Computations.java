@@ -49,6 +49,7 @@ import org.redfx.strange.gate.TwoQubitGate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.redfx.strange.QuantumExecutionEnvironment;
 
 /**
  *
@@ -63,7 +64,7 @@ public class Computations {
         }
     }
     
-    public static Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits) {
+    public static Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits, QuantumExecutionEnvironment qee) {
         long l0 = System.currentTimeMillis();
         Complex[][] a = new Complex[1][1];
         a[0][0] = Complex.ONE;
@@ -80,7 +81,7 @@ public class Computations {
             if (myGate instanceof BlockGate) {
                 dbg("calculateStepMatrix for blockgate "+myGate+" of class "+myGate.getClass());
                 BlockGate sqg = (BlockGate)myGate;
-                a = tensor(a, sqg.getMatrix());
+                a = tensor(a, sqg.getMatrix(qee));
                 dbg("calculateStepMatrix for blockgate calculated "+myGate);
 
                 idx = idx - sqg.getSize()+1;

@@ -59,9 +59,14 @@ import java.util.function.Function;
  */
 public class Classic {
     
+    private static QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
+            
+    public static void setQuantumExecutionEnvironment(QuantumExecutionEnvironment val) {
+        qee = val;
+    }
+    
     public static int randomBit() {
         Program program = new Program(1, new Step(new Hadamard(0)));
-        QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
         Result result = qee.runProgram(program);
         Qubit[] qubits = result.getQubits();
         int answer = qubits[0].measure();
@@ -80,7 +85,6 @@ public class Classic {
         int m = y < 2? 1 : 1 + (int) Math.ceil(Math.log(y)/Math.log(2));
         int n = x < 2? 1 : 1 + (int) Math.ceil(Math.log(x)/Math.log(2));
         Program program = new Program(m + n);
-        QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
         Step prep = new Step();
         int y0 = y;
         for (int i = 0; i < m; i++) {
@@ -139,8 +143,6 @@ public class Classic {
         double cnt = Math.PI*Math.sqrt(N)/4;
 
         Oracle oracle = createGroverOracle(n, list, function);
-                QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
-
         Program p = new Program(n);
         Step s0 = new Step();
         for (int i = 0; i < n; i++) {
@@ -240,16 +242,15 @@ public class Classic {
             p.addStep(new Step(cbg));
         }
         p.addStep(new Step(new InvFourier(offset, 0)));
-        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
-        Result result = sqee.runProgram(p);
+        System.err.println("Calculate periodicity using "+qee);
+        Result result = qee.runProgram(p);
         Qubit[] q = result.getQubits();
         int answer = 0;
         for (int i = 0; i < offset; i++) {
             answer = answer + q[i].measure()*(1<< i);
         }
-        System.err.println("got answer: "+answer);
+     //   System.err.println("measure period for a = " + a +" and N = " +mod+" got answer: "+answer);
         return answer;
-
     }
           
     private static<T> Oracle createGroverOracle(int n, List<T> list, Function<T, Integer> function) {

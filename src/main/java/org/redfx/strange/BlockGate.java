@@ -115,7 +115,12 @@ public class BlockGate<T> implements Gate {
 
     @Override
     public Complex[][] getMatrix() {
-        Complex[][] answer = block.getMatrix();
+        return getMatrix(null);
+    }
+    
+    @Override
+    public Complex[][] getMatrix(QuantumExecutionEnvironment qee) {
+        Complex[][] answer = block.getMatrix(qee);
         if (inverse) {
             answer = Complex.conjugateTranspose(answer);
         }

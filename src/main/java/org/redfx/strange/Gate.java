@@ -99,7 +99,11 @@ public interface Gate {
     
     public String getGroup();
     
-    public  Complex[][] getMatrix();
+    public Complex[][] getMatrix();
+    
+    default public Complex[][] getMatrix(QuantumExecutionEnvironment qee) {
+        return getMatrix();
+    }
 
     
 }

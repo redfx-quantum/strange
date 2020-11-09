@@ -38,6 +38,7 @@ import org.redfx.strange.Complex;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.redfx.strange.QuantumExecutionEnvironment;
 
 public class Fourier extends BlockGate {
 
@@ -54,11 +55,20 @@ public class Fourier extends BlockGate {
         super(new Block("Fourier", dim), idx);
         this.dim = dim;
         this.size = 1 <<dim;
+      //  System.err.println("Created a fourier block");
     }
     
     
     @Override
     public Complex[][] getMatrix() {
+        return getMatrix(null);
+    }
+    
+    @Override
+    public Complex[][] getMatrix(QuantumExecutionEnvironment eqq) {
+      //  System.err.println("Get fourier matrix");
+        //Thread.dumpStack();
+
         if (matrix == null) {
             double omega = Math.PI*2/size;
             double den = Math.sqrt(size);

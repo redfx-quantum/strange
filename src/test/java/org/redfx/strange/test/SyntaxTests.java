@@ -57,6 +57,13 @@ public class SyntaxTests {
         }
         assertTrue(gotException);
     }
+    
+    //@Test
+    public void addDoubleGates() {
+        Program p = new Program(1);
+        Step s = new Step(new Identity(0));
+        s.addGate(new Identity(0));
+    }
 
     @Test
     public void testNamedStep() {
