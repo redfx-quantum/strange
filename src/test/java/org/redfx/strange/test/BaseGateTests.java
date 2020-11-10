@@ -32,19 +32,31 @@
  */
 package org.redfx.strange.test;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.redfx.strange.Program;
 import org.redfx.strange.QuantumExecutionEnvironment;
 import org.redfx.strange.Result;
 import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
 
-
 public class BaseGateTests {
+
     private static boolean jfxIsSetup;
 
     public Result runProgram(Program program) throws RuntimeException {
-        QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
+        QuantumExecutionEnvironment qee;
+        String ee = System.getProperty("strange.ee");
+        if (ee != null) {
+            try {
+                Class c = Class.forName(ee);
+                qee = (QuantumExecutionEnvironment) c.newInstance();
+            } catch (Exception ex) {
+                Logger.getLogger(BaseGateTests.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException(ex);
+            }
+        }
+        qee = new SimpleQuantumExecutionEnvironment();
         return qee.runProgram(program);
     }
-
 
 }
