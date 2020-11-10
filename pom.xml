@@ -4,7 +4,7 @@
   <groupId>org.redfx</groupId>
   <artifactId>strange</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.18-SNAPSHOT</version>
+  <version>0.0.18</version>
   <name>Strange</name>
   <description>Strange Quantum Simulator</description>
   <url>http://maven.apache.org</url>
@@ -181,6 +181,7 @@
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>${javadoc.plugin.version}</version>
             <configuration>
+              <detectJavaApiLink>false</detectJavaApiLink>
               <source>8</source>
             </configuration>
             <executions>
