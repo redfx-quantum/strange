@@ -46,7 +46,6 @@ public class BaseGateTests {
     public Result runProgram(Program program) throws RuntimeException {
         QuantumExecutionEnvironment qee;
         String ee = System.getProperty("strange.ee");
-        System.err.println("EE = "+ee);
         if (ee != null) {
             try {
                 Class c = Class.forName(ee);
