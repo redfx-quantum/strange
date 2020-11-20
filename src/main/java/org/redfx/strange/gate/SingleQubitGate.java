@@ -45,6 +45,7 @@ import java.util.List;
 public abstract class SingleQubitGate implements Gate {
     
     private int idx;
+    private boolean inverse;
     
     public SingleQubitGate() {}
     
@@ -92,7 +93,18 @@ public abstract class SingleQubitGate implements Gate {
         return "SingleQubit";
     }
     
+    @Override
+    public int getSize() {
+        return 1;
+    }
+    
+    @Override
     public abstract Complex[][] getMatrix();
+    
+    @Override
+    public void setInverse(boolean v) {
+        this.inverse = v;
+    }
     
     @Override public String toString() {
         return "Gate with index "+idx+" and caption "+getCaption();

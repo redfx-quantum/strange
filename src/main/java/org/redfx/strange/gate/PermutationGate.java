@@ -118,6 +118,15 @@ public class PermutationGate implements Gate {
     }
     
     @Override
+    public int getSize() {
+        return 2;
+    }
+    
+    @Override public void setInverse(boolean v) {
+        // NOP
+    }
+    
+    @Override
     public String toString() {
         return "Perm "+a+", "+b;
     }

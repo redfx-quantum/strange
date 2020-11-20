@@ -40,7 +40,7 @@ import org.redfx.strange.Complex;
  */
 public class R extends SingleQubitGate {
     
-    final Complex[][] matrix;
+    Complex[][] matrix;
     private final double expv;
     private int pow = -1;
     
@@ -58,6 +58,12 @@ public class R extends SingleQubitGate {
     @Override
     public Complex[][] getMatrix() {
         return matrix;
+    }
+    
+    @Override
+    public void setInverse(boolean v) {
+        super.setInverse(v);
+        matrix = Complex.conjugateTranspose(matrix);
     }
 
     @Override public String getCaption() { 

@@ -78,7 +78,6 @@ public class ControlledBlockTests extends BaseGateTests {
         BlockGate gate = new BlockGate(block, 0);
         ControlledBlockGate cbg = new ControlledBlockGate(gate, 0, 1);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
 
         p.addStep(prep);
         p.addStep(new Step(cbg));
@@ -102,7 +101,6 @@ public class ControlledBlockTests extends BaseGateTests {
         BlockGate gate = new BlockGate(block, 0);
         ControlledBlockGate cbg = new ControlledBlockGate(gate, 1, 0);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
 
         p.addStep(prep);
         p.addStep(new Step(cbg));
@@ -122,7 +120,6 @@ public class ControlledBlockTests extends BaseGateTests {
         BlockGate gate = new BlockGate(block, 0);
         ControlledBlockGate cbg = new ControlledBlockGate(gate, 1, 2);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
 
         p.addStep(prep);
         p.addStep(new Step(cbg));
@@ -143,7 +140,6 @@ public class ControlledBlockTests extends BaseGateTests {
         BlockGate gate = new BlockGate(block, 0);
         ControlledBlockGate cbg = new ControlledBlockGate(gate, 0, 2);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
 
         p.addStep(prep);
         p.addStep(new Step(cbg));
@@ -164,15 +160,11 @@ public class ControlledBlockTests extends BaseGateTests {
         BlockGate gate = new BlockGate(block, 0);
         ControlledBlockGate cbg = new ControlledBlockGate(gate, 1, 0);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
 
         p.addStep(prep);
         p.addStep(new Step(cbg));
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
-        for (int i = 0; i < 3; i++) {
-            System.err.println("q["+i+"] = "+q[i].measure());
-        }
         assertEquals(3, q.length);
         assertEquals(1, q[0].measure());
         assertEquals(1, q[1].measure());
@@ -189,7 +181,6 @@ public class ControlledBlockTests extends BaseGateTests {
         BlockGate gate = new BlockGate(block, 0);
         ControlledBlockGate cbg = new ControlledBlockGate(gate, 2, 0);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
 
         p.addStep(prep);
         p.addStep(new Step(cbg));
@@ -197,9 +188,6 @@ public class ControlledBlockTests extends BaseGateTests {
         Complex[] probability = result.getProbability();
         Complex.printArray(probability);
         Qubit[] q = result.getQubits();
-                for (int i = 0; i < 3; i++) {
-            System.err.println("q["+i+"] = "+q[i].measure());
-        }
         assertEquals(3, q.length);
         assertEquals(1, q[0].measure());
         assertEquals(0, q[1].measure());
@@ -215,7 +203,6 @@ public class ControlledBlockTests extends BaseGateTests {
         BlockGate gate = new BlockGate(block, 0);
         ControlledBlockGate cbg = new ControlledBlockGate(gate, 3, 1);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
 
         p.addStep(prep);
         p.addStep(new Step(cbg));
@@ -223,9 +210,6 @@ public class ControlledBlockTests extends BaseGateTests {
         Complex[] probability = result.getProbability();
         Complex.printArray(probability);
         Qubit[] q = result.getQubits();
-                for (int i = 0; i < 4; i++) {
-            System.err.println("q["+i+"] = "+q[i].measure());
-        }
         assertEquals(4, q.length);
         assertEquals(0, q[0].measure());
         assertEquals(1, q[1].measure());
@@ -242,7 +226,6 @@ public class ControlledBlockTests extends BaseGateTests {
         BlockGate gate = new BlockGate(block, 0);
         ControlledBlockGate cbg = new ControlledBlockGate(gate, 1, 3);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
 
         p.addStep(prep);
         p.addStep(new Step(cbg));
@@ -250,9 +233,7 @@ public class ControlledBlockTests extends BaseGateTests {
         Complex[] probability = result.getProbability();
         Complex.printArray(probability);
         Qubit[] q = result.getQubits();
-                for (int i = 0; i < 4; i++) {
-            System.err.println("q["+i+"] = "+q[i].measure());
-        }
+
         assertEquals(4, q.length);
         assertEquals(0, q[0].measure());
         assertEquals(0, q[1].measure());

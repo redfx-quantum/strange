@@ -79,7 +79,6 @@ public class Mul extends BlockGate<Mul> {
         }
 
         for (int i = x0; i < x1+1; i++) {
-            System.err.println("swap "+i+" with "+(i+size));
             answer.addStep(new Step (new Swap(i, i + size)));
         }
 
