@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.redfx.strange.Block;
 import org.redfx.strange.BlockGate;
+import org.redfx.strange.Complex;
 import org.redfx.strange.ControlledBlockGate;
 import org.redfx.strange.Program;
 import org.redfx.strange.Qubit;
@@ -43,9 +44,13 @@ import org.redfx.strange.Result;
 import org.redfx.strange.Step;
 import org.redfx.strange.gate.Add;
 import org.redfx.strange.gate.AddInteger;
+import org.redfx.strange.gate.AddModulus;
 import org.redfx.strange.gate.Cnot;
+import org.redfx.strange.gate.Fourier;
+import org.redfx.strange.gate.InvFourier;
 import org.redfx.strange.gate.Mul;
 import org.redfx.strange.gate.MulModulus;
+import org.redfx.strange.gate.R;
 import org.redfx.strange.gate.Swap;
 import org.redfx.strange.gate.X;
 import org.redfx.strange.local.Computations;
@@ -55,20 +60,204 @@ import org.redfx.strange.local.Computations;
  * @author johan
  */
 public class SingleTest extends BaseGateTests {
-  @Test
-    public void add01() {
-        Program p = new Program(2);
+    
+    @Test
+    public void multiplyMod5x3andswapandcleans1a0() { // 5 x 3 mod 6 = 3
+        Program p = new Program(9);
         Step prep = new Step();
-        prep.addGate(new X(1));
+        int mul = 5;
+        int N = 6;
+        prep.addGates(new X(4), new X(5)); // 3 in high register
         p.addStep(prep);
-        Add add = new Add(0,0,1,1);
-        p.addStep(new Step(add));
+        for (int i = 0; i < mul; i++) {
+            AddModulus add = new AddModulus(0, 3, 4, 7, N);
+            p.addStep(new Step(add));
+        }
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
+        assertEquals(9, q.length);
+        assertEquals(1, q[0].measure()); // q2,q1,q0,q3 should be clean
+        assertEquals(1, q[1].measure());  
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure()); // result in q4,q5,q6,q7
+        assertEquals(1, q[5].measure());
+        assertEquals(0, q[6].measure());  
+        assertEquals(0, q[7].measure());  
+        assertEquals(0, q[8].measure());  
+    }
+      
+    
+    //   @Test
+    public void multiplyMod5x3andswapandcleans2() { // 5 x 3 mod 6 = 3
+        System.err.println("C2");
+        // |A00110000> -> 
+        Program p = new Program(9);
+        Step prep = new Step();
+        int mul = 5;
+        int N = 6;
+        prep.addGates(new X(4), new X(5)); // 3 in high register
+        p.addStep(prep);
+        for (int i = 0; i < 1; i++) {
+            AddModulus add = new AddModulus(0, 3, 4, 7, N);
+            p.addStep(new Step(add));
+        }
+        p.addStep(new Step( new Swap(0,4)));
+        p.addStep(new Step( new Swap(1,5)));
+        p.addStep(new Step( new Swap(2,6)));
+        p.addStep(new Step( new Swap(3,7)));
+
+        int invsteps = Computations.getInverseModulus(mul,N);
+        System.err.println("INVSTEPS = "+invsteps);
+        for (int i = 0; i < invsteps; i++) {
+            AddModulus addModulus = new AddModulus(0, 3, 4, 7, N).inverse();
+            p.addStep(new Step(addModulus));
+        }
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        System.err.println("Results: ");
+        for (int i = 0; i < 9; i++) {
+            System.err.println("m["+i+"]: "+q[i].measure());
+        }
+        assertEquals(9, q.length);
+        assertEquals(0, q[0].measure()); // q2,q1,q0,q3 should be clean
+        assertEquals(0, q[1].measure());  
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure()); // result in q4,q5,q6,q7
+        assertEquals(1, q[5].measure());
+        assertEquals(0, q[6].measure());  
+        assertEquals(0, q[7].measure());  
+        assertEquals(0, q[8].measure());  
+    }
+//    @Test
+    public void multiplyMod5x3andswapandcleans1() { // 5 x 3 mod 6 = 3
+        Program p = new Program(9);
+        Step prep = new Step();
+        int mul = 5;
+        int N = 6;
+        prep.addGates(new X(4), new X(5)); // 3 in high register
+        p.addStep(prep);
+        for (int i = 0; i < mul; i++) {
+            AddModulus add = new AddModulus(0, 3, 4, 7, N);
+            p.addStep(new Step(add));
+        }
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(9, q.length);
+        assertEquals(1, q[0].measure()); // q2,q1,q0,q3 should be clean
+        assertEquals(1, q[1].measure());  
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure()); // result in q4,q5,q6,q7
+        assertEquals(1, q[5].measure());
+        assertEquals(0, q[6].measure());  
+        assertEquals(0, q[7].measure());  
+        assertEquals(0, q[8].measure());  
+    }
+//@Test 
+    public void mul13() { // 0100 -> 1100
+        Program p = new Program(4);
+        Step prep = new Step();
+        prep.addGates(new X(2));
+        Step s = new Step(new Mul(0,1,3));
+        p.addStep(prep);
+        p.addStep(s);
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(4, q.length);
+        System.err.println("results: ");
+        for (int i = 0; i < 4; i++) {
+            System.err.println("m["+i+"]: "+q[i].measure());
+        }
+        assertEquals(0, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(1, q[2].measure());
+        assertEquals(1, q[3].measure());
+    }
+    
+   // @Test
+    public void addmodp0() {
+        int N = 1;
+        int dim = 2;
+        Program p = new Program(dim);
+    //            AddInteger min = new AddInteger(0,1,N);
+
+        AddInteger min = new AddInteger(0,1,N).inverse();
+        p.addStep(new Step(min));
+
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        for (int i = 0; i < q.length; i++) {
+            System.err.println("q["+i+"] = "+q[i].measure());
+        }
         assertEquals(2, q.length);
         assertEquals(1, q[0].measure());
-        assertEquals(1, q[1].measure());   
+        assertEquals(1, q[1].measure());
     }
+    
+// @Test
+    public void addmod1() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(0));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(0, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(1, q[6].measure());
+    }
+  //  @Test
+    public void addmod2() {
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(0));
+        p.addStep(prep);
+        Add add = new Add(0,2,3,5);
+        p.addStep(new Step(add));
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        p.addStep(new Step(new Cnot(2,dim-1)));
+        AddInteger addN = new AddInteger(0,2,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
+        System.err.println("CBG created: "+cbg);
+        p.addStep(new Step(cbg));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        for (int i =0; i < 7; i++) {
+            System.err.println("Q["+i+"]: "+q[i].measure());
+        }
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(1, q[6].measure());
+        System.err.println("DONE");
+    }
+
 //    @Test
     public void cf () {
         double d = 340./1024;
@@ -108,7 +297,7 @@ public class SingleTest extends BaseGateTests {
         assertEquals(0, q[9].measure());  
     }
     
-  //  @Test // 
+   // ja  @Test // 
     public void expmul3p4mod7() { // 3^4 = 81 -> mod 7 = 4
         int length = 3; 
         // q0 -> q2: 4
@@ -126,14 +315,11 @@ public class SingleTest extends BaseGateTests {
             for (int j = 0; j < 1 << i; j++) {
                 m = m*a %mod;
             }
-//            int m = (int) Math.pow(a, 1 << i);
             System.err.println("M = "+m);
             MulModulus mul = new MulModulus(length, 2 * length, m, mod);
             ControlledBlockGate cbg = new ControlledBlockGate(mul, length, i);
             p.addStep(new Step(cbg));
         }
-          //          MulModulus mul = new MulModulus(3, 6, 2, 7);
-//p.addStep(new Step(mul));
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
         assertEquals(12, q.length);
@@ -156,7 +342,7 @@ public class SingleTest extends BaseGateTests {
     }
     
     
-//    @Test // 
+ //  @Test // 
     public void expmul() {
         int length = 2;
         int a = 3;

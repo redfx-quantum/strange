@@ -43,8 +43,7 @@ public class InvFourier extends Fourier {
      * @param idx the index of the first qubit in the circuit affected by this gate
      */
     public InvFourier(int size, int idx) {
-        super(size, idx);
-      //  super(new Block("Fourier", size), idx);
+        super("InvFourier", size, idx);
     }
     
     @Override
@@ -87,7 +86,11 @@ public class InvFourier extends Fourier {
                 }
             }
         }
-        Complex.printMatrix(matrix);
         return matrix;
+    }
+    
+    @Override
+    public boolean hasOptimization() {
+        return false;
     }
 }

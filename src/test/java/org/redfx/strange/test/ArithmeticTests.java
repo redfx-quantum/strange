@@ -165,6 +165,20 @@ public class ArithmeticTests extends BaseGateTests {
     }
     
     @Test
+    public void addmodp0() {
+        int N = 1;
+        int dim = 2;
+        Program p = new Program(dim);
+        AddInteger min = new AddInteger(0,1,N).inverse();
+        p.addStep(new Step(min));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(2, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+    }
+    
+    @Test
     public void add0num0() {
         Program p = new Program(1);
         Step prep = new Step();
@@ -431,10 +445,6 @@ public class ArithmeticTests extends BaseGateTests {
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
         assertEquals(4, q.length);
-        System.err.println("results: ");
-        for (int i = 0; i < 4; i++) {
-            System.err.println("m["+i+"]: "+q[i].measure());
-        }
         assertEquals(0, q[0].measure());
         assertEquals(0, q[1].measure());
         assertEquals(1, q[2].measure());
@@ -453,10 +463,6 @@ public class ArithmeticTests extends BaseGateTests {
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
         assertEquals(6, q.length);
-        System.err.println("results: ");
-        for (int i = 0; i < 6; i++) {
-            System.err.println("m["+i+"]: "+q[i].measure());
-        }
         assertEquals(0, q[0].measure());
         assertEquals(0, q[1].measure());
         assertEquals(0, q[2].measure());
@@ -472,7 +478,6 @@ public class ArithmeticTests extends BaseGateTests {
         Add add = new Add(0,0,1,1);
         ControlledBlockGate cbg = new ControlledBlockGate(add, 1,0);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
         Step prep = new Step();
         prep.addGates(new X(0));
         p.addStep(prep);
@@ -493,7 +498,6 @@ public class ArithmeticTests extends BaseGateTests {
         Add add = new Add(0,0,1,1);
         ControlledBlockGate cbg = new ControlledBlockGate(add, 0,2);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
         Step prep = new Step();
         prep.addGates(new X(2));
         p.addStep(prep);
@@ -514,7 +518,6 @@ public class ArithmeticTests extends BaseGateTests {
         Add add = new Add(0,0,1,1);
         ControlledBlockGate cbg = new ControlledBlockGate(add, 1,0);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
         Step prep = new Step();
         prep.addGates(new X(0), new X(2));
         p.addStep(prep);
@@ -535,7 +538,6 @@ public class ArithmeticTests extends BaseGateTests {
         Add add = new Add(0,0,1,1);
         ControlledBlockGate cbg = new ControlledBlockGate(add, 0,2);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
         Step prep = new Step();
         prep.addGates(new X(1), new X(2));
         p.addStep(prep);
@@ -556,7 +558,6 @@ public class ArithmeticTests extends BaseGateTests {
         Add add = new Add(0,0,1,1);
         ControlledBlockGate cbg = new ControlledBlockGate(add, 0,2);
         Complex[][] m = cbg.getMatrix();
-        Complex.printMatrix(m, System.err);
         Step prep = new Step();
         prep.addGates(new X(0), new X(1), new X(2));
         p.addStep(prep);
@@ -594,10 +595,6 @@ public class ArithmeticTests extends BaseGateTests {
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
         assertEquals(6, q.length);
-        System.err.println("results: ");
-        for (int i = 0; i < 6; i++) {
-            System.err.println("m["+i+"]: "+q[i].measure());
-        }
         assertEquals(0, q[0].measure());
         assertEquals(0, q[1].measure());
         assertEquals(0, q[2].measure());
@@ -997,10 +994,6 @@ public class ArithmeticTests extends BaseGateTests {
 
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
-                System.err.println("Results: ");
-        for (int i = 0; i < 7; i++) {
-            System.err.println("m["+i+"]: "+q[i].measure());
-        }
         assertEquals(7, q.length);
         assertEquals(1, q[0].measure());
         assertEquals(1, q[1].measure());
@@ -1025,10 +1018,6 @@ public class ArithmeticTests extends BaseGateTests {
         p.addStep(mod);
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
-        System.err.println("Results: ");
-        for (int i = 0; i < 7; i++) {
-            System.err.println("m["+i+"]: "+q[i].measure());
-        }
         assertEquals(7, q.length);
         assertEquals(1, q[0].measure());
         assertEquals(0, q[1].measure());
@@ -1084,17 +1073,12 @@ public class ArithmeticTests extends BaseGateTests {
         p.addStep(new Step( new Swap(3,7)));
 
         int invsteps = Computations.getInverseModulus(mul,N);
-        System.err.println("INVSTEPS = "+invsteps);
         for (int i = 0; i < invsteps; i++) {
             AddModulus addModulus = new AddModulus(0, 3, 4, 7, N).inverse();
             p.addStep(new Step(addModulus));
         }
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
-        System.err.println("Results: ");
-        for (int i = 0; i < 9; i++) {
-            System.err.println("m["+i+"]: "+q[i].measure());
-        }
         assertEquals(9, q.length);
         assertEquals(0, q[0].measure()); // q2,q1,q0,q3 should be clean
         assertEquals(0, q[1].measure());  
@@ -1119,10 +1103,7 @@ public class ArithmeticTests extends BaseGateTests {
         p.addStep(s);
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
-        System.err.println("results: ");
-        for (int i = 0; i < 9; i++) {
-            System.err.println("m["+i+"]: "+q[i].measure());
-        }
+
         assertEquals(9, q.length);
         assertEquals(0, q[0].measure()); // q2,q1,q0,q3 should be clean
         assertEquals(0, q[1].measure());  
@@ -1147,10 +1128,6 @@ public class ArithmeticTests extends BaseGateTests {
         p.addStep(s);
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
-        System.err.println("results: ");
-        for (int i = 0; i < 9; i++) {
-            System.err.println("m["+i+"]: "+q[i].measure());
-        }
         assertEquals(10, q.length);
         assertEquals(0, q[0].measure());
         assertEquals(0, q[1].measure()); // q2,q1,q0,q3 should be clean
@@ -1176,10 +1153,6 @@ public class ArithmeticTests extends BaseGateTests {
         p.addStep(s);
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
-        System.err.println("results: ");
-        for (int i = 0; i < 9; i++) {
-            System.err.println("m["+i+"]: "+q[i].measure());
-        }
         assertEquals(9, q.length);
         assertEquals(0, q[0].measure()); // q2,q1,q0,q3 should be clean
         assertEquals(0, q[1].measure());  

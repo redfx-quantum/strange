@@ -136,6 +136,12 @@ public class Step {
         return this.program;
     }
 
+    public void setInverse(boolean val) {
+        for (Gate g: gates) {
+            g.setInverse(val);
+        }
+    }
+    
     private void verifyUnique (Gate gate) {
         for (Gate g: gates) {
             long overlap = g.getAffectedQubitIndexes().stream().filter(gate.getAffectedQubitIndexes()::contains).count();

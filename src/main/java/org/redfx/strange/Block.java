@@ -37,6 +37,7 @@ import org.redfx.strange.local.Computations;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.redfx.strange.gate.ProbabilitiesGate;
 
 /**
  *
@@ -51,54 +52,61 @@ public class Block {
 
     /**
      * Create a block spanning size qubits
+     *
      * @param size the number of (adjacent) qubits in this block
      */
     public Block(int size) {
-        this ("anonymous", size);
+        this("anonymous", size);
     }
     
+    /**
+     * Create a named block spanning size qubits
+     *
+     * @param name the name of the block
+     * @param size the number of (adjacent) qubits in this block
+     */
     public Block(String name, int size) {
         this.nqubits = size;
         this.name = name;
     }
-    
+
     public void addStep(Step step) {
         this.steps.add(step);
         matrix = null;
     }
-    
+
     public List<Step> getSteps() {
         return this.steps;
     }
-    
+
     public int getNQubits() {
         return this.nqubits;
     }
-    
+
     private void validateGate(Gate gate) {
-        gate.getAffectedQubitIndexes().stream().filter((idx) -> (idx > nqubits -1)).
+        gate.getAffectedQubitIndexes().stream().filter((idx) -> (idx > nqubits - 1)).
                 forEachOrdered(item -> {
-            throw new IllegalArgumentException("Can't add a gate with qubit index larger than block size");
-        });
+                    throw new IllegalArgumentException("Can't add a gate with qubit index larger than block size");
+                });
     }
 
     Complex[][] getMatrix() {
         return getMatrix(null);
     }
+
     Complex[][] getMatrix(QuantumExecutionEnvironment qee) {
         if (matrix == null) {
-       //     System.err.println("[JVDBG] need to get Matrix for "+nqubits+" qubits for block " +this);
-            matrix = Complex.identityMatrix(1<<nqubits);
+            matrix = Complex.identityMatrix(1 << nqubits);
             List<Step> simpleSteps = new ArrayList<>();
             for (Step step : steps) {
                 simpleSteps.addAll(Computations.decomposeStep(step, nqubits));
             }
             Collections.reverse(simpleSteps);
-            for (Step step: simpleSteps) {
+
+            for (Step step : simpleSteps) {
                 List<Gate> gates = step.getGates();
                 if ((matrix != null) && (gates.size() == 1) && (gates.get(0) instanceof PermutationGate)) {
-                    matrix = Complex.permutate((PermutationGate)gates.get(0), matrix);
-
+                    matrix = Complex.permutate((PermutationGate) gates.get(0), matrix);
                 } else {
                     Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits, qee);
                     if (matrix == null) {
@@ -112,11 +120,51 @@ public class Block {
                     }
                 }
             }
-        } 
+        }
         return matrix;
     }
-    
-    @Override public String toString() {
-        return "Block named "+name+" at "+super.toString();
+
+    public Complex[] applyOptimize(Complex[] probs, boolean inverse) {
+        int dim = probs.length;
+
+        List<Step> simpleSteps = new ArrayList<>();
+        for (Step step : steps) {
+            simpleSteps.addAll(Computations.decomposeStep(step, nqubits));
+        }
+        if (inverse) {
+            Collections.reverse(simpleSteps);
+            for (Step step : simpleSteps) {
+                step.setInverse(true);
+            }
+        }
+        for (Step step : simpleSteps) {
+            if (!step.getGates().isEmpty()) {
+                probs = applyStep(step, probs);
+            }
+        }
+        return probs;
+    }
+
+    private Complex[] applyStep(Step step, Complex[] vector) {
+        long s0 = System.currentTimeMillis();
+        List<Gate> gates = step.getGates();
+        if (!gates.isEmpty() && gates.get(0) instanceof ProbabilitiesGate) {
+            return vector;
+        }
+        if (gates.size() == 1 && gates.get(0) instanceof PermutationGate) {
+            PermutationGate pg = (PermutationGate) gates.get(0);
+            return Computations.permutateVector(vector, pg.getIndex1(), pg.getIndex2());
+        }
+
+        Complex[] result = new Complex[vector.length];
+        result = Computations.calculateNewState(gates, vector, nqubits);
+        long s1 = System.currentTimeMillis();
+        return result;
+
+    }
+
+    @Override
+    public String toString() {
+        return "Block named " + name + " at " + super.toString();
     }
 }

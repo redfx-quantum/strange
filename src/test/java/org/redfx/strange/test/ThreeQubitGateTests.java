@@ -182,7 +182,6 @@ public class ThreeQubitGateTests extends BaseGateTests {
 
     @Test
     public void ToffoliGateR4() {
-        System.err.println("R4");
         // |1100> -> |1101>
         Program p = new Program(4,
            new Step(new X(2),new X(3)),
@@ -198,7 +197,6 @@ public class ThreeQubitGateTests extends BaseGateTests {
 
     @Test
     public void ToffoliGateS2() {
-        System.err.println("S2");
         // |0101> -> |1101>
         Program p = new Program(4,
            new Step(new X(0),new X(2)),

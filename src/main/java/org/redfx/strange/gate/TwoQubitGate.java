@@ -47,6 +47,7 @@ public abstract class TwoQubitGate implements Gate {
     private int first;
     private int second;
     private int highest = -1;
+    private boolean inverse;
     
     public TwoQubitGate() {}
     
@@ -104,7 +105,16 @@ public abstract class TwoQubitGate implements Gate {
     public String getGroup() {
         return "TwoQubit";
     }
+     
+    @Override
+    public int getSize() {
+        return 2;
+    }
     
+    @Override
+    public void setInverse(boolean v) {
+        this.inverse = v;
+    }
     
     @Override public String toString() {
         return "Gate acting on qubits "+first+" and "+second+" and caption "+getCaption();

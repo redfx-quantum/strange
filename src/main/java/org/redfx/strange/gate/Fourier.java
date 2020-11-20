@@ -52,12 +52,14 @@ public class Fourier extends BlockGate {
      * @param idx the index of the first qubit in the circuit affected by this gate
      */
     public Fourier(int dim, int idx) {
-        super(new Block("Fourier", dim), idx);
-        this.dim = dim;
-        this.size = 1 <<dim;
-      //  System.err.println("Created a fourier block");
+        this("Fourier", dim, idx);
     }
     
+    public Fourier(String name, int dim, int idx) {
+         super(new Block(name, dim), idx);
+        this.dim = dim;
+        this.size = 1 <<dim;
+    }
     
     @Override
     public Complex[][] getMatrix() {
@@ -66,8 +68,6 @@ public class Fourier extends BlockGate {
     
     @Override
     public Complex[][] getMatrix(QuantumExecutionEnvironment eqq) {
-      //  System.err.println("Get fourier matrix");
-        //Thread.dumpStack();
 
         if (matrix == null) {
             double omega = Math.PI*2/size;
@@ -87,6 +87,21 @@ public class Fourier extends BlockGate {
     }
 
     @Override
+    public void setInverse(boolean v) {
+        if (v) {
+            Complex[][] m = getMatrix();
+            this.matrix = Complex.conjugateTranspose(m);
+        }
+    }
+
+    @Override
+    public Fourier inverse() {
+        Complex[][] m = getMatrix();
+        this.matrix = Complex.conjugateTranspose(m);
+        return this;
+    }
+    
+    @Override
     public List<Integer> getAffectedQubitIndexes() {
         return IntStream.range(idx, idx+dim).boxed().collect(Collectors.toList());
     }
@@ -94,5 +109,10 @@ public class Fourier extends BlockGate {
     @Override
     public int getHighestAffectedQubitIndex() {
         return dim+idx-1;
+    }
+    
+    @Override
+    public boolean hasOptimization() {
+        return false; // for now, we calculate the matrix
     }
 }

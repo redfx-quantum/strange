@@ -60,7 +60,12 @@ public class Oracle implements Gate {
             setAdditionalQubit(i,i);
         }
     }
-
+ 
+    @Override
+    public int getSize() {
+        return span;
+    }
+    
     public void setCaption(String c) {
         this.caption = c;
     }
@@ -124,6 +129,13 @@ public class Oracle implements Gate {
                     matrix[i][j] = Complex.ZERO;
                 }
             }
+        }
+    }
+
+    @Override
+    public void setInverse(boolean inv) {
+        if (inv) {
+            this.matrix = Complex.conjugateTranspose(matrix);
         }
     }
 }

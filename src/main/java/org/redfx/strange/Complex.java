@@ -154,15 +154,9 @@ public final class Complex {
      * @return
      */
     public static Complex[][] tensor(Complex[][] a, Complex[][] b) {
-        Complex.printMatrix(a);
-        Complex.printMatrix(b);
         int d1 = a.length;
         int d2 = b.length;
-       // System.err.println("tensor for "+d1+" and "+d2+", new dim will be "+(d1*d2));
-        //Computations.printMemory();
         Complex[][] result = new Complex[d1 * d2][d1 * d2];
-        //System.err.println("allocated memory");
-// Computations.printMemory();
         for (int rowa = 0; rowa < d1; rowa++) {
             for (int cola = 0; cola < d1; cola++) {
                 for (int rowb = 0; rowb < d2; rowb++) {
@@ -176,9 +170,6 @@ public final class Complex {
                 }
             }
         }
-        //System.err.println("tensor created new matrix");
-        //Computations.printMemory();
-
         return result;
     }
     static int zCount = 0;
@@ -189,7 +180,6 @@ public final class Complex {
     }
     
     public static Complex[][] slowmmul(Complex[][] a, Complex[][] b) {
-     //   System.err.println("slowmul");
         int arow = a.length;
         int acol = a[0].length;
         int brow = b.length;
@@ -210,78 +200,8 @@ public final class Complex {
 
         return answer;
     }
-        
-    private static Complex[][] fastmmul(Complex[][] a, Complex[][] b) {
-        /*
-        long l0 = System.currentTimeMillis();
-        int arow = a.length;
-        int acol = a[0].length;
-        int brow = b.length;
-        int bcol = b[0].length;
-        int am = 0;
-        if (acol != brow) {
-            throw new RuntimeException("#cols a " + acol + " != #rows b " + brow);
-        }
-        Complex[][] answer = new Complex[arow][bcol];
-        double[][] ar = new double[arow][acol];
-        double[][] ai = new double[arow][acol];
-        double[][] br = new double[brow][bcol];
-        double[][] bi = new double[brow][bcol];
-        dbg("start for loop");
-        for (int i = 0; i < arow; i++) {
-            for (int j = 0; j < bcol; j++) {
-                Complex el = new Complex(0., 0.);
-                double newr = 0;
-                double newi = 0;
-                boolean zero = true;
-                for (int k = 0; k < acol; k++) {
-                    if (j == 0) {
-                        ar[i][k] = a[i][k].r;
-                        ai[i][k] = a[i][k].i;
-                    }
-                    if (i == 0) {
-                        br[k][j] = b[k][j].r;
-                        bi[k][j] = b[k][j].i;
-                    }
-                }
-                if (zero) {
-                    answer[i][j] = Complex.ZERO;
-                    zCount++;
-                } else {
-                    answer[i][j] = Complex.ZERO;
-                    nzCount++;
-                }
 
-                //      System.err.println("ANSWER["+i+"]["+j+"] = "+answer[i][j]);
-
-            }
-        }
-        //     if (1 < 2) System.exit(0);
-        long l1 = System.currentTimeMillis();
-        dbg("mulitply matrix " + arow + ", " + acol + ", " + bcol + " took " + (l1 - l0) + " zc = " + zCount + " and nzc = " + nzCount + " and am = " + am);
-        INDArray n_ar = Nd4j.create(ar);
-        INDArray n_ai = Nd4j.create(ai);
-        INDArray n_br = Nd4j.create(br);
-        INDArray n_bi = Nd4j.create(bi);
-        INDArray n_r = n_ar.mmul(n_br).sub(n_ai.mmul(n_bi));
-        INDArray n_i = n_ai.mmul(n_br).add(n_ar.mmul(n_bi));
-//        System.err.println("ar = "+n_ar);
-//        System.err.println("br = "+n_br);
-//        System.err.println("nr = "+n_r);
-//        System.err.println("ni = "+n_i);
-        for (int i = 0; i < acol; i++) {
-            for (int j = 0; j < brow; j++) {
-                answer[i][j] = new Complex(n_r.getDouble(i, j), n_i.getDouble(i, j));
-//                                System.err.println("NDANSWER["+i+"]["+j+"] = "+answer[i][j]);
-
-            }
-        }
-        return answer;
-*/
-        throw new RuntimeException ("Fast multiplication not available");
-    }
-
-    static Complex[][] conjugateTranspose(Complex[][] src) {
+    public static Complex[][] conjugateTranspose(Complex[][] src) {
         int d0 = src.length;
         int d1 = src[0].length;
         Complex[][] answer = new Complex[d1][d0];
@@ -417,9 +337,16 @@ public final class Complex {
         }
     }
 
+ 
     @Override
     public String toString() {
-        return "(" + this.r + ", " + this.i + ")";
+        double mr = this.r;
+        double mi = this.i;
+        if (Math.abs(mr) < 1e-7) mr = 0;
+        if (Math.abs(mi) < 1e-7) mi = 0;
+        if (Math.abs(mr) > .999999) mr = 1;
+        if (Math.abs(mi) > .999999) mi = 1;
+        return "(" + mr + ", " + mi + ")";
     }
-    
+
 }

@@ -47,7 +47,6 @@ public class ClassicTests {
         int o = 0;
         for (int i = 0; i < 100; i++) {
             int b = Classic.randomBit();
-            System.out.println("b = "+b);
             if (b == 0) z++;
             if (b == 1) o++;
         }

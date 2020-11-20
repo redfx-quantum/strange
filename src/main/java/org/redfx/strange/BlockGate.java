@@ -40,12 +40,13 @@ import java.util.stream.IntStream;
  *
  * A Gate describes an operation on one or more qubits.
  * @author johan
+ * @param <T> Type of the Gate
  */
-public class BlockGate<T> implements Gate {
+public class BlockGate<T extends Gate> implements Gate {
 
     protected Block block;
     protected int idx;
-    private boolean inverse = false;
+    protected boolean inverse = false;
     
     protected BlockGate() {
     }
@@ -123,21 +124,38 @@ public class BlockGate<T> implements Gate {
         Complex[][] answer = block.getMatrix(qee);
         if (inverse) {
             answer = Complex.conjugateTranspose(answer);
+            Complex.printMatrix(answer);
         }
         return answer;
     }
     
-    public T inverse() {
-        this.inverse = !inverse;
-        return (T)this;
+    @Override
+    public void setInverse(boolean inv) {
+        this.inverse = inv;
     }
     
+    public T inverse() {
+        setInverse(true);
+        return (T) this;
+    }
+    
+    @Override
     public int getSize() {
         return block.getNQubits();
     }
-    
+        
+    @Override
+    public boolean hasOptimization() {
+        return true;
+    }
+
+    @Override
+    public Complex[] applyOptimize(Complex[] v) {
+        return block.applyOptimize(v, inverse);
+    }
+
     @Override public String toString() {
-        return "Gate for block "+block+", size = "+getSize();
+        return "Gate for block "+block+", size = "+getSize()+", inv = "+inverse;
     }
 
     

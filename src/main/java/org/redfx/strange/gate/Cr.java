@@ -74,7 +74,6 @@ public class Cr extends TwoQubitGate {
         {Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO},
         {Complex.ZERO,Complex.ZERO,Complex.ZERO,new Complex(ar, ai)}        
         };
-       // Complex.printMatrix(matrix);
     }
     public Cr(int a, int b, int base, int pow) {
         this(a,b, Math.PI*2/Math.pow(base, pow));
@@ -84,6 +83,14 @@ public class Cr extends TwoQubitGate {
     @Override
     public Complex[][] getMatrix() {
         return matrix;
+    }
+    
+    @Override 
+    public void setInverse(boolean inv) {
+        if (inv) {
+            Complex[][] m = getMatrix();
+            this.matrix = Complex.conjugateTranspose(m);
+        }
     }
 
     @Override public String getCaption() {

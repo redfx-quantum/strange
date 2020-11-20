@@ -37,13 +37,12 @@ import org.redfx.strange.local.Computations;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  *
  * A Gate describes an operation on one or more qubits.
  * @author johan
+ * @param <T> type of the Block
  */
 public class ControlledBlockGate<T> extends BlockGate {
 
@@ -147,7 +146,7 @@ public class ControlledBlockGate<T> extends BlockGate {
     public Complex[][] getMatrix() {
         return getMatrix(null);
     }
-    
+
     @Override
     public Complex[][] getMatrix(QuantumExecutionEnvironment qee) {
         if (matrix == null) {
@@ -191,30 +190,35 @@ public class ControlledBlockGate<T> extends BlockGate {
         }
         return matrix;
     }
+    
+    @Override
+    public boolean hasOptimization() {
+        return true;
+    }
+
+    @Override
+    public Complex[] applyOptimize(Complex[] v) {
+        int size = v.length;
+        Complex[] answer = new Complex[size];
+        int dim = size / 2;
+        Complex[] oldv = new Complex[dim];
+        for (int i = 0; i < dim; i++) {
+            oldv[i] = v[i + dim];
+        }
+        Complex[] p2 = block.applyOptimize(oldv, inverse);
+        for (int i = 0; i < dim; i++) {
+            answer[i] = v[i];
+            answer[dim + i] = p2[i];
+        }
+        return answer;
+    }
 
     public int getSize() {
         return block.getNQubits()+1;
     }
     
     @Override public String toString() {
-        return "CGate for "+super.toString();
-    }
-
-    void printMemory() {
-        if (1 < 2) return;
-        Runtime rt = Runtime.getRuntime();
-        long fm = rt.freeMemory()/1024;
-        long mm = rt.maxMemory()/1024;
-        long tm = rt.totalMemory()/1024;
-        long um = tm - fm;
-        System.err.println("free = "+fm+", mm = "+mm+", tm = "+tm+", used = "+um);
-        System.err.println("now gc...");
-        System.gc();
-        fm = rt.freeMemory()/1024;
-        mm = rt.maxMemory()/1024;
-        tm = rt.totalMemory()/1024;
-        um = tm - fm;
-        System.err.println("free = "+fm+", mm = "+mm+", tm = "+tm+", used = "+um);
+        return "ControlledGate for "+super.toString();
     }
     
 }
