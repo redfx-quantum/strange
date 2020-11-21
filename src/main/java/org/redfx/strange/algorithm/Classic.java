@@ -185,13 +185,20 @@ public class Classic {
      * Find the periodicity of a^x mod N
      * @param a
      * @param mod N
-     * @return period r
+     * @return period r or -1 if no period is found
      */
     public static int findPeriod(int a, int mod) {
+        int maxtries = 2;
+        int tries = 0;
         int p = 0;
-        while (p == 0) {
+        while ((p == 0) && tries < maxtries) {
+            System.err.println("MEASURE period, a = "+a+", mod = "+mod);
             p = measurePeriod(a, mod);
+            if (p ==0) {
+                System.err.println("We measured a periodicity of 0, and have to start over.");
+            }
         }
+        if (p ==0) return -1;
         int period = Computations.fraction(p, mod);
         return period;
     }
@@ -204,6 +211,11 @@ public class Classic {
         System.out.println("calculate gcd(a, N):"+ gcdan); 
         if (gcdan != 1) return gcdan;
         int p = findPeriod (a, N); 
+        if (p == -1) {
+            System.err.println("After too many tries with " + a+", we need to pick a new random number.");
+            return qfactor(N);
+
+        }
         System.out.println("period of f = "+p);
         if (p%2 == 1) { 
             System.out.println("bummer, odd period, restart.");
