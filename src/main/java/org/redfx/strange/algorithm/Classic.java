@@ -192,7 +192,6 @@ public class Classic {
         int tries = 0;
         int p = 0;
         while ((p == 0) && tries < maxtries) {
-            System.err.println("MEASURE period, a = "+a+", mod = "+mod);
             p = measurePeriod(a, mod);
             if (p ==0) {
                 System.err.println("We measured a periodicity of 0, and have to start over.");
