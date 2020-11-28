@@ -61,7 +61,31 @@ import org.redfx.strange.local.Computations;
  */
 public class SingleTest extends BaseGateTests {
     
-    @Test
+   // @Test
+    public void minus1() {
+        int N = 3;
+        int dim = 3;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(0));
+        p.addStep(prep);
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        System.err.println("matrix for min = ");
+        Complex.printMatrix(min.getMatrix());
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        for (int i = 0; i < dim;i++) {
+            System.err.println("m["+i+"] = "+q[i].measure());
+        }
+        assertEquals(dim, q.length);
+        assertEquals(0, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+    }
+    
+//    @Test
     public void multiplyMod5x3andswapandcleans1a0() { // 5 x 3 mod 6 = 3
         Program p = new Program(9);
         Step prep = new Step();
@@ -196,33 +220,6 @@ public class SingleTest extends BaseGateTests {
         assertEquals(1, q[1].measure());
     }
     
-// @Test
-    public void addmod1() {
-        int n = 2;
-        int N = 3;
-        int dim = 2 * (n+1)+1;
-        Program p = new Program(dim);
-        Step prep = new Step();
-        prep.addGates(new X(0));
-        p.addStep(prep);
-        Add add = new Add(0,2,3,5);
-        p.addStep(new Step(add));
-        
-        AddInteger min = new AddInteger(0,2,N).inverse();
-        p.addStep(new Step(min));
-        p.addStep(new Step(new Cnot(2,dim-1)));
-
-        Result result = runProgram(p);
-        Qubit[] q = result.getQubits();
-        assertEquals(7, q.length);
-        assertEquals(0, q[0].measure());
-        assertEquals(1, q[1].measure());
-        assertEquals(1, q[2].measure());
-        assertEquals(0, q[3].measure());
-        assertEquals(0, q[4].measure());
-        assertEquals(0, q[5].measure());
-        assertEquals(1, q[6].measure());
-    }
   //  @Test
     public void addmod2() {
         int n = 2;

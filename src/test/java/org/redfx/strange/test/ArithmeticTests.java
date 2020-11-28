@@ -603,6 +603,25 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(1, q[5].measure());
     }
     
+     
+    @Test
+    public void minus1() {
+        int N = 3;
+        int dim = 3;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(0));
+        p.addStep(prep);
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(dim, q.length);
+        assertEquals(0, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+    }
     
     @Test
     public void addmod0() {

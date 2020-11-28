@@ -33,81 +33,36 @@
 package org.redfx.strange.gate;
 
 import org.redfx.strange.Complex;
-import org.redfx.strange.Gate;
-import java.util.Collections;
-import java.util.List;
 
 /**
  *
- * This class describe a Gate that operates on a single qubit only.
+ * This class describe a Gate that operates on a single qubit only and that is
+ * predefined with a given matrix.
+ * 
  * @author johan
  */
-public abstract class SingleQubitGate implements Gate {
+public class SingleQubitMatrixGate extends SingleQubitGate {
     
-    protected int idx;
-    private boolean inverse;
+    private Complex[][] matrix;
     
-    public SingleQubitGate() {}
-    
-    public SingleQubitGate (int idx) {
-        this.idx = idx;
-    }
-
-    @Override
-    public int getMainQubitIndex() {
-        return this.idx;
+    public SingleQubitMatrixGate(int idx, Complex[][] m) {
+        super(idx);
+        this.matrix = m;
     }
     
     @Override
-    public void setMainQubitIndex(int idx) {
-        this.idx = idx;
+    public Complex[][] getMatrix() {
+        return this.matrix;
     }
-    
-    @Override
-    public void setAdditionalQubit(int idx, int cnt) {
-        throw new RuntimeException("A SingleQubitGate can not have additional qubits");
-    }
-
-    @Override
-    public List<Integer> getAffectedQubitIndexes() {
-        return Collections.singletonList(idx);
-    }
-
-    @Override
-    public int getHighestAffectedQubitIndex() {
-        return idx;
-    }
-    
-    @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-    
-    @Override
-    public String getCaption() {
-        return getName();    
-    }
-    
-    @Override
-    public String getGroup() {
-        return "SingleQubit";
-    }
-    
-    @Override
-    public int getSize() {
-        return 1;
-    }
-    
-    @Override
-    public abstract Complex[][] getMatrix();
-    
+       
     @Override
     public void setInverse(boolean v) {
-        this.inverse = v;
+        super.setInverse(v);
+        matrix = Complex.conjugateTranspose(matrix);
     }
     
     @Override public String toString() {
-        return "Gate with index "+idx+" and caption "+getCaption();
+        return "SingleQubitMatrixGate with index "+idx;
     }
     
 }
