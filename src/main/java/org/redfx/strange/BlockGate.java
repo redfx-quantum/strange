@@ -124,7 +124,6 @@ public class BlockGate<T extends Gate> implements Gate {
         Complex[][] answer = block.getMatrix(qee);
         if (inverse) {
             answer = Complex.conjugateTranspose(answer);
-            Complex.printMatrix(answer);
         }
         return answer;
     }

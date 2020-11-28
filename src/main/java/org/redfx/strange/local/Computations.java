@@ -383,7 +383,7 @@ public class Computations {
         int nqubits = gate.getSize();
         int gatedim = 1 << nqubits;
         int size = v.length;
-        dbg("GETNEXTPROBABILITY asked for size = " + size + " and gates = " + gates);
+     //   System.err.println("GETNEXTPROBABILITY asked for size = " + size + " and gates = " + gates);
         if (gates.size() > 1) {
 
             int partdim = size / gatedim;

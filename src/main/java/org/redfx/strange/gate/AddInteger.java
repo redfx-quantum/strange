@@ -37,6 +37,8 @@ import org.redfx.strange.BlockGate;
 import org.redfx.strange.Step;
 import static org.redfx.strange.gate.Add.cache;
 import java.util.HashMap;
+import org.redfx.strange.Complex;
+import org.redfx.strange.Gate;
 
 /**
  *
@@ -72,17 +74,29 @@ public class AddInteger extends BlockGate<AddInteger> {
     }
     
     public Block createBlock(int x0, int x1, int num) {
+        boolean old = false;
         int m = x1-x0+1;
         Block answer = new Block("AddInteger ", m);
         answer.addStep(new Step(new Fourier(m, 0)));
+        Step pstep = new Step();
         for (int i = 0; i < m; i++) {
-           for (int j = 0; j < m-i ; j++) {
+            Complex[][] mat = Complex.identityMatrix(2);
+            for (int j = 0; j < m-i ; j++) {
                 int cr0 = m-j-i-1;
-                if ((num >> cr0 & 1 ) == 1) {
-                    Step s = new Step(new R(2,1+j,i));
-                    answer.addStep(s);
+                if ((num >> cr0 & 1) == 1) {
+                    mat = Complex.mmul(mat, new R(2, 1 + j, i).getMatrix());
+                    if (old) {
+                        Step s = new Step(new R(2, 1 + j, i));
+                        answer.addStep(s);
+                    }
                 }
             }
+            if (!old) {
+                pstep.addGate(new SingleQubitMatrixGate(i, mat));
+            }
+        }
+        if (!old) {
+            answer.addStep(pstep);
         }
         answer.addStep(new Step(new InvFourier(m, 0)));
         return answer;
