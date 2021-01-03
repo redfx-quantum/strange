@@ -6,11 +6,50 @@ A Quantum Program, defined by <code>org.redfx.strange.Program</code> can be exec
 <code>org.redfx.strange.QuantumExecutionEnvironment</code>.
 
 You can read more about Java and QuantumComputing in [Quantum Computing for Java Developers](https://www.manning.com/books/quantum-computing-for-java-developers?a_aid=quantumjava&a_bid=e5166ab9)
+<a href="https://www.manning.com/books/quantum-computing-for-java-developers?a_aid=quantumjava&a_bid=e5166ab9">![Quantum Computing for Developers](https://github.com/johanvos/quantumjava/blob/master/qc.png)</a>
+
 
 # Getting Started
 
 Strange is distributed via the traditional Java distribution channels (e.g. maven central and jcenter) and can thus easily be used leveraging maven or gradle build software.
 
+Using maven
+
+A typical `pom.xml` file looks as follows:
+
+```maven
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.redfx.javaqc</groupId>
+  <artifactId>simplestrangedemo</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>SimpleStrangeDemo</name>
+  <url>http://maven.apache.org</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.redfx</groupId>
+      <artifactId>strange</artifactId>
+      <version>0.0.17</version>
+    </dependency>
+  </dependencies>
+  <build> 
+    <plugins>
+      <plugin>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <version>0.0.4</version>
+        <configuration>
+          <mainClass>SimpleStrangeDemo</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+```
 Using gradle
 
 A typical build.gradle file looks as follows:
@@ -78,3 +117,5 @@ Running this application a number of times will consistently give the same proba
 The Strange API's allow to create and simulate quantum programs. A companion project, [StrangeFX](https://github.com/redfx-quantum/strangefx) , allows to visualise programs, and create them with a simple drag and drop interface. The sample program above rendered via StrangeFX looks as follows:
 ![StrangeFX rendering](https://github.com/redfx-quantum/strangefx/blob/master/docs/images/simpleview.png)
 
+# More samples
+You can find more samples at https://github.com/johanvos/quantumjava
