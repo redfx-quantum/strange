@@ -112,9 +112,9 @@ After running the program on this simulator, we inspect the state of the Qubits.
 
 Running this application a number of times will consistently give the same probabilities, and different measurements.
 
-# Visualisation
+# Visualization
 
-The Strange API's allow to create and simulate quantum programs. A companion project, [StrangeFX](https://github.com/redfx-quantum/strangefx) , allows to visualise programs, and create them with a simple drag and drop interface. The sample program above rendered via StrangeFX looks as follows:
+The Strange API's allow creating and simulate quantum programs. A companion project, [StrangeFX](https://github.com/redfx-quantum/strangefx) , allows visualising programs, and create them with a simple drag and drop interface. The sample program above rendered via StrangeFX looks as follows:
 ![StrangeFX rendering](https://github.com/redfx-quantum/strangefx/blob/master/docs/images/simpleview.png)
 
 # More samples
