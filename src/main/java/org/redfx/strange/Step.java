@@ -103,6 +103,14 @@ public class Step {
         return Collections.unmodifiableList(gates);
     }
     
+    /**
+     * Remove a Gate from this step
+     * @param g the Gate that should be removed
+     */
+    public void removeGate(Gate g) {
+        gates.remove(g);
+    }
+    
     public void setComplexStep(int idx) {
         this.complexStep = idx;
     }
