@@ -47,7 +47,7 @@ import org.redfx.strange.gate.X;
  *
  * @author johan
  */
-public class ArithmeticTests3 extends BaseGateTests {
+public class Arithmetic3Tests extends BaseGateTests {
 
     static final double D = 0.000000001d;
         
@@ -189,7 +189,7 @@ public class ArithmeticTests3 extends BaseGateTests {
         assertEquals(0, q[8].measure());
     }
     
-  //      @Test // 
+    // @Test // 
     public void expmul3p4mod7() { // 3^4 = 81 -> mod 7 = 4
         int length = 3; 
         // q0 -> q2: 4

@@ -54,7 +54,7 @@ import org.redfx.strange.local.Computations;
  *
  * @author johan
  */
-public class ArithmeticTests2 extends BaseGateTests {
+public class Arithmetic2Tests extends BaseGateTests {
 
     static final double D = 0.000000001d;
     
@@ -615,7 +615,7 @@ public class ArithmeticTests2 extends BaseGateTests {
     }
     
     public static void main(String[] args) {
-        ArithmeticTests2 t = new ArithmeticTests2();
+        Arithmetic2Tests t = new Arithmetic2Tests();
         t.multiplyMod5x3andswapandcleans1();
     }
 
