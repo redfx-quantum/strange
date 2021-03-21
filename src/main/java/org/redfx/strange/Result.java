@@ -2,7 +2,7 @@
  * #%L
  * Strange
  * %%
- * Copyright (C) 2020 Johan Vos
+ * Copyright (C) 2020, 2021 Johan Vos
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -32,6 +32,9 @@
  */
 package org.redfx.strange;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author johan
@@ -43,14 +46,16 @@ public class Result {
     
     private Qubit[] qubits;
     private Complex[] probability;
-    private Complex[][] intermediates;
+    private Complex[][] intermediateProps;
+    private Map<Integer, Qubit[]> intermediateQubits;
     private int measuredProbability = -1;
  
     public Result(int nqubits, int steps) {
         assert(steps >= 0);
         this.nqubits = nqubits;
         this.nsteps = steps;
-        intermediates = new Complex[steps > 0 ? steps : 1][];
+        intermediateProps = new Complex[steps > 0 ? steps : 1][];
+        intermediateQubits = new HashMap<>();
     }
 
     public Result(Qubit[] q, Complex[] p) {
@@ -60,18 +65,42 @@ public class Result {
     
     public Qubit[] getQubits() {
         if (this.qubits == null) {
-
             this.qubits = calculateQubits();
         }
         return this.qubits;
     }
+    
+    public Qubit[] getQubitsAtStep(int i) {
+        int j = i;
+        while (this.intermediateQubits.get(j) == null) j--;
+        return this.intermediateQubits.get(j);
+    }
 
+    public Map<Integer, Qubit[]> getIntermediateQubits() {
+        return this.intermediateQubits;
+    }
+    
     private Qubit[] calculateQubits() {
         Qubit[] answer = new Qubit[nqubits];
         if (nqubits == 0) {
             return answer;
         }
-        double[] d = calculateQubitStatesFromVector(intermediates[nsteps-1]);
+        int lastidx = nsteps-1;
+        while (intermediateProps[lastidx] == null) lastidx--;
+        double[] d = calculateQubitStatesFromVector(intermediateProps[lastidx]);
+        for (int i = 0; i < answer.length; i++) {
+            answer[i] = new Qubit();
+            answer[i].setProbability(d[i]);
+        }
+        return answer;
+    }
+    
+    private Qubit[] calculateQubitsFromVector(Complex[] probs) {
+        Qubit[] answer = new Qubit[nqubits];
+        if (nqubits == 0) {
+            return answer;
+        }
+        double[] d = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < answer.length; i++) {
             answer[i] = new Qubit();
             answer[i].setProbability(d[i]);
@@ -84,15 +113,20 @@ public class Result {
     }
     
     public void setIntermediateProbability(int step, Complex[] p) {
-        this.intermediates[step] = p;
+        this.intermediateProps[step] = p;
+        this.intermediateQubits.put(step, calculateQubitsFromVector(p));
     //    if ((step == nsteps -1) || (nsteps == 0)) { // in case we have no steps, this is the final result
             this.probability = p;
      //   }
     }
-    
+
     public Complex[] getIntermediateProbability(int step) {
-        return intermediates[step];
+        return intermediateProps[step];
     }
+//    
+//    public Qubit[][] getIntermediateQubits() {
+//        return intermediateQubits;
+//    }
     
     private double[] calculateQubitStatesFromVector(Complex[] vectorresult) {
         int nq = (int) Math.round(Math.log(vectorresult.length) / Math.log(2));

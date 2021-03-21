@@ -1160,7 +1160,7 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(0, q[9].measure());  
     }
     
-//    @Test
+    @Test
     public void findPeriod7_15() { // 5 x 3 mod 6 = 3
         Program p = new Program(9);
         int mul = 7;
