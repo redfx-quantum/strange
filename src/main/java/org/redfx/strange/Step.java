@@ -47,6 +47,20 @@ import java.util.Objects;
  */
 public class Step {
     
+    /**
+     * The type of the step. Typically, a step contains instructions that alter 
+     * the quantum circuit. Those are steps with type <code>NORMAL</code>.
+     * <br/>
+     * Some steps do not alter the quantum circuit at all and can be ignored in
+     * computations. Those are steps with type <code>PSEUDO</code> and they 
+     * are typically used for visualization.
+     */
+    public enum Type {
+        NORMAL,
+        PSEUDO
+    }
+    
+    private final Type type;
     private final ArrayList<Gate> gates = new ArrayList<>();
     private int index;
     private final String name;
@@ -65,8 +79,17 @@ public class Step {
     public Step(String name, Gate... moreGates ) {
         this.name = name;
         addGates(moreGates);
+        this.type = Type.NORMAL;
+    }
+    
+    public Step(Type type) {
+        this.type = type;
+        this.name = "pseudo";
     }
 
+    public Type getType() {
+        return this.type;
+    }
     /**
      * Return the name of this step. This is for descriptive information only, it has no impact on the
      * computations
@@ -158,7 +181,11 @@ public class Step {
     }
 
     @Override public String toString() {
-        return "Step with gates "+this.gates;
+        if (this.getType() == Step.Type.PSEUDO) {
+            return "Pseudo-step";
+        } else {
+            return "Step with gates "+this.gates;
+        }
     }
 
 }

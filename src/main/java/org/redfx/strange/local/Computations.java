@@ -123,6 +123,11 @@ public class Computations {
     public static List<Step> decomposeStep(Step s, int nqubit) {
         ArrayList<Step> answer = new ArrayList<>();
         answer.add(s);
+        if (s.getType() == Step.Type.PSEUDO) {
+            s.setComplexStep(s.getIndex());
+            return answer;
+        }
+
         List<Gate> gates = s.getGates();
 
         if (gates.isEmpty()) {
