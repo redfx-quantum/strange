@@ -69,12 +69,6 @@ public class Result {
         }
         return this.qubits;
     }
-    
-    public Qubit[] getQubitsAtStep(int i) {
-        int j = i;
-        while (this.intermediateQubits.get(j) == null) j--;
-        return this.intermediateQubits.get(j);
-    }
 
     public Map<Integer, Qubit[]> getIntermediateQubits() {
         return this.intermediateQubits;
@@ -123,11 +117,7 @@ public class Result {
     public Complex[] getIntermediateProbability(int step) {
         return intermediateProps[step];
     }
-//    
-//    public Qubit[][] getIntermediateQubits() {
-//        return intermediateQubits;
-//    }
-    
+
     private double[] calculateQubitStatesFromVector(Complex[] vectorresult) {
         int nq = (int) Math.round(Math.log(vectorresult.length) / Math.log(2));
         double[] answer = new double[nq];

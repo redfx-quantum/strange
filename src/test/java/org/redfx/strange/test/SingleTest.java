@@ -47,7 +47,7 @@ import org.redfx.strange.gate.X;
  */
 public class SingleTest extends BaseGateTests {
        
-    @Test
+//    @Test
     public void test3x1mod5is3() { // 3 x 2 %5 = 1
         Program p = new Program(9);
         int mul = 2;
@@ -70,7 +70,7 @@ public class SingleTest extends BaseGateTests {
         assertEquals(0, q[7].measure());  
         assertEquals(0, q[8].measure());  
     }
-    @Test
+//    @Test
     public void test3x2mod5is1() { // 3 x 2 %5 = 1
         Program p = new Program(9);
         int mul = 2;
