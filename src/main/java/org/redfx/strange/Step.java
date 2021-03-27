@@ -50,7 +50,7 @@ public class Step {
     /**
      * The type of the step. Typically, a step contains instructions that alter 
      * the quantum circuit. Those are steps with type <code>NORMAL</code>.
-     * <br/>
+     * <br>
      * Some steps do not alter the quantum circuit at all and can be ignored in
      * computations. Those are steps with type <code>PSEUDO</code> and they 
      * are typically used for visualization.
