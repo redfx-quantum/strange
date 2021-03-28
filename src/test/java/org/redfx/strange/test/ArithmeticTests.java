@@ -38,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.redfx.strange.Block;
 import org.redfx.strange.Complex;
 import org.redfx.strange.ControlledBlockGate;
+import org.redfx.strange.Gate;
 import org.redfx.strange.Program;
 import org.redfx.strange.Qubit;
 import org.redfx.strange.Result;
@@ -606,6 +607,8 @@ public class ArithmeticTests extends BaseGateTests {
      
     @Test
     public void minus1() {
+        // 1 - 3 = -2
+        // -2 + 8 = 6
         int N = 3;
         int dim = 3;
         Program p = new Program(dim);
@@ -624,7 +627,35 @@ public class ArithmeticTests extends BaseGateTests {
     }
     
     @Test
+    public void minus2() {
+        // 1-3 = -2 
+        // -2 + 8 = 6       
+        int n = 2;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program p = new Program(dim);
+        Step prep = new Step();
+        prep.addGates(new X(0));
+        p.addStep(prep);
+        
+        AddInteger min = new AddInteger(0,2,N).inverse();
+        p.addStep(new Step(min));
+
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(0, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
+    }
+    
+    @Test
     public void addmod0() {
+        // 0 + 1 = 1
         int n = 2;
         int N = 3;
         int dim = 2 * (n+1)+1;
@@ -1160,6 +1191,99 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(0, q[9].measure());  
     }
     
+    @Test
+    public void inverseAndinvinverse() {
+        int x1 = 2;
+        int x0 = 0;
+        int y0 = 3;
+        int y1 = 5;
+        int n = x1-x0;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program answer = new Program(7);
+
+        answer.addStep(new Step (new X(0), new X(1), new X(2), new X(4)));        
+        Add add1 = new Add(x0,x1,y0,y1);
+        answer.addStep (new Step(add1.inverse()));
+        
+        Add add2 = new Add(x0,x1,y0,y1);
+        answer.addStep (new Step(add2.inverse().inverse()));
+        
+        
+        Result result = runProgram(answer);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
+        
+    }
+    
+    @Test
+    public void invinverseAndinverse() {
+        int x1 = 2;
+        int x0 = 0;
+        int y0 = 3;
+        int y1 = 5;
+        int n = x1-x0;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program answer = new Program(7);
+
+        answer.addStep(new Step (new X(0), new X(1), new X(2), new X(4)));
+        
+        Add add1 = new Add(x0,x1,y0,y1);
+        answer.addStep (new Step(add1.inverse().inverse()));
+        Add add2 = new Add(x0,x1,y0,y1);
+        answer.addStep (new Step(add2.inverse()));
+        Result result = runProgram(answer);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(0, q[6].measure());
+    }
+         
+    @Test
+    public void addmodpart2 () {
+          int x1 = 2;
+        int x0 = 0;
+        int y0 = 3;
+        int y1 = 5;
+        int n = x1-x0;
+        int N = 3;
+        int dim = 2 * (n+1)+1;
+        Program answer = new Program(7);
+
+        answer.addStep(new Step (new X(0), new X(4)));
+
+
+        Add add3 = new Add(x0,x1,y0,y1);
+        answer.addStep (new Step(add3.inverse()));
+        
+        Block blockinv = new Block(1);
+        blockinv.addStep(new Step(new X(0)));
+        Gate cbginv = new ControlledBlockGate(blockinv, dim-1, x1).inverse();
+        answer.addStep(new Step(cbginv));
+         Result result = runProgram(answer);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(1, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(1, q[6].measure());
+    }
 //    @Test
     public void findPeriod7_15() { // 5 x 3 mod 6 = 3
         Program p = new Program(9);

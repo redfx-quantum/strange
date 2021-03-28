@@ -134,7 +134,7 @@ public class BlockGate<T extends Gate> implements Gate {
     }
     
     public T inverse() {
-        setInverse(true);
+        setInverse(!this.inverse);
         return (T) this;
     }
     

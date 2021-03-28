@@ -135,6 +135,7 @@ public class Step {
     }
     
     public void setComplexStep(int idx) {
+      //  if (idx == 1 ) Thread.dumpStack();
         this.complexStep = idx;
     }
     
@@ -169,7 +170,11 @@ public class Step {
 
     public void setInverse(boolean val) {
         for (Gate g: gates) {
+            if (g instanceof BlockGate) {
+                ((BlockGate)g).inverse();
+            } else {
             g.setInverse(val);
+            }
         }
     }
     

@@ -379,10 +379,29 @@ public class Computations {
         return answer;
     }
 
+    static int nested = 0;
+
     public static Complex[] calculateNewState(List<Gate> gates, Complex[] vector, int length) {
+        if (nested < 0) {
+            System.err.println("[COMP] calculateNewState, gates =  " + gates + ", length = " + length + ", nested = " + nested);
+            double[] csv = calculateQubitStatesFromVector(vector);
+            for (int i = 0; i < csv.length; i++) {
+                System.err.println("preq[" + i + "] = " + csv[i]);
+            }
+        }
+        nested++;
         Complex[] answer = getNextProbability(getAllGates(gates, length), vector);
+        nested--;
+        if (nested < 0) {
+            System.err.println("[COMP] DONE calculateNewState, gates =  " + gates + ", length = " + length + ", nested = " + nested);
+            double[] csv = calculateQubitStatesFromVector(answer);
+            for (int i = 0; i < csv.length; i++) {
+                System.err.println("q[" + i + "] = " + csv[i]);
+            }
+        }
         return answer;
     }
+    
     private static Complex[] getNextProbability(List<Gate> gates, Complex[] v) {
         Gate gate = gates.get(0);
         int nqubits = gate.getSize();
@@ -511,6 +530,7 @@ public class Computations {
     }
 
     private static void processBlockGate(ControlledBlockGate gate, ArrayList<Step> answer) {
+        Step master = answer.get(answer.size() -1);
         gate.calculateHighLow();
         int low = gate.getLow();
         int control = gate.getControlQubit();
@@ -545,12 +565,37 @@ public class Computations {
             }
         }
 
-        for (PermutationGate pg : perm) {
+        for (int i = 0; i < perm.size(); i++) {
+            PermutationGate pg = perm.get(i);
             Step lpg = new Step(pg);
-            lpg.setComplexStep(1);
+            if (i < perm.size()-1) {
+                lpg.setComplexStep(-1);
+            } else {
+                // the complex step should be the last part of the step
+                lpg.setComplexStep(master.getComplexStep());
+                master.setComplexStep(-1);
+            }
             answer.add(lpg);
             answer.add(0, new Step(pg));
         }
+
+    }
+    
+    public static double[] calculateQubitStatesFromVector(Complex[] vectorresult) {
+        int nq = (int) Math.round(Math.log(vectorresult.length) / Math.log(2));
+        double[] answer = new double[nq];
+        int ressize = 1 << nq;
+        for (int i = 0; i < nq; i++) {
+            int pw = i;//nq - i - 1;
+            int div = 1 << pw;
+            for (int j = 0; j < ressize; j++) {
+                int p1 = j / div;
+                if (p1 % 2 == 1) {
+                    answer[i] = answer[i] + vectorresult[j].abssqr();
+                }
+            }
+        }
+        return answer;
     }
 
 }

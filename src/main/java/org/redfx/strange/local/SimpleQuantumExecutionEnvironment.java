@@ -104,19 +104,17 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         dbg("START RUN, number of steps = " + simpleSteps.size());
         for (Step step : simpleSteps) {
             if (!step.getGates().isEmpty()) {
-                dbg("RUN STEP " + step + ", cnt = " + cnt);
+                System.err.println("RUN STEP " + step + ", cnt = " + cnt);
                 cnt++;
-                dbg("before this step, probs = ");
+             //   dbg("before this step, probs = ");
           //      printProbs(probs);
                 probs = applyStep(step, probs, qubit);
-                dbg("after this step, probs = "+probs);
+              //  dbg("after this step, probs = "+probs);
             //    printProbs(probs);
                 int idx = step.getComplexStep();
-         //       System.err.println("complex? "+idx);
+                System.err.println("complex? "+idx);
                 if (idx > -1) {
                     result.setIntermediateProbability(idx, probs);
-                    double[] intmeas = calculateQubitStatesFromVector(probs);
-                    
                 }
             }
         }
