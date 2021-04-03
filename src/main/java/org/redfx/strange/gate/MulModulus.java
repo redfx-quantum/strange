@@ -48,7 +48,8 @@ import java.util.List;
 public class MulModulus extends BlockGate<MulModulus> {
 
     Block block;
-    static HashMap<Integer, Block> cache = new HashMap<>();
+// disable cache for now
+   // static HashMap<Integer, Block> cache = new HashMap<>();
 
     /**
      * Multiply the qubit in the x register with an integer mul
@@ -73,10 +74,10 @@ public class MulModulus extends BlockGate<MulModulus> {
     
     public Block createBlock(int y0, int y1, int mul, int mod) {
         int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;
-        this.block = cache.get(hash);
-        if (block != null) {
-            return block;
-        }
+//        this.block = cache.get(hash);
+//        if (block != null) {
+//            return block;
+//        }
 
         int x0 = y0;
         int x1 = y1-y0;
@@ -96,7 +97,7 @@ public class MulModulus extends BlockGate<MulModulus> {
             AddModulus add = new AddModulus(x0, x1, x1+1, x1 + size, mod).inverse();
             answer.addStep(new Step(add));
         }
-        cache.put(hash, answer);
+        //cache.put(hash, answer);
         return answer;
     }
   

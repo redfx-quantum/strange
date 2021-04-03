@@ -168,8 +168,13 @@ public class Step {
     }
 
     public void setInverse(boolean val) {
+        // TODO: https://github.com/redfx-quantum/strange/issues/93
         for (Gate g: gates) {
-            g.setInverse(val);
+            if (g instanceof BlockGate) {
+                ((BlockGate)g).inverse();
+            } else {
+                g.setInverse(val);
+            }
         }
     }
     
