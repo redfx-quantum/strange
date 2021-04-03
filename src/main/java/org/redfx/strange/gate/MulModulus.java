@@ -48,6 +48,7 @@ import java.util.List;
 public class MulModulus extends BlockGate<MulModulus> {
 
     Block block;
+// disable cache for now
    // static HashMap<Integer, Block> cache = new HashMap<>();
 
     /**

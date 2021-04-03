@@ -108,12 +108,7 @@ public class Result {
     }
     
     public void setIntermediateProbability(int step, Complex[] p) {
-        System.err.println("SIP for step "+step);
         this.intermediateProps[step] = p;
-        Qubit[] cqv = calculateQubitsFromVector(p);
-        for (Qubit qq : cqv) {
-            System.err.println("Q = "+qq.getProbability());
-        }
         this.intermediateQubits.put(step, calculateQubitsFromVector(p));
     //    if ((step == nsteps -1) || (nsteps == 0)) { // in case we have no steps, this is the final result
             this.probability = p;

@@ -379,26 +379,12 @@ public class Computations {
         return answer;
     }
 
-    static int nested = 0;
+    static int nested = 0; // allows us to e.g. show only 2 nested steps
 
     public static Complex[] calculateNewState(List<Gate> gates, Complex[] vector, int length) {
-        if (nested < 0) {
-            System.err.println("[COMP] calculateNewState, gates =  " + gates + ", length = " + length + ", nested = " + nested);
-            double[] csv = calculateQubitStatesFromVector(vector);
-            for (int i = 0; i < csv.length; i++) {
-                System.err.println("preq[" + i + "] = " + csv[i]);
-            }
-        }
         nested++;
         Complex[] answer = getNextProbability(getAllGates(gates, length), vector);
         nested--;
-        if (nested < 0) {
-            System.err.println("[COMP] DONE calculateNewState, gates =  " + gates + ", length = " + length + ", nested = " + nested);
-            double[] csv = calculateQubitStatesFromVector(answer);
-            for (int i = 0; i < csv.length; i++) {
-                System.err.println("q[" + i + "] = " + csv[i]);
-            }
-        }
         return answer;
     }
     
@@ -581,6 +567,7 @@ public class Computations {
 
     }
     
+    // TODO: make this a utility method
     public static double[] calculateQubitStatesFromVector(Complex[] vectorresult) {
         int nq = (int) Math.round(Math.log(vectorresult.length) / Math.log(2));
         double[] answer = new double[nq];

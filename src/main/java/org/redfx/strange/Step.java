@@ -135,7 +135,6 @@ public class Step {
     }
     
     public void setComplexStep(int idx) {
-      //  if (idx == 1 ) Thread.dumpStack();
         this.complexStep = idx;
     }
     
@@ -169,11 +168,12 @@ public class Step {
     }
 
     public void setInverse(boolean val) {
+        // TODO: https://github.com/redfx-quantum/strange/issues/93
         for (Gate g: gates) {
             if (g instanceof BlockGate) {
                 ((BlockGate)g).inverse();
             } else {
-            g.setInverse(val);
+                g.setInverse(val);
             }
         }
     }

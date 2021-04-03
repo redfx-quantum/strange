@@ -139,17 +139,7 @@ public class Block {
         }
         for (Step step : simpleSteps) {
             if (!step.getGates().isEmpty()) {
-//                double[] cqs = Computations.calculateQubitStatesFromVector(probs);
-//                System.err.println("pre step = "+step);
-//                for (int i =0; i < cqs.length; i++) {
-//                    System.err.println("preblockq["+i+"] = "+cqs[i]);
-//                }
                 probs = applyStep(step, probs);
-//                 cqs = Computations.calculateQubitStatesFromVector(probs);
-//                System.err.println("post step = "+step);
-//                for (int i =0; i < cqs.length; i++) {
-//                    System.err.println("postblockq["+i+"] = "+cqs[i]);
-//                }
             }
         }
         return probs;
