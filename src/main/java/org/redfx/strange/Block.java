@@ -125,8 +125,6 @@ public class Block {
     }
 
     public Complex[] applyOptimize(Complex[] probs, boolean inverse) {
-        int dim = probs.length;
-
         List<Step> simpleSteps = new ArrayList<>();
         for (Step step : steps) {
             simpleSteps.addAll(Computations.decomposeStep(step, nqubits));
@@ -140,6 +138,11 @@ public class Block {
         for (Step step : simpleSteps) {
             if (!step.getGates().isEmpty()) {
                 probs = applyStep(step, probs);
+            }
+        }
+        if (inverse) {
+            for (Step step : simpleSteps) {
+                step.setInverse(true);
             }
         }
         return probs;
