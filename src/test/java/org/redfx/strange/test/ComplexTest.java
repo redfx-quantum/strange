@@ -55,7 +55,6 @@ public class ComplexTest {
         Complex neg = new Complex(-.1, -.2);
         String negString = neg.toString();
         assertEquals(negString, "(-0.1, -0.2)");
-        System.err.println("NEG = "+negString);
     }
 
 }
