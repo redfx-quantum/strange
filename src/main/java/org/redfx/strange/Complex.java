@@ -337,11 +337,10 @@ public final class Complex {
         }
     }
 
- 
     @Override
     public String toString() {
-        double mr = this.r;
-        double mi = this.i;
+        float mr = this.r;
+        float mi = this.i;
         if (Math.abs(mr) < 1e-7) mr = 0;
         if (Math.abs(mi) < 1e-7) mi = 0;
         if (Math.abs(mr) > .999999) mr = 1;
