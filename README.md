@@ -32,7 +32,7 @@ A typical `pom.xml` file looks as follows:
     <dependency>
       <groupId>org.redfx</groupId>
       <artifactId>strange</artifactId>
-      <version>0.0.17</version>
+      <version>0.0.21</version>
     </dependency>
   </dependencies>
   <build> 
@@ -40,7 +40,7 @@ A typical `pom.xml` file looks as follows:
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
-        <version>0.0.4</version>
+        <version>0.0.6</version>
         <configuration>
           <mainClass>SimpleStrangeDemo</mainClass>
         </configuration>
@@ -63,7 +63,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.redfx:strange:0.0.16'
+    implementation 'org.redfx:strange:0.0.21'
 }
 
 mainClassName = 'SimpleStrangeDemo'
