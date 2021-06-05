@@ -32,7 +32,7 @@
  */
 package org.redfx.strange.local;
 
-import org.redfx.strange.BlockGate;
+import java.lang.System.Logger.Level;
 import org.redfx.strange.Complex;
 import org.redfx.strange.Gate;
 import org.redfx.strange.Program;
@@ -41,13 +41,9 @@ import org.redfx.strange.Qubit;
 import org.redfx.strange.Result;
 import org.redfx.strange.Step;
 import org.redfx.strange.gate.Identity;
-import org.redfx.strange.gate.Oracle;
 import org.redfx.strange.gate.PermutationGate;
 import org.redfx.strange.gate.ProbabilitiesGate;
-import org.redfx.strange.gate.SingleQubitGate;
 import org.redfx.strange.gate.Swap;
-import org.redfx.strange.gate.ThreeQubitGate;
-import org.redfx.strange.gate.TwoQubitGate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +53,18 @@ import java.util.function.Consumer;
  *
  * @author johan
  */
+
+
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
+
     static void dbg (String s) {
-        Complex.dbg(s);
+        String dbp = System.getProperty("dbg", "false");
+        if (dbp.equals("true")) {
+            System.err.println("[DBG] "+ s);
+        }
+    }
+
+    public SimpleQuantumExecutionEnvironment() {
     }
 
     @Override
