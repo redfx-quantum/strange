@@ -57,7 +57,7 @@ import java.util.function.Consumer;
 
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
 
-    static void dbg (String s) {
+    public static void dbg (String s) {
         String dbp = System.getProperty("dbg", "false");
         if (dbp.equals("true")) {
             System.err.println("[DBG] "+ s);
@@ -148,7 +148,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
     
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
-        dbg("start applystep");
+        dbg("start applystep, vectorsize = "+vector.length+", ql = "+qubits.length);
         long s0 = System.currentTimeMillis();
         List<Gate> gates = step.getGates();
         if (!gates.isEmpty() && gates.get(0) instanceof ProbabilitiesGate ) {
