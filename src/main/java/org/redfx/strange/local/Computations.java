@@ -60,9 +60,7 @@ public class Computations {
     private static final boolean debug = false;
 
     static void dbg(String s) {
-        if (debug) {
-            System.err.println("[DBG] " + System.currentTimeMillis() % 100000 + ": " + s);
-        }
+        SimpleQuantumExecutionEnvironment.dbg(s);
     }
 
     public static Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits, QuantumExecutionEnvironment qee) {
@@ -394,7 +392,7 @@ public class Computations {
         int nqubits = gate.getSize();
         int gatedim = 1 << nqubits;
         int size = v.length;
-     //   System.err.println("GETNEXTPROBABILITY asked for size = " + size + " and gates = " + gates);
+     dbg("GETNEXTPROBABILITY asked for size = " + size + " and gates = " + gates);
         if (gates.size() > 1) {
 
             int partdim = size / gatedim;
@@ -480,8 +478,23 @@ public class Computations {
             }
         }
     }
+    
+    /**
+     * Check if the gates operates on qubits that are part of this Program.
+     * e.g. if a 3-sized gate is applied to qubit 2 in a 3-qubit circuit, this
+     * will throw an IllegalArgumentException.
+     */
+    private static void validateGates(List<Gate> gates, int nQubits) {
+        for (Gate gate : gates) {
+            if (gate.getHighestAffectedQubitIndex() >= nQubits) {
+                throw new IllegalArgumentException 
+        ("Gate "+gate+" operates on qubit "+ gate.getHighestAffectedQubitIndex()+" but we have only "+nQubits+" qubits.");
+            }
+        }
+    }
 
     private static List<Gate> getAllGates(List<Gate> gates, int nQubits) {
+        validateGates(gates, nQubits);
         dbg("getAllGates, orig = " + gates);
         List<Gate> answer = new ArrayList<>();
         int idx = nQubits - 1;
