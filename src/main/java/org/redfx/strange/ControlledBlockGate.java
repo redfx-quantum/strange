@@ -80,6 +80,8 @@ public class ControlledBlockGate<T> extends BlockGate {
         } else {
             this.haq = idx+block.getNQubits() -1;
         }
+     //   System.err.println("create cbg, idx = "+idx+", ctrl = " +control+", block = " +block+", this = "+this);
+  //  Thread.dumpStack();
     }
 
     @Override
@@ -119,9 +121,11 @@ public class ControlledBlockGate<T> extends BlockGate {
         int gap = control - idx;
         int bs = block.getNQubits();
         low = 0;
+//        System.err.println("CALC highlow for "+this+", ctrl = "+control+", idx = "+idx);
          if (control > idx) {
              low =idx;
                 if (gap < bs) {
+                    System.err.println("Error processing cbg "+this);
                     throw new IllegalArgumentException("Can't have control at " + control + " for gate with size " + bs + " starting at " + idx);
                 }
                 if (gap > bs) {

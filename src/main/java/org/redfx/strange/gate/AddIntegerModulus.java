@@ -69,7 +69,7 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
         Block answer = new Block("AddIntegerModulus", x1-x0+2);
         int n = x1-x0;
         int dim = n+1;
-
+        System.err.println("Create block for AIM, n = "+n+", dim = " + dim+", x0 = "+x0);
         AddInteger add = new AddInteger(x0, x1, a);
         answer.addStep(new Step(add));
 
@@ -93,7 +93,7 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
 
         AddInteger add3 = new AddInteger(x0,x1,a);
         answer.addStep (new Step(add3));
-       
+        System.err.println("AIM block created");
         return answer;
     }
 

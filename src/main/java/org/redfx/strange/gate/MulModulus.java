@@ -40,6 +40,8 @@ import org.redfx.strange.Step;
 import org.redfx.strange.local.Computations;
 import java.util.HashMap;
 import java.util.List;
+import org.redfx.strange.ControlledBlockGate;
+import static org.redfx.strange.gate.Mul2Modulus.cache;
 
 /**
  *
@@ -71,10 +73,9 @@ public class MulModulus extends BlockGate<MulModulus> {
         x0 = 0;
         this.block = createBlock(x0, x1,mul, mod);
         setBlock(block);
-       
     }
     
-    public Block createBlock(int y0, int y1, int mul, int mod) {
+    public Block oldcreateBlock(int y0, int y1, int mul, int mod) {
         int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;
 //        this.block = cache.get(hash);
 //        if (block != null) {
@@ -100,6 +101,46 @@ public class MulModulus extends BlockGate<MulModulus> {
             answer.addStep(new Step(add));
         }
         //cache.put(hash, answer);
+        return answer;
+    }
+  
+    
+    public Block createBlock(int y0, int y1, int mul, int mod) {
+        int n = y1 - y0;
+        System.err.println("Need to create block with mul = "+mul+" and mod = "+mod);
+        int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;
+
+        int x0 = y0;
+        int x1 = y1-y0;
+        int size = 1 + x1-x0;
+        Block answer = new Block("MulModulus", 2 * size+1);
+        for (int i = 0; i < n; i++) {
+            int m = 1;
+            for (int j = 0; j < 1 << i; j++) {
+                m = m * mul % mod;
+            }
+            System.err.println("Create AddIntMod, x0 = "+x0+", x1 = "+x1+", m = " +m+", mod = "+mod);
+            AddIntegerModulus add = new AddIntegerModulus(x0, x1, m, mod);
+            System.err.println("Create CBG with idx = "+(n+1) +" and ctrl "+i);
+            ControlledBlockGate cbg = new ControlledBlockGate(add, n+1, i);
+            answer.addStep(new Step(cbg));
+        }
+
+        for (int i = x0; i < x1; i++) {
+            answer.addStep(new Step (new Swap(i, i + size)));
+        }
+
+        int invsteps = Computations.getInverseModulus(mul,mod);
+        for (int i = 0; i < invsteps; i++) {
+                        int m = 1;
+            for (int j = 0; j < 1 << i; j++) {
+                m = m * mul % mod;
+            }
+            AddIntegerModulus add = new AddIntegerModulus(x0, x1, m, mod).inverse();
+            ControlledBlockGate cbg = new ControlledBlockGate(add, n+1, i);
+            answer.addStep(new Step(cbg));
+        }
+        System.err.println("Number of steps in mulblock: " + answer.getSteps().size());
         return answer;
     }
   
