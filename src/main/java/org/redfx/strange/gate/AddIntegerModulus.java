@@ -84,12 +84,8 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
         answer.addStep(new Step(add2));
         
         answer.addStep(new Step(new X(dim-1)));
-        Block block = new Block(1);
-        block.addStep(new Step(new X(0)));
-        ControlledBlockGate cbg2 = new ControlledBlockGate(block, dim-1, x1);
-        answer.addStep(new Step(cbg2));
+        answer.addStep(new Step(new Cnot(x1,dim)));
         answer.addStep(new Step(new X(dim-1)));
-
 
         AddInteger add3 = new AddInteger(x0,x1,a);
         answer.addStep (new Step(add3));

@@ -41,7 +41,6 @@ import org.redfx.strange.local.Computations;
 import java.util.HashMap;
 import java.util.List;
 import org.redfx.strange.ControlledBlockGate;
-import static org.redfx.strange.gate.Mul2Modulus.cache;
 
 /**
  *
