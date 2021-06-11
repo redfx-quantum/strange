@@ -370,7 +370,6 @@ public class Computations {
             throw new IllegalArgumentException("Can not permutate element "+a+" and "+b+" of vector sized "+vector.length);
         }
         int dim = vector.length;
-        System.err.println("a = "+a+", b = " + b+", dim = "+dim);
         Complex[] answer = new Complex[dim];
         for (int i = 0; i < dim; i++) {
             int j = i;

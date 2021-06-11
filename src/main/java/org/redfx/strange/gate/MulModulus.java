@@ -72,7 +72,7 @@ public class MulModulus extends BlockGate<MulModulus> {
         setBlock(block);
     }
     
-    public Block oldcreateBlock(int y0, int y1, int mul, int mod) {
+    public Block createBlock(int y0, int y1, int mul, int mod) {
         int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;
 //        this.block = cache.get(hash);
 //        if (block != null) {
@@ -102,7 +102,7 @@ public class MulModulus extends BlockGate<MulModulus> {
     }
   
     
-    public Block createBlock(int y0, int y1, int mul, int mod) {
+    public Block newcreateBlock(int y0, int y1, int mul, int mod) {
         int n = y1 - y0;
         System.err.println("Need to create block with mul = "+mul+" and mod = "+mod);
         int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;

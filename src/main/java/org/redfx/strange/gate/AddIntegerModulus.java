@@ -73,11 +73,15 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
         System.err.println("step 1, addi, x0 = "+x0+", x1 = " +x1+", a = "+a);
         AddInteger add = new AddInteger(x0, x1, a);
         answer.addStep(new Step(add));
-
+answer.addStep(new Step(Step.Type.PSEUDO));
         AddInteger min = new AddInteger(x0,x1,N).inverse();
         System.err.println("step 2, addmin, x0 = "+x0+", x1 = " + x1+", N = " +N);
         answer.addStep(new Step(min));
+        answer.addStep(new Step(Step.Type.PSEUDO));
+
         answer.addStep(new Step(new Cnot(x1,dim)));
+        answer.addStep(new Step(Step.Type.PSEUDO));
+
         AddInteger addN = new AddInteger(x0,x1,N);
         ControlledBlockGate cbg = new ControlledBlockGate(addN, x0,dim);
         answer.addStep(new Step(cbg));
@@ -91,7 +95,7 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
 
         AddInteger add3 = new AddInteger(x0,x1,a);
         answer.addStep (new Step(add3));
-        System.err.println("AIM block created");
+        System.err.println("AIM block created with some steps");
         return answer;
     }
 
