@@ -58,12 +58,10 @@ public class MulModulus extends BlockGate<MulModulus> {
      * @param x1 end idx x register
      * @param mul
      * @param mod
-     * x_0 ----- y_0 + x_0
-     * x_1 ----- y+1 + x_1
-     * y_0 ----- 0
-     * y_1 ----- 0
-     * ANC ----- ANC (0) 
-     * x_1 and y_1 are overflow bits (initially 0, final 0)
+     * x_0 ----- x_0 * mul (n qubits in and out)
+     * x_n-1 ----- x_1-1 * mul 
+     * y_0 ----- 0 ( n + 2 qubits needed for addintmon)
+     * y_n+1 ----- 0
      */
     public MulModulus(int x0, int x1, int mul, int mod) {
         super();
@@ -111,8 +109,9 @@ public class MulModulus extends BlockGate<MulModulus> {
 
         int x0 = y0;
         int x1 = y1-y0;
-        int size = 1 + x1-x0;
-        Block answer = new Block("MulModulus", 2 * size+1);
+        int size =  x1-x0 +1;
+        System.err.println("mm, size = "+size+", y0 = " + y0+", y1 = "+y1);
+        Block answer = new Block("MulModulus", 2 * size+2);
         for (int i = 0; i < n; i++) {
             int m = 1;
             for (int j = 0; j < 1 << i; j++) {

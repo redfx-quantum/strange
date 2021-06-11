@@ -59,17 +59,17 @@ public class SingleTest extends BaseGateTests {
            
      @Test
     public void multiplyModGate2x5mod3() { // 2 x 5 mod 3 = 1
-        Program p = new Program(7);
+        Program p = new Program(6);
         int mul = 5;
         int N = 3;
         Step prep = new Step();
         prep.addGates(new X(1)); // 2 in high register
-        Step s = new Step(new MulModulus(0,2,mul, N));
+        Step s = new Step(new MulModulus(0,1,mul, N));
         p.addStep(prep);
         p.addStep(s);
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 6; i++) {
             System.err.println("q["+i+"] = "+q[i].measure());
         }
         assertEquals(7, q.length);
@@ -79,7 +79,7 @@ public class SingleTest extends BaseGateTests {
         assertEquals(0, q[3].measure());
         assertEquals(0, q[4].measure()); // result in q4,q5,q6,q7
         assertEquals(0, q[5].measure());
-        assertEquals(0, q[6].measure());  
+     //   assertEquals(0, q[6].measure());  
     }
     
     // @Test

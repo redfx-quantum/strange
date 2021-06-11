@@ -50,7 +50,7 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
     /**
      * Add integer a to the qubit in the x register mod N, result is in x
      * @param x0 start idx x register
-     * @param x1 end idx x register
+     * @param x1 end idx x register, this must be |0> 
      * ANC(0)--- ANC(0)
      * x1 is an overflow bit
      * the qubit following x_1 should be 0 (and will be 0 after this gate)
@@ -70,10 +70,12 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
         int n = x1-x0;
         int dim = n+1;
         System.err.println("Create block for AIM, n = "+n+", dim = " + dim+", x0 = "+x0);
+        System.err.println("step 1, addi, x0 = "+x0+", x1 = " +x1+", a = "+a);
         AddInteger add = new AddInteger(x0, x1, a);
         answer.addStep(new Step(add));
 
         AddInteger min = new AddInteger(x0,x1,N).inverse();
+        System.err.println("step 2, addmin, x0 = "+x0+", x1 = " + x1+", N = " +N);
         answer.addStep(new Step(min));
         answer.addStep(new Step(new Cnot(x1,dim)));
         AddInteger addN = new AddInteger(x0,x1,N);
