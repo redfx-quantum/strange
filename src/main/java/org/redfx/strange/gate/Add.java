@@ -88,4 +88,9 @@ public class Add extends BlockGate<Add> {
         return answer;
     }
 
+    @Override
+    public String getCaption() {
+        return "A\nD\nD";
+    }
+
 }

@@ -58,11 +58,19 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
     public AddIntegerModulus(int x0, int x1, int a, int N) {
         super();
         System.err.println("asked for addintegermodulus, x0 = "+x0+", x1 = "+x1+", a = "+a+", N = "+N);
+        int n = x1 - x0 + 1;
+        if (N >= (1 << n)) {
+            throw new IllegalArgumentException ("AddIntegerModules with n = "+n+" but modulus is bigger than max: "+N);
+        }
         setIndex(x0);
         x1 = x1 - x0;
         x0 = 0;
         this.block = createBlock(x0, x1, a, N);
         setBlock(block);
+    }
+
+    public AddIntegerModulus(int i, int i0, int i1) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     public Block createBlock(int x0, int x1, int a, int N) {

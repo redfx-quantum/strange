@@ -120,4 +120,10 @@ public class AddModulus extends BlockGate<AddModulus> {
         return answer;
     }
 
+
+    @Override
+    public String getCaption() {
+        return "A\nD\nD\n";
+    }
+
 }
