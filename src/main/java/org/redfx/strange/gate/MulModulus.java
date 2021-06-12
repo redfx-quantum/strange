@@ -124,9 +124,9 @@ public class MulModulus extends BlockGate<MulModulus> {
             answer.addStep(new Step (new Swap(i, i + size)));
         }
 
-        int invsteps = Computations.getInverseModulus(mul,mod);
-        for (int i = 0; i < invsteps; i++) {
-                        int m = ( mul * (1 << i)) % mod;
+        int invmul = Computations.getInverseModulus(mul,mod);
+        for (int i = 0; i < n; i++) {
+                        int m = ( invmul * (1 << i)) % mod;
 
             AddIntegerModulus add = new AddIntegerModulus(x0, x1+1, m, mod);
             ControlledBlockGate cbg = new ControlledBlockGate(add, n, i);

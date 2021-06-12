@@ -52,7 +52,7 @@ public class MulModulusTests extends BaseGateTests {
     static final double D = 0.000000001d;
 
     @Test
-    public void mul2x5mod3() { // 5 x 3 mod 6 = 3
+    public void mul2x5mod3() { // 2 x 5 mod 3 = 1
         Program p = new Program(6);
         int mul = 5;
         int N = 3;
@@ -74,8 +74,8 @@ public class MulModulusTests extends BaseGateTests {
 
     }
     
-  //  @Test
-    public void multiplyModGate5x3mod6() { // 5 x 3 mod 6 = 3
+    @Test
+    public void mul3x5mod6() { // 3 x 5 mod 6 = 3
         Program p = new Program(8);
         int mul = 5;
         int N = 6;
