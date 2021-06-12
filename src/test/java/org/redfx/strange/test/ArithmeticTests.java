@@ -286,18 +286,19 @@ public class ArithmeticTests extends BaseGateTests {
        
     @Test
     public void addmod11num4() {
-        Program p = new Program(3);
+        Program p = new Program(4);
         Step prep = new Step();
         prep.addGates(new X(0));
         p.addStep(prep);
-        AddIntegerModulus add = new AddIntegerModulus(0,0,1,3);
+        AddIntegerModulus add = new AddIntegerModulus(0,1,1,3);
         p.addStep(new Step(add));
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
-        assertEquals(3, q.length);
+        assertEquals(4, q.length);
         assertEquals(0, q[0].measure());
         assertEquals(1, q[1].measure());
         assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
     }  
          
     @Test

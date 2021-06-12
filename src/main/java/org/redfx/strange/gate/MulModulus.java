@@ -72,7 +72,7 @@ public class MulModulus extends BlockGate<MulModulus> {
         setBlock(block);
     }
     
-    public Block createBlock(int y0, int y1, int mul, int mod) {
+    public Block oldCreateBlock(int y0, int y1, int mul, int mod) {
         int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;
 //        this.block = cache.get(hash);
 //        if (block != null) {
@@ -102,7 +102,7 @@ public class MulModulus extends BlockGate<MulModulus> {
     }
   
     
-    public Block newcreateBlock(int y0, int y1, int mul, int mod) {
+    public Block createBlock(int y0, int y1, int mul, int mod) {
         int n = y1 - y0;
         System.err.println("Need to create block with mul = "+mul+" and mod = "+mod);
         int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;
@@ -134,8 +134,9 @@ public class MulModulus extends BlockGate<MulModulus> {
             for (int j = 0; j < 1 << i; j++) {
                 m = m * mul % mod;
             }
-            AddIntegerModulus add = new AddIntegerModulus(x0, x1, m, mod).inverse();
+            AddIntegerModulus add = new AddIntegerModulus(x0, x1, m, mod);
             ControlledBlockGate cbg = new ControlledBlockGate(add, n+1, i);
+            cbg.setInverse(true);
             answer.addStep(new Step(cbg));
         }
         System.err.println("Number of steps in mulblock: " + answer.getSteps().size());

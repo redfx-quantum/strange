@@ -72,7 +72,7 @@ public class SingleTest extends BaseGateTests {
         for (int i = 0; i < 6; i++) {
             System.err.println("q["+i+"] = "+q[i].measure());
         }
-        assertEquals(7, q.length);
+        assertEquals(6, q.length);
         assertEquals(1, q[0].measure()); // q2,q1,q0,q3 should be clean
         assertEquals(0, q[1].measure());  
         assertEquals(0, q[2].measure());
