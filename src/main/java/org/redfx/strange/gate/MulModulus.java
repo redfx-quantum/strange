@@ -103,39 +103,33 @@ public class MulModulus extends BlockGate<MulModulus> {
   
     
     public Block createBlock(int y0, int y1, int mul, int mod) {
-        int n = y1 - y0;
         System.err.println("Need to create block with mul = "+mul+" and mod = "+mod);
         int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;
-
         int x0 = y0;
         int x1 = y1-y0;
         int size =  x1-x0 +1;
+        int n = size;
         System.err.println("mm, size = "+size+", y0 = " + y0+", y1 = "+y1);
         Block answer = new Block("MulModulus", 2 * size+2);
         for (int i = 0; i < n; i++) {
-            int m = 1;
-            for (int j = 0; j < 1 << i; j++) {
-                m = m * mul % mod;
-            }
+            int m = ( mul * (1 << i)) % mod;
             System.err.println("Create AddIntMod, x0 = "+x0+", x1 = "+x1+", m = " +m+", mod = "+mod);
-            AddIntegerModulus add = new AddIntegerModulus(x0, x1, m, mod);
+            AddIntegerModulus add = new AddIntegerModulus(x0, x1+1, m, mod);
             System.err.println("Create CBG with idx = "+(n+1) +" and ctrl "+i);
-            ControlledBlockGate cbg = new ControlledBlockGate(add, n+1, i);
+            ControlledBlockGate cbg = new ControlledBlockGate(add, n, i);
             answer.addStep(new Step(cbg));
         }
 
-        for (int i = x0; i < x1; i++) {
+        for (int i = x0; i < x1+1; i++) {
             answer.addStep(new Step (new Swap(i, i + size)));
         }
 
         int invsteps = Computations.getInverseModulus(mul,mod);
         for (int i = 0; i < invsteps; i++) {
-                        int m = 1;
-            for (int j = 0; j < 1 << i; j++) {
-                m = m * mul % mod;
-            }
-            AddIntegerModulus add = new AddIntegerModulus(x0, x1, m, mod);
-            ControlledBlockGate cbg = new ControlledBlockGate(add, n+1, i);
+                        int m = ( mul * (1 << i)) % mod;
+
+            AddIntegerModulus add = new AddIntegerModulus(x0, x1+1, m, mod);
+            ControlledBlockGate cbg = new ControlledBlockGate(add, n, i);
             cbg.setInverse(true);
             answer.addStep(new Step(cbg));
         }
