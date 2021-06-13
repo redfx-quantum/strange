@@ -97,5 +97,5 @@ public class MulModulusTests extends BaseGateTests {
         assertEquals(0, q[6].measure());  
         assertEquals(0, q[7].measure());  
     }
-    
+
 }

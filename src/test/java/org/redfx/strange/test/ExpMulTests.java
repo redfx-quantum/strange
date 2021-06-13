@@ -47,7 +47,7 @@ import org.redfx.strange.gate.X;
  *
  * @author johan
  */
-public class Arithmetic3Tests extends BaseGateTests {
+public class ExpMulTests extends BaseGateTests {
 
     static final double D = 0.000000001d;
         
