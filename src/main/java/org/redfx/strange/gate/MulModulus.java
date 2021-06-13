@@ -48,6 +48,7 @@ import org.redfx.strange.ControlledBlockGate;
  */
 public class MulModulus extends BlockGate<MulModulus> {
 
+    boolean old = false;
     Block block;
 // disable cache for now
    // static HashMap<Integer, Block> cache = new HashMap<>();
@@ -68,11 +69,11 @@ public class MulModulus extends BlockGate<MulModulus> {
         this.setIndex(x0);
         x1 = x1-x0;
         x0 = 0;
-        this.block = createBlock(x0, x1,mul, mod);
+        this.block = old? oldcreateBlock(x0, x1, mul, mod) : createBlock(x0, x1,mul, mod);
         setBlock(block);
     }
     
-    public Block oldCreateBlock(int y0, int y1, int mul, int mod) {
+    public Block oldcreateBlock(int y0, int y1, int mul, int mod) {
         int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;
 //        this.block = cache.get(hash);
 //        if (block != null) {
