@@ -57,7 +57,6 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
      */
     public AddIntegerModulus(int x0, int x1, int a, int N) {
         super();
-        System.err.println("asked for addintegermodulus, x0 = "+x0+", x1 = "+x1+", a = "+a+", N = "+N);
         int n = x1 - x0 + 1;
         if (N >= (1 << n)) {
             throw new IllegalArgumentException ("AddIntegerModules with n = "+n+" but modulus is bigger than max: "+N);
@@ -69,27 +68,15 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
         setBlock(block);
     }
 
-    public AddIntegerModulus(int i, int i0, int i1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
     public Block createBlock(int x0, int x1, int a, int N) {
         Block answer = new Block("AddIntegerModulus", x1-x0+2);
         int n = x1-x0;
         int dim = n+1;
-        System.err.println("Create block for AIM, n = "+n+", dim = " + dim+", x0 = "+x0);
-        System.err.println("step 1, addi, x0 = "+x0+", x1 = " +x1+", a = "+a);
         AddInteger add = new AddInteger(x0, x1, a);
         answer.addStep(new Step(add));
-answer.addStep(new Step(Step.Type.PSEUDO));
         AddInteger min = new AddInteger(x0,x1,N).inverse();
-        System.err.println("step 2, addmin, x0 = "+x0+", x1 = " + x1+", N = " +N);
         answer.addStep(new Step(min));
-        answer.addStep(new Step(Step.Type.PSEUDO));
-
         answer.addStep(new Step(new Cnot(x1,dim)));
-        answer.addStep(new Step(Step.Type.PSEUDO));
-
         AddInteger addN = new AddInteger(x0,x1,N);
         ControlledBlockGate cbg = new ControlledBlockGate(addN, x0,dim);
         answer.addStep(new Step(cbg));
@@ -103,7 +90,6 @@ answer.addStep(new Step(Step.Type.PSEUDO));
 
         AddInteger add3 = new AddInteger(x0,x1,a);
         answer.addStep (new Step(add3));
-        System.err.println("AIM block created with some steps");
         return answer;
     }
 
