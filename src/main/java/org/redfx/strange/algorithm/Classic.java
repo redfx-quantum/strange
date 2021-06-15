@@ -231,16 +231,15 @@ public class Classic {
         return factor;
     }
     
-    private static int measurePeriod(int a, int mod) {
-            
+    private static int measurePeriod(int a, int mod) {         
         int length = (int) Math.ceil(Math.log(mod) / Math.log(2));
         int offset = length;
-        Program p = new Program(2 * length + 3 + offset);
+        Program p = new Program(2 * length + 2 + offset);
         Step prep = new Step();
         for (int i = 0; i < offset; i++) {
             prep.addGate(new Hadamard(i));
         }
-        Step prepAnc = new Step(new X(length + 1 + offset));
+        Step prepAnc = new Step(new X(offset));
         p.addStep(prep);
         p.addStep(prepAnc);
         for (int i = length - 1; i > length - 1 - offset; i--) {
@@ -248,19 +247,17 @@ public class Classic {
             for (int j = 0; j < 1 << i; j++) {
                 m = m * a % mod;
             }
-            MulModulus mul = new MulModulus(length, 2 * length, m, mod);
+            MulModulus mul = new MulModulus(length, 2 * length-1, m, mod);
             ControlledBlockGate cbg = new ControlledBlockGate(mul, offset, i);
             p.addStep(new Step(cbg));
         }
         p.addStep(new Step(new InvFourier(offset, 0)));
-        System.err.println("Calculate periodicity using "+qee);
         Result result = qee.runProgram(p);
         Qubit[] q = result.getQubits();
         int answer = 0;
         for (int i = 0; i < offset; i++) {
             answer = answer + q[i].measure()*(1<< i);
         }
-     //   System.err.println("measure period for a = " + a +" and N = " +mod+" got answer: "+answer);
         return answer;
     }
           

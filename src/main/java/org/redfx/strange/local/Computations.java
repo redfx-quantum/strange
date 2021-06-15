@@ -143,6 +143,9 @@ public class Computations {
         // at least one non-singlequbitgate
         List<Gate> firstGates = new ArrayList<>();
         for (Gate gate : gates) {
+            if (gate.getHighestAffectedQubitIndex() > nqubit) {
+                throw new IllegalArgumentException("Only "+nqubit+" qubits available while Gate "+gate+" requires qubit "+gate.getHighestAffectedQubitIndex());
+            }
             if (gate instanceof ProbabilitiesGate) {
                 s.setInformalStep(true);
                 return answer;
@@ -363,6 +366,9 @@ public class Computations {
     public static Complex[] permutateVector(Complex[] vector, int a, int b) {
         int amask = 1 << a;
         int bmask = 1 << b;
+        if ((amask >= vector.length) || (bmask >= vector.length)) {
+            throw new IllegalArgumentException("Can not permutate element "+a+" and "+b+" of vector sized "+vector.length);
+        }
         int dim = vector.length;
         Complex[] answer = new Complex[dim];
         for (int i = 0; i < dim; i++) {

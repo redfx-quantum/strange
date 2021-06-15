@@ -427,91 +427,6 @@ public class Arithmetic4Tests extends BaseGateTests {
     }
   
     @Test
-    public void testexpmodH37() {
-        //  H { 1 x 3 ^ A mod 7}
-        int mod = 7;
-        int a = 3;
-        int length = (int) Math.ceil(Math.log(mod) / Math.log(2));
-        int offset = 1 ;
-        int dim0 = 1 << offset;
-        assertEquals(dim0, 2);
-        Program p = new Program(2 * length + 3 + offset);
-        Step prep = new Step();
-
-        prep.addGate(new X(3));
-        
-        Step prepAnc = new Step(new X(length + 1 + offset));
-        p.addStep(prep);
-        p.addStep(prepAnc);
-        for (int i = offset - 1; i > - 1; i--) {
-            int m = 1;
-            for (int j = 0; j < 1 << i; j++) {
-                m = m * a % mod;
-            }
-//            System.err.println("Create MulModulus, i = "+i+", m = "+m+", a = "+a+", MOD = "+mod);
-            MulModulus mul = new MulModulus(length, 2 * length, m, mod);
-            ControlledBlockGate cbg = new ControlledBlockGate(mul, offset, i);
-            p.addStep(new Step(cbg));
-        }
-        p.addStep(new Step(new InvFourier(offset, 0)));
-        Result result = runProgram(p);
-        Complex[] probs = result.getProbability();
-        Qubit[] q = result.getQubits();
-        int answer = 0;
-        double[] amps = new double[dim0];
-        for (int i = 0; i < probs.length; i++) {
-            amps[i%dim0] = amps[i%dim0] + probs[i].abssqr();
-        }
-        for (int i = 0; i < dim0; i ++) {
-//            System.err.println("AMP["+i+"] = "+amps[i]);
-            assertEquals(amps[i], .5, 0.001);
-        }
-    }
-    
-    @Test
-    public void testexpmodHH37() {
-        //  H { 1 x 3 ^ A mod 7}
-        int mod = 7;
-        int a = 3;
-        int length = (int) Math.ceil(Math.log(mod) / Math.log(2));
-        int offset = 2 ;
-        int dim0 = 1 << offset;
-        assertEquals(dim0, 4);
-        Program p = new Program(2 * length + 3 + offset);
-        Step prep = new Step();
-        for (int i = 0; i < offset; i++) {
-            prep.addGate(new Hadamard(i));
-        }
-        
-        Step prepAnc = new Step(new X(length + 1 + offset));
-        p.addStep(prep);
-        p.addStep(prepAnc);
-        for (int i = offset - 1; i > - 1; i--) {
-            int m = 1;
-            for (int j = 0; j < 1 << i; j++) {
-                m = m * a % mod;
-            }
-//            System.err.println("Create MulModulus, i = "+i+", m = "+m+", a = "+a+", MOD = "+mod);
-            MulModulus mul = new MulModulus(length, 2 * length, m, mod);
-            ControlledBlockGate cbg = new ControlledBlockGate(mul, offset, i);
-            p.addStep(new Step(cbg));
-        }
-        p.addStep(new Step(new InvFourier(offset, 0)));
-        Result result = runProgram(p);
-        Complex[] probs = result.getProbability();
-        Qubit[] q = result.getQubits();
-        int answer = 0;
-        double[] amps = new double[dim0];
-        for (int i = 0; i < probs.length; i++) {
-            amps[i%dim0] = amps[i%dim0] + probs[i].abssqr();
-        }
-        for (int i = 0; i < dim0; i ++) {
-         //   System.err.println("AMP["+i+"] = "+amps[i]);
-            assertEquals(amps[i], .25, 0.001);
-        }
-    }
-    
-    @Test
     public void testMinOffset() {
         int offset = 2;
         int n = 2;
@@ -794,10 +709,8 @@ public class Arithmetic4Tests extends BaseGateTests {
         answer.addStep(new Step(add2));
         
         answer.addStep(new Step(new X(dim-1)));
-        Block block = new Block(1);
-        block.addStep(new Step(new X(0)));
-        ControlledBlockGate cbg2 = new ControlledBlockGate(block, dim-1, x1);
-        answer.addStep(new Step(cbg2));
+        answer.addStep(new Step(new Cnot(x1, dim)));
+
         answer.addStep(new Step(new X(dim-1)));
 
         for (Step step: answer.getSteps()) {
@@ -852,10 +765,7 @@ public class Arithmetic4Tests extends BaseGateTests {
         // invert MSB
         answer.addStep(new Step(new X(dim-1)));
         // add CNOT
-        Block block = new Block(1);
-        block.addStep(new Step(new X(0)));
-        ControlledBlockGate cbg2 = new ControlledBlockGate(block, dim-1, x1);
-        answer.addStep(new Step(cbg2));
+        answer.addStep(new Step(new Cnot(x1, dim)));
         // invert B again
         answer.addStep(new Step(new X(dim-1)));
 
@@ -876,6 +786,224 @@ public class Arithmetic4Tests extends BaseGateTests {
         assertEquals(0, q[2].measure());
         assertEquals(0, q[3].measure());
         assertEquals(0, q[4].measure());
+    }
+
+    // 0 + 3 = 3
+    // 3 - 4 = -1
+    // since 3 < 4 we should add 4 again
+    // -1 + 4 = 3
+    @Test
+    public void testAddIntMod2Part2() {
+        int x0 =0;
+        int x1 = 3;
+        int a = 3;
+        int n = x1-x0;
+        int N = 4;
+        int pdim = n + 2;
+        Program p = new Program(pdim);
+
+        Block answer = new Block("AddIntegerModulus", x1-x0+2);
+
+        int dim = n+1;
+
+        AddInteger add = new AddInteger(x0, x1, a);
+        answer.addStep(new Step(add));
+
+        AddInteger min = new AddInteger(x0,x1,N).inverse();
+        answer.addStep(new Step(min));
+       
+        answer.addStep(new Step(new Cnot(x1,dim)));
+        AddInteger addN = new AddInteger(x0,x1,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, x0,dim);
+        answer.addStep(new Step(cbg));
+
+        for (Step step: answer.getSteps()) {
+            p.addStep(step);
+        }
+        
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+
+        assertEquals(pdim, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure());
+    }
+    
+    // 0 + 3 = 3
+    // 3 - 4 = -1
+    // since 3 < 4 we should add 4 again
+    // -1 + 4 = 3
+    // 3 - 3 = 0 -> -2 + 16 = 14
+    @Test
+    public void testAddIntMod2Part3() {
+        int x0 =0;
+        int x1 = 3;
+        int a = 3;
+        int n = x1-x0;
+        int N = 4;
+        int pdim = n + 2;
+        Program p = new Program(pdim);
+
+        Block answer = new Block("AddIntegerModulus", x1-x0+2);
+
+        int dim = n+1;
+        
+        // 0 + 3 = 3
+        AddInteger add = new AddInteger(x0, x1, a);
+        answer.addStep(new Step(add));
+
+        // 3 - 4 = -1
+        AddInteger min = new AddInteger(x0,x1,N).inverse();
+        answer.addStep(new Step(min));
+       
+        // ancilla 1
+        answer.addStep(new Step(new Cnot(x1,dim)));
+        AddInteger addN = new AddInteger(x0,x1,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, x0,dim);
+        // -1 + 4 = 3
+        answer.addStep(new Step(cbg));
+
+        // 3 - 3 = 0
+        AddInteger add2 = new AddInteger(x0,x1,a).inverse();
+        answer.addStep(new Step(add2));
+
+        for (Step step: answer.getSteps()) {
+            p.addStep(step);
+        }
+        
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+
+        assertEquals(pdim, q.length);
+        assertEquals(0, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(1, q[4].measure());
+    }
+    
+    // 0 + 3 = 3
+    // 3 - 4 = -1
+    // since 3 < 4 we should add 4 again
+    // -1 + 4 = 3
+    // 3 - 3 = 0 -> -2 + 16 = 14
+    // invert msb in b and add cnot to ancilla bit, invert msb in b again
+    @Test
+    public void testAddIntMod2Part4() {
+        int x0 =0;
+        int x1 = 3;
+        int a = 3;
+        int n = x1-x0;
+        int N = 4;
+        int pdim = n + 2;
+        Program p = new Program(pdim);
+
+        Block answer = new Block("AddIntegerModulus", x1-x0+2);
+
+        int dim = n+1;
+        
+        // 0 + 3 = 3
+        AddInteger add = new AddInteger(x0, x1, a);
+        answer.addStep(new Step(add));
+
+        // 3 - 4 = -1
+        AddInteger min = new AddInteger(x0,x1,N).inverse();
+        answer.addStep(new Step(min));
+       
+        // ancilla 1
+        answer.addStep(new Step(new Cnot(x1,dim)));
+        AddInteger addN = new AddInteger(x0,x1,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, x0,dim);
+        // -1 + 4 = 3
+        answer.addStep(new Step(cbg));
+
+        // 3 - 3 = 0
+        AddInteger add2 = new AddInteger(x0,x1,a).inverse();
+        answer.addStep(new Step(add2));
+        
+        answer.addStep(new Step(new X(dim-1)));
+        answer.addStep(new Step(new Cnot(x1, dim)));
+        
+//        Block block = new Block(1);
+//        block.addStep(new Step(new X(0)));
+//        ControlledBlockGate cbg2 = new ControlledBlockGate(block, dim, x1);
+//        answer.addStep(new Step(cbg2));
+        answer.addStep(new Step(new X(dim-1)));
+
+        for (Step step: answer.getSteps()) {
+            p.addStep(step);
+        }
+        
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+
+        assertEquals(pdim, q.length);
+        assertEquals(0, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+        assertEquals(0, q[4].measure());
+    }
+    
+    @Test
+    public void testAddIntMod3PartAll() {
+        // 0 + 1 mod 3 = 1
+        int x0 =0;
+        int x1 = 2;
+        int a = 1;
+        int n = x1-x0;
+        int N = 3;
+        int pdim = n + 2;
+        Program p = new Program(pdim);
+        Step prep = new Step();
+        Block answer = new Block("AddIntegerModulus", x1-x0+2);
+
+        int dim = n+1;
+        
+        // 2 + 3 = 5
+        AddInteger add = new AddInteger(x0, x1, a);
+        answer.addStep(new Step(add));
+
+        // 5 - 4 = 1
+        AddInteger min = new AddInteger(x0,x1,N).inverse();
+        answer.addStep(new Step(min));
+       
+        // ancilla 0
+        answer.addStep(new Step(new Cnot(x1,dim)));
+        AddInteger addN = new AddInteger(x0,x1,N);
+        ControlledBlockGate cbg = new ControlledBlockGate(addN, x0,dim);
+        answer.addStep(new Step(cbg));
+
+        // (1 - 3) MOD 16 = 14 
+        AddInteger add2 = new AddInteger(x0,x1,a).inverse();
+        answer.addStep(new Step(add2));
+        
+        // invert MSB
+        answer.addStep(new Step(new X(dim-1)));
+        // add CNOT
+        answer.addStep(new Step(new Cnot(x1, dim)));
+        // invert B again
+        answer.addStep(new Step(new X(dim-1)));
+
+        // re-add a
+        AddInteger add3 = new AddInteger(x0,x1,a);
+        answer.addStep (new Step(add3));
+        
+        for (Step step: answer.getSteps()) {
+            p.addStep(step);
+        }
+        
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+
+        assertEquals(pdim, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
     }
     
 }

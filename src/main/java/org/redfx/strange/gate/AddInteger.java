@@ -102,4 +102,9 @@ public class AddInteger extends BlockGate<AddInteger> {
         return answer;
     }
 
+    @Override
+    public String getCaption() {
+        return "A\nD\nD\nI";
+    }
+
 }
