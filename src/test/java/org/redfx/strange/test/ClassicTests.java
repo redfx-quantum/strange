@@ -31,6 +31,10 @@
  * #L%
  */
 package org.redfx.strange.test;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.redfx.strange.algorithm.Classic;
@@ -90,4 +94,32 @@ public class ClassicTests {
         int sum = Classic.qsum(4,13);
         assertEquals(17, sum);
     }
+  
+    @Test
+    void quantumSearch() {
+        Function<Person, Integer> f29Mexico
+                = (Person p) -> ((p.getAge() == 29) && (p.getCountry().equals("Mexico"))) ? 1 : 0;
+        for (int i = 0; i < 10; i++) {
+            List<Person> persons = prepareDatabase();
+            Collections.shuffle(persons);
+            Person target = Classic.search(persons, f29Mexico);
+            assertEquals(target.getAge(), 29);
+            assertEquals(target.getCountry(), "Mexico");
+        }
+    }
+
+
+    List<Person> prepareDatabase() {
+        List<Person> persons = new LinkedList<>();
+        persons.add(new Person("Alice", 42, "Nigeria"));
+        persons.add(new Person("Bob", 36, "Australia"));
+        persons.add(new Person("Eve", 85, "USA"));
+        persons.add(new Person("Niels", 18, "Greece"));
+        persons.add(new Person("Albert", 29, "Mexico"));
+        persons.add(new Person("Roger", 29, "Belgium"));
+        persons.add(new Person("Marie", 15, "Russia"));
+        persons.add(new Person("Janice", 52, "China"));
+        return persons;
+    }
+
 }
