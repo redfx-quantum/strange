@@ -137,6 +137,33 @@ public class Classic {
      * by the function, returns 1.
      */
     public static<T> T search(List<T> list, Function<T, Integer> function) {
+        double[] probability = searchProbabilities(list, function);
+        int winner = 0;
+        double wv = 0;
+        for (int i = 0 ; i < probability.length; i++) {
+            double a = probability[i];
+            if (a > wv) {
+                wv = a;
+                winner = i;
+            }
+        }
+        System.err.println("winner = "+winner+" with prob "+wv);
+        return list.get(winner);
+    }
+    
+      
+    /**
+     * Apply Grover's search algorithm to find the element from the supplied
+     * list that would evaluate the provided function to 1
+     * @param <T> the type of the element 
+     * @param list the list of all elements that need to be searched into
+     * @param function the function that, when evaluated, returns 0 for all
+     * elements except for the element that this method returns, which evaluation
+     * leads to 1.
+     * @return the single element from the provided list that, when evaluated
+     * by the function, returns 1.
+     */
+    public static<T> double[] searchProbabilities(List<T> list, Function<T, Integer> function) {
         int size = list.size();
         int n = (int) Math.ceil((Math.log(size)/Math.log(2)));
         int N = 1 << n;
@@ -168,17 +195,12 @@ public class Classic {
 
         Result res = qee.runProgram(p);
         Complex[] probability = res.getProbability();
-        int winner = 0;
-        double wv = 0;
-        for (int i = 0 ; i < probability.length; i++) {
-            double a = probability[i].abssqr();
-            if (a > wv) {
-                wv = a;
-                winner = i;
-            }
+        double[] answer = new double[probability.length];
+        for (int i = 0; i < probability.length; i++) {
+            answer[i] = probability[i].abssqr();
         }
-        System.err.println("winner = "+winner+" with prob "+wv);
-        return list.get(winner);
+        return answer;
+      
     }
 
     /**
