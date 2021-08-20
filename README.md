@@ -32,7 +32,7 @@ A typical `pom.xml` file looks as follows:
     <dependency>
       <groupId>org.redfx</groupId>
       <artifactId>strange</artifactId>
-      <version>0.0.21</version>
+      <version>0.1.1</version>
     </dependency>
   </dependencies>
   <build> 
@@ -63,7 +63,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.redfx:strange:0.0.21'
+    implementation 'org.redfx:strange:0.1.1'
 }
 
 mainClassName = 'SimpleStrangeDemo'
