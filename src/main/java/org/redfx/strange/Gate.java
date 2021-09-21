@@ -45,7 +45,9 @@ import org.redfx.strange.gate.Toffoli;
 import org.redfx.strange.gate.X;
 import org.redfx.strange.gate.Y;
 import org.redfx.strange.gate.Z;
-
+import org.redfx.strange.gate.RotationX;
+import org.redfx.strange.gate.RotationY;
+import org.redfx.strange.gate.RotationZ;
 import java.util.List;
 
 /**
@@ -69,6 +71,9 @@ public interface Gate {
     static Gate x(int idx)  { return new X(idx); }
     static Gate y(int idx)  { return new Y(idx); }
     static Gate z(int idx)  { return new Z(idx); }
+	static Gate rotationX(double theta, int idx) { return new RotationX(theta, idx); }
+	static Gate rotationY(double theta, int idx) { return new RotationY(theta, idx); }
+	static Gate rotationZ(double theta, int idx) { return new RotationZ(theta, idx); }
 
     /**
      * Set the main qubit where this gate operates on.
