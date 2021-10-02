@@ -73,7 +73,7 @@ public class RotationTests extends BaseGateTests{
             }
         }
         assertTrue(results[0] < 10);
-        assertTrue(results[1] > 90);
+        assertTrue(results[1] < 10);
     }
 
 }
