@@ -1,17 +1,14 @@
-package com.quantumtest;
+package org.redfx.strange.gate;
 
 import org.redfx.strange.Complex;
 import org.redfx.strange.gate.SingleQubitGate;
 
-public class RotationZ extends SingleQubitGate {
+public class RotationZ extends Rotation {
 
     Complex[][] matrix;
-    private final double thetav;
 
     public RotationZ(double theta, int idx) {
-        super(idx);
-        this.thetav = theta;
-        matrix =  new Complex[][]{{new Complex(0,Math.pow(Math.E,-theta/2)),Complex.ZERO}, {Complex.ZERO,new Complex(0,Math.pow(Math.E,theta/2))}};
+        super(theta, Axes.ZAxis, idx);
     }
 
     @Override
@@ -26,7 +23,7 @@ public class RotationZ extends SingleQubitGate {
     }
 
     @Override public String getCaption() {
-        return "RotationZ " + thetav;
+        return "RotationZ " + this.thetav;
     }
 
 }
