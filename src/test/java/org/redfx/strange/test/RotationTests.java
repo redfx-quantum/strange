@@ -49,16 +49,6 @@ public class RotationTests extends BaseGateTests{
         assertTrue(results[2] > 90);
     }
 
-    /*
-    Test will currently error with the following error:
-
-    java.lang.ArrayIndexOutOfBoundsException: Index 2 out of bounds for length 2
-
-	at org.redfx.strange.Result.measureSystem(Result.java:164)
-	at org.redfx.strange.local.SimpleQuantumExecutionEnvironment.runProgram(SimpleQuantumExecutionEnvironment.java:130)
-	at org.redfx.strange.test.BaseGateTests.runProgram(BaseGateTests.java:59)
-	at org.redfx.strange.test.RotationTests.rotationZTest(RotationTests.java:58)
-    */
     @Test
     public void rotationZTest(){
         int[] results = new int[2];
