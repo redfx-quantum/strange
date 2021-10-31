@@ -40,10 +40,6 @@ import org.redfx.strange.gate.Measurement;
 import org.redfx.strange.gate.Oracle;
 import org.redfx.strange.gate.PermutationGate;
 import org.redfx.strange.gate.ProbabilitiesGate;
-import org.redfx.strange.gate.Rotation;
-import org.redfx.strange.gate.RotationX;
-import org.redfx.strange.gate.RotationY;
-import org.redfx.strange.gate.RotationZ;
 import org.redfx.strange.gate.Swap;
 import org.redfx.strange.gate.Toffoli;
 import org.redfx.strange.gate.X;
@@ -51,6 +47,10 @@ import org.redfx.strange.gate.Y;
 import org.redfx.strange.gate.Z;
 
 import java.util.List;
+import org.redfx.strange.gate.Rotation;
+import org.redfx.strange.gate.RotationX;
+import org.redfx.strange.gate.RotationY;
+import org.redfx.strange.gate.RotationZ;
 
 /**
  *
