@@ -32,28 +32,29 @@
  */
 package org.redfx.strange.demo;
 
-import org.redfx.strange.gate.Z;
-import org.redfx.strange.gate.Add;
-import org.redfx.strange.gate.X;
-import org.redfx.strange.gate.AddModulus;
-import org.redfx.strange.gate.Swap;
-import org.redfx.strange.gate.MulModulus;
-import org.redfx.strange.gate.PermutationGate;
-import org.redfx.strange.gate.Y;
-import org.redfx.strange.Complex;
-import org.redfx.strange.ControlledBlockGate;
-import org.redfx.strange.Gate;
-import org.redfx.strange.Program;
-import org.redfx.strange.Qubit;
-import org.redfx.strange.Result;
-import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
-import org.redfx.strange.Step;
+import org.redfx.strange.*;
+import org.redfx.strange.gate.*;
 import org.redfx.strange.local.Computations;
+import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
+
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * <p>Demo class.</p>
+ *
+ * @author alain
+ * @version $Id: $Id
+ */
 public class Demo {
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects
+     * @throws java.util.concurrent.ExecutionException if any.
+     * @throws java.lang.InterruptedException if any.
+     */
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Hello, Demo3");
 //        int rows = 256;
@@ -142,6 +143,9 @@ public class Demo {
         }
     }
     
+    /**
+     * <p>multiplyMod5x3andswapandclean.</p>
+     */
     public static void multiplyMod5x3andswapandclean() { // 5 x 3 mod 6 = 3
         Program p = new Program(9);
         Step prep = new Step();
@@ -169,6 +173,9 @@ public class Demo {
 
     }
     
+     /**
+      * <p>expmul3p4mod7.</p>
+      */
      static public void expmul3p4mod7() { // 3^4 = 81 -> mod 7 = 4
         int length = 3; 
         // q0 -> q2: a (3)
@@ -200,6 +207,9 @@ public class Demo {
 
     }
   
+     /**
+      * <p>zerotest.</p>
+      */
      static public void zerotest() {
              Program p = new Program(2);
         Step prep = new Step();
@@ -212,6 +222,9 @@ public class Demo {
         Qubit[] q = result.getQubits();
 
      }
+     /**
+      * <p>modmultest.</p>
+      */
      static public void modmultest() { // 3^4 = 81 -> mod 7 = 4
         int length = 3; 
         // q0 -> q2: a (3)
@@ -283,12 +296,18 @@ public class Demo {
         Qubit[] q = result.getQubits();
     }
     
+    /**
+     * <p>expmul2p3mod7gen.</p>
+     */
     public static void expmul2p3mod7gen() { // 3^4 = 81 -> mod 7 = 4
         Qubit[] q = expmodNum3(2, 7, 3);
         for (int i = 0; i < q.length; i++) {
             System.err.println("m[" + i + "]: " + q[i].measure());
         }
     }
+     /**
+      * <p>expmul7p4mod15gen.</p>
+      */
      public static void expmul7p4mod15gen() { // 3^4 = 81 -> mod 7 = 4
         Qubit[] q = expmodNum3(7, 15, 4);
         for (int i = 0; i < q.length; i++) {

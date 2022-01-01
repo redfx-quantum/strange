@@ -35,10 +35,17 @@ package org.redfx.strange.gate;
 import org.redfx.strange.Complex;
 import org.redfx.strange.QuantumExecutionEnvironment;
 
+/**
+ * <p>InvFourier class.</p>
+ *
+ * @author alain
+ * @version $Id: $Id
+ */
 public class InvFourier extends Fourier {
     
     /**
      * Create a Fourier gate with the given size (dimensions), starting at idx
+     *
      * @param size number of qubits affected by this gate
      * @param idx the index of the first qubit in the circuit affected by this gate
      */
@@ -46,11 +53,13 @@ public class InvFourier extends Fourier {
         super("InvFourier", size, idx);
     }
     
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
         return getMatrix(null);
     }
     
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix(QuantumExecutionEnvironment eqq) {
         if (matrix == null) {
@@ -89,6 +98,7 @@ public class InvFourier extends Fourier {
         return matrix;
     }
     
+    /** {@inheritDoc} */
     @Override
     public boolean hasOptimization() {
         return false;

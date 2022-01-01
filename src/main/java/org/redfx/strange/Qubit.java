@@ -33,8 +33,10 @@
 package org.redfx.strange;
 
 /**
+ * <p>Qubit class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class Qubit {
 
@@ -60,6 +62,7 @@ public class Qubit {
     /**
      * Creates a qubit with an initial value for alpha.
      * The initial state of the qubit is ralpha |0&gt; + (1-ralpha^2)^(1/2) |1&gt;
+     *
      * @param ralpha the real part of the alpha coefficient in alfa |0&gt; + beta |1&gt;
      */
     public Qubit (double ralpha) {
@@ -76,12 +79,18 @@ public class Qubit {
         return new Complex(Math.cos(phi)*s, Math.sin(phi)*s);
     }
     
+    /**
+     * <p>setProbability.</p>
+     *
+     * @param p a double
+     */
     public void setProbability(double p) {
         this.prob = p;
     }
     
     /**
      * Performs a measurement on this qubit.
+     *
      * @return <code>0</code> or <code>1</code>
      */
     public int measure() {
@@ -93,10 +102,20 @@ public class Qubit {
         return measuredValue ? 1 : 0;
     }
     
+    /**
+     * <p>Setter for the field <code>measuredValue</code>.</p>
+     *
+     * @param v a boolean
+     */
     public void setMeasuredValue (boolean v) {
         this.measuredValue = v;
     }
     
+    /**
+     * <p>getProbability.</p>
+     *
+     * @return a double
+     */
     public double getProbability() {
         return this.prob;
     }

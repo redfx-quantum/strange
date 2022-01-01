@@ -33,15 +33,18 @@
 package org.redfx.strange;
 
 import org.redfx.strange.gate.PermutationGate;
+import org.redfx.strange.gate.ProbabilitiesGate;
 import org.redfx.strange.local.Computations;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.redfx.strange.gate.ProbabilitiesGate;
 
 /**
+ * <p>Block class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class Block {
 
@@ -70,15 +73,30 @@ public class Block {
         this.name = name;
     }
 
+    /**
+     * <p>addStep.</p>
+     *
+     * @param step a {@link org.redfx.strange.Step} object
+     */
     public void addStep(Step step) {
         this.steps.add(step);
         matrix = null;
     }
 
+    /**
+     * <p>Getter for the field <code>steps</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<Step> getSteps() {
         return this.steps;
     }
 
+    /**
+     * <p>getNQubits.</p>
+     *
+     * @return a int
+     */
     public int getNQubits() {
         return this.nqubits;
     }
@@ -124,6 +142,13 @@ public class Block {
         return matrix;
     }
 
+    /**
+     * <p>applyOptimize.</p>
+     *
+     * @param probs an array of {@link org.redfx.strange.Complex} objects
+     * @param inverse a boolean
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public Complex[] applyOptimize(Complex[] probs, boolean inverse) {
         List<Step> simpleSteps = new ArrayList<>();
         for (Step step : steps) {
@@ -166,6 +191,7 @@ public class Block {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "Block named " + name + " at " + super.toString();

@@ -34,15 +34,14 @@ package org.redfx.strange.gate;
 
 import org.redfx.strange.Block;
 import org.redfx.strange.BlockGate;
-import org.redfx.strange.Complex;
-import org.redfx.strange.Gate;
 import org.redfx.strange.Step;
 import org.redfx.strange.local.Computations;
-import java.util.List;
 
 /**
+ * <p>Mul class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class Mul extends BlockGate<Mul> {
 
@@ -50,6 +49,7 @@ public class Mul extends BlockGate<Mul> {
     
     /**
      * Multiply the qubit in the x register with an integer mul
+     *
      * @param x0 start idx x register
      * @param x1 end idx x register
      * @param mul
@@ -67,6 +67,14 @@ public class Mul extends BlockGate<Mul> {
        
     }
     
+    /**
+     * <p>createBlock.</p>
+     *
+     * @param y0 a int
+     * @param y1 a int
+     * @param mul a int
+     * @return a {@link org.redfx.strange.Block} object
+     */
     public Block createBlock(int y0, int y1, int mul) {
         int x0 = 0;
         int x1 = y1-y0;

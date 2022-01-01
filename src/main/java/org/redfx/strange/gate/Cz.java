@@ -35,8 +35,10 @@ package org.redfx.strange.gate;
 import org.redfx.strange.Complex;
 
 /**
+ * <p>Cz class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class Cz extends TwoQubitGate {
     
@@ -47,18 +49,29 @@ public class Cz extends TwoQubitGate {
         {Complex.ZERO,Complex.ZERO,Complex.ZERO,Complex.ONE.mul(-1)}
     };
     
+    /**
+     * <p>Constructor for Cz.</p>
+     */
     public Cz() {    
     }
     
+    /**
+     * <p>Constructor for Cz.</p>
+     *
+     * @param a a int
+     * @param b a int
+     */
     public Cz (int a, int b) {
         super(a,b);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
         return matrix;
     }
 
+    /** {@inheritDoc} */
     @Override public String getCaption() {
         return "Cz";
     }

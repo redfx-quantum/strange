@@ -32,14 +32,7 @@
  */
 package org.redfx.strange.local;
 
-import java.lang.System.Logger.Level;
-import org.redfx.strange.Complex;
-import org.redfx.strange.Gate;
-import org.redfx.strange.Program;
-import org.redfx.strange.QuantumExecutionEnvironment;
-import org.redfx.strange.Qubit;
-import org.redfx.strange.Result;
-import org.redfx.strange.Step;
+import org.redfx.strange.*;
 import org.redfx.strange.gate.Identity;
 import org.redfx.strange.gate.PermutationGate;
 import org.redfx.strange.gate.ProbabilitiesGate;
@@ -50,13 +43,18 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
+ * <p>SimpleQuantumExecutionEnvironment class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
-
-
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
 
+    /**
+     * <p>dbg.</p>
+     *
+     * @param s a {@link java.lang.String} object
+     */
     public static void dbg (String s) {
         String dbp = System.getProperty("dbg", "false");
         if (dbp.equals("true")) {
@@ -64,9 +62,13 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         }
     }
 
+    /**
+     * <p>Constructor for SimpleQuantumExecutionEnvironment.</p>
+     */
     public SimpleQuantumExecutionEnvironment() {
     }
 
+    /** {@inheritDoc} */
     @Override
     public Result runProgram(Program p) {
         dbg("runProgram ");
@@ -132,6 +134,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         return result;
     }
     
+    /** {@inheritDoc} */
     @Override
     public void runProgram(Program p, Consumer<Result> result) {
         Thread t = new Thread(() -> result.accept(runProgram(p)));
@@ -193,6 +196,13 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
 
     // replaced by the similar function on Complex
+    /**
+     * <p>tensor.</p>
+     *
+     * @param a an array of {@link org.redfx.strange.Complex} objects
+     * @param b an array of {@link org.redfx.strange.Complex} objects
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     @Deprecated
     public Complex[][] tensor(Complex[][] a, Complex[][] b) {
         int d1 = a.length;
@@ -227,6 +237,14 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         return answer;
     }
     
+    /**
+     * <p>createPermutationMatrix.</p>
+     *
+     * @param first a int
+     * @param second a int
+     * @param n a int
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public Complex[][] createPermutationMatrix(int first, int second, int n) {
         Complex[][] swapMatrix = new Swap().getMatrix();
         Complex[][] iMatrix = new Identity().getMatrix();

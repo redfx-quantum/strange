@@ -44,9 +44,11 @@ import java.util.Objects;
 /**
  *
  * A Quantum Program.
- * A Program contains a list of <code>Step</code>s that are executed sequentially 
+ * A Program contains a list of <code>Step</code>s that are executed sequentially
  * by a QuantumExecutionEnvironment.
+ *
  * @author johan
+ * @version $Id: $Id
  */
 public class Program {
  
@@ -62,6 +64,7 @@ public class Program {
     /**
      * Create a Quantum Program and indicate how many qubits will be involved.
      * By default, all qubits are initialized to the |0 &gt; state.
+     *
      * @param nQubits the amount of qubits that will be used in this program
      * @param moreSteps steps to add to the program
      */
@@ -77,9 +80,10 @@ public class Program {
      * \psi = \alpha |0 &gt; + \beta |1 &gt; .
      * Since \alpha^2 + \beta^2 should equals 1, only
      * \alpha is required.
+     *
      * @param idx the index of the qubit to be initialized
      * @param alpha the alpha value of the qubit state.
-     * @throws IllegalArgumentException in case the index of the qubit is higher than the amount of qubits -1 .
+     * @throws java.lang.IllegalArgumentException in case the index of the qubit is higher than the amount of qubits -1 .
      */
     public void initializeQubit(int idx, double alpha) {
         if (idx >= numberQubits) {
@@ -89,6 +93,11 @@ public class Program {
         this.initAlpha[idx] = alpha;
     }
 
+    /**
+     * <p>getInitialAlphas.</p>
+     *
+     * @return an array of {@link double} objects
+     */
     public double[] getInitialAlphas() {
         return this.initAlpha;
     }
@@ -97,6 +106,7 @@ public class Program {
      * Adds a step with one or more gates to the existing program.
      * In case the Step contains an operation that would put a measured qubit into a potential superposition
      * again, an IllegalArgumentException is thrown.
+     *
      * @param step the step to be added to the program
      */
     public void addStep(Step step) {
@@ -113,6 +123,7 @@ public class Program {
      * Adds multiple steps with one or more gates to the existing program.
      * In case the Step contains an operation that would put a measured qubit into a potential superposition
      * again, an IllegalArgumentException is thrown.
+     *
      * @param moreSteps steps to be added to the program
      */
     public void addSteps(Step... moreSteps) {
@@ -141,26 +152,56 @@ public class Program {
         return true;
     }
     
+    /**
+     * <p>Getter for the field <code>steps</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<Step> getSteps() {
         return this.steps;
     }
 
+    /**
+     * <p>Getter for the field <code>decomposedSteps</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<Step> getDecomposedSteps () {
         return this.decomposedSteps;
     }
 
+    /**
+     * <p>Setter for the field <code>decomposedSteps</code>.</p>
+     *
+     * @param ds a {@link java.util.List} object
+     */
     public void setDecomposedSteps(List<Step> ds) {
         this.decomposedSteps = ds;
     }
     
+    /**
+     * <p>Getter for the field <code>numberQubits</code>.</p>
+     *
+     * @return a int
+     */
     public int getNumberQubits() {
         return this.numberQubits;
     }
 
+    /**
+     * <p>Setter for the field <code>result</code>.</p>
+     *
+     * @param r a {@link org.redfx.strange.Result} object
+     */
     public void setResult(Result r) {
         this.result = r;
     }
 
+    /**
+     * <p>Getter for the field <code>result</code>.</p>
+     *
+     * @return a {@link org.redfx.strange.Result} object
+     */
     public Result getResult() {
         return this.result;
     }

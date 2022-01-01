@@ -32,12 +32,13 @@
  */
 package org.redfx.strange;
 
-import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 /**
+ * <p>QuantumExecutionEnvironment interface.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public interface QuantumExecutionEnvironment {
 
@@ -51,14 +52,28 @@ public interface QuantumExecutionEnvironment {
      * The <code>Result</code> also contains a list of Qubits, each with a measuredValue.
      * Every invocation of this method, or of the <code>Result.measureSystem</code> method
      * may result in different values for <code>measuredValue</code> for the qubits.
+     *
      * @param p the provided <code>Program</code> to be executed.
      * @return the <code>Result</code> instance containing the probability vector for
      * the system, and a measurement for every qubit.
      */
     Result runProgram(Program p);
 
+    /**
+     * <p>runProgram.</p>
+     *
+     * @param p a {@link org.redfx.strange.Program} object
+     * @param result a {@link java.util.function.Consumer} object
+     */
     void runProgram (Program p, Consumer<Result> result);
     
+    /**
+     * <p>mmul.</p>
+     *
+     * @param a an array of {@link org.redfx.strange.Complex} objects
+     * @param b an array of {@link org.redfx.strange.Complex} objects
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     default public Complex[][] mmul(Complex[][] a, Complex[][] b) {
         return Complex.mmul(a, b);
     }

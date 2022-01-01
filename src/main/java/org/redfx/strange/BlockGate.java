@@ -39,8 +39,10 @@ import java.util.stream.IntStream;
 /**
  *
  * A Gate describes an operation on one or more qubits.
+ *
  * @author johan
  * @param <T> Type of the Gate
+ * @version $Id: $Id
  */
 public class BlockGate<T extends Gate> implements Gate {
 
@@ -48,77 +50,106 @@ public class BlockGate<T extends Gate> implements Gate {
     protected int idx;
     protected boolean inverse = false;
     
+    /**
+     * <p>Constructor for BlockGate.</p>
+     */
     protected BlockGate() {
     }
     
     /**
-     * Create a block 
-     * @param block
-     * @param idx
+     * Create a block
+     *
+     * @param block a {@link org.redfx.strange.Block} object
+     * @param idx a int
      */
     public BlockGate (Block block, int idx) {
         this.block = block;
         this.idx = idx;
     }
     
+    /**
+     * <p>Setter for the field <code>block</code>.</p>
+     *
+     * @param b a {@link org.redfx.strange.Block} object
+     */
     protected final void setBlock(Block b) {
         this.block = b;
     }
     
+    /**
+     * <p>Getter for the field <code>block</code>.</p>
+     *
+     * @return a {@link org.redfx.strange.Block} object
+     */
     public final Block getBlock() {
         return this.block;
     }
     
+    /**
+     * <p>setIndex.</p>
+     *
+     * @param idx a int
+     */
     protected final void setIndex(int idx) {
         this.idx = idx;
     }
     
+    /** {@inheritDoc} */
     @Override
     public void setMainQubitIndex(int idx) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getMainQubitIndex() {
         return idx;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setAdditionalQubit(int idx, int cnt) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Integer> getAffectedQubitIndexes() {
         return IntStream.range(idx, idx+block.getNQubits()).boxed().collect(Collectors.toList());
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getHighestAffectedQubitIndex() {
         int answer = block.getNQubits()+idx-1;
         return answer;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getCaption() {
         return "B";
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getName() {
         return "BlockGate";
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getGroup() {
         return "BlockGroup";
     }
 
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
         return getMatrix(null);
     }
     
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix(QuantumExecutionEnvironment qee) {
         Complex[][] answer = block.getMatrix(qee);
@@ -128,31 +159,41 @@ public class BlockGate<T extends Gate> implements Gate {
         return answer;
     }
     
+    /** {@inheritDoc} */
     @Override
     public void setInverse(boolean inv) {
         this.inverse = inv;
     }
     
+    /**
+     * <p>inverse.</p>
+     *
+     * @return a T object
+     */
     public T inverse() {
         setInverse(!this.inverse);
         return (T) this;
     }
     
+    /** {@inheritDoc} */
     @Override
     public int getSize() {
         return block.getNQubits();
     }
         
+    /** {@inheritDoc} */
     @Override
     public boolean hasOptimization() {
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Complex[] applyOptimize(Complex[] v) {
         return block.applyOptimize(v, inverse);
     }
 
+    /** {@inheritDoc} */
     @Override public String toString() {
         return "Gate for block "+block+", size = "+getSize()+", inv = "+inverse;
     }

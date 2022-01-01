@@ -32,39 +32,38 @@
  */
 package org.redfx.strange.algorithm;
 
-import org.redfx.strange.Complex;
-import org.redfx.strange.ControlledBlockGate;
-import org.redfx.strange.Gate;
-import org.redfx.strange.Program;
-import org.redfx.strange.QuantumExecutionEnvironment;
-import org.redfx.strange.Qubit;
-import org.redfx.strange.Result;
-import org.redfx.strange.Step;
-import org.redfx.strange.gate.Cr;
-import org.redfx.strange.gate.Fourier;
-import org.redfx.strange.gate.Hadamard;
-import org.redfx.strange.gate.InvFourier;
-import org.redfx.strange.gate.MulModulus;
-import org.redfx.strange.gate.Oracle;
-import org.redfx.strange.gate.ProbabilitiesGate;
-import org.redfx.strange.gate.X;
+import org.redfx.strange.*;
+import org.redfx.strange.gate.*;
 import org.redfx.strange.local.Computations;
 import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
+
 import java.util.List;
 import java.util.function.Function;
 
 /**
+ * <p>Classic class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class Classic {
     
     private static QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
             
+    /**
+     * <p>setQuantumExecutionEnvironment.</p>
+     *
+     * @param val a {@link org.redfx.strange.QuantumExecutionEnvironment} object
+     */
     public static void setQuantumExecutionEnvironment(QuantumExecutionEnvironment val) {
         qee = val;
     }
     
+    /**
+     * <p>randomBit.</p>
+     *
+     * @return a int
+     */
     public static int randomBit() {
         Program program = new Program(1, new Step(new Hadamard(0)));
         Result result = qee.runProgram(program);
@@ -75,6 +74,7 @@ public class Classic {
     
     /**
      * Use a quantum addition algorithm to compute the sum of a and b
+     *
      * @param a first term
      * @param b second term
      * @return the sum of a and b
@@ -128,7 +128,8 @@ public class Classic {
     /**
      * Apply Grover's search algorithm to find the element from the supplied
      * list that would evaluate the provided function to 1
-     * @param <T> the type of the element 
+     *
+     * @param <T> the type of the element
      * @param list the list of all elements that need to be searched into
      * @param function the function that, when evaluated, returns 0 for all
      * elements except for the element that this method returns, which evaluation
@@ -155,7 +156,8 @@ public class Classic {
     /**
      * Apply Grover's search algorithm to find the element from the supplied
      * list that would evaluate the provided function to 1
-     * @param <T> the type of the element 
+     *
+     * @param <T> the type of the element
      * @param list the list of all elements that need to be searched into
      * @param function the function that, when evaluated, returns 0 for all
      * elements except for the element that this method returns, which evaluation
@@ -205,7 +207,8 @@ public class Classic {
 
     /**
      * Find the periodicity of a^x mod N
-     * @param a
+     *
+     * @param a a int
      * @param mod N
      * @return period r or -1 if no period is found
      */
@@ -224,6 +227,12 @@ public class Classic {
         return period;
     }
     
+    /**
+     * <p>qfactor.</p>
+     *
+     * @param N a int
+     * @return a int
+     */
     public static int qfactor (int N) {
         System.out.println("We need to factor "+N);
         int a = 1+ (int)((N-1) * Math.random());

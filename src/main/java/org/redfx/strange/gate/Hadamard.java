@@ -35,22 +35,31 @@ package org.redfx.strange.gate;
 import org.redfx.strange.Complex;
 
 /**
+ * <p>Hadamard class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class Hadamard extends SingleQubitGate {
     
     Complex[][] matrix =  new Complex[][]{{ Complex.HC, Complex.HC }, { Complex.HC, Complex.HCN }};
     
+    /**
+     * <p>Constructor for Hadamard.</p>
+     *
+     * @param idx a int
+     */
     public Hadamard (int idx) {
         super(idx);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
         return matrix;
     }
     
+    /** {@inheritDoc} */
     @Override public String getCaption() {return "H";}
     
 }

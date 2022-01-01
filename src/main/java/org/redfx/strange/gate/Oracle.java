@@ -41,6 +41,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+/**
+ * <p>Oracle class.</p>
+ *
+ * @author alain
+ * @version $Id: $Id
+ */
 public class Oracle implements Gate {
 
     private int mainQubit = 0;
@@ -49,9 +55,19 @@ public class Oracle implements Gate {
     private String caption = "Oracle";
     private int span = 1;
 
+    /**
+     * <p>Constructor for Oracle.</p>
+     *
+     * @param i a int
+     */
     public Oracle (int i) {
         this.mainQubit = i;
     }
+    /**
+     * <p>Constructor for Oracle.</p>
+     *
+     * @param matrix an array of {@link org.redfx.strange.Complex} objects
+     */
     public Oracle(Complex[][] matrix) {
         this.matrix = matrix;
         sanitizeMatrix();
@@ -61,59 +77,79 @@ public class Oracle implements Gate {
         }
     }
  
+    /** {@inheritDoc} */
     @Override
     public int getSize() {
         return span;
     }
     
+    /**
+     * <p>Setter for the field <code>caption</code>.</p>
+     *
+     * @param c a {@link java.lang.String} object
+     */
     public void setCaption(String c) {
         this.caption = c;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setMainQubitIndex(int idx) {
         this.mainQubit = 0;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getMainQubitIndex() {
         return mainQubit;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setAdditionalQubit(int idx, int cnt) {
         this.affected.add(idx);
     }
 
+    /**
+     * <p>getQubits.</p>
+     *
+     * @return a int
+     */
     public int getQubits() {
         return span;
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Integer> getAffectedQubitIndexes() {
         return this.affected;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getHighestAffectedQubitIndex() {
         return Collections.max(getAffectedQubitIndexes());
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getCaption() {
         return this.caption;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getName() {
         return "Oracle";
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getGroup() {
         return "Oracle";
     }
 
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
         return matrix;
@@ -132,6 +168,7 @@ public class Oracle implements Gate {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setInverse(boolean inv) {
         if (inv) {

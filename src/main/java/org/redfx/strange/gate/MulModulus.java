@@ -34,17 +34,15 @@ package org.redfx.strange.gate;
 
 import org.redfx.strange.Block;
 import org.redfx.strange.BlockGate;
-import org.redfx.strange.Complex;
-import org.redfx.strange.Gate;
+import org.redfx.strange.ControlledBlockGate;
 import org.redfx.strange.Step;
 import org.redfx.strange.local.Computations;
-import java.util.HashMap;
-import java.util.List;
-import org.redfx.strange.ControlledBlockGate;
 
 /**
+ * <p>MulModulus class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class MulModulus extends BlockGate<MulModulus> {
 
@@ -54,12 +52,13 @@ public class MulModulus extends BlockGate<MulModulus> {
 
     /**
      * Multiply the qubit in the x register with an integer mul
+     *
      * @param x0 start idx x register
      * @param x1 end idx x register
-     * @param mul
+     * @param mul a int
      * @param mod
      * x_0 ----- x_0 * mul (n qubits in and out)
-     * x_n-1 ----- x_1-1 * mul 
+     * x_n-1 ----- x_1-1 * mul
      * y_0 ----- 0 ( n + 2 qubits needed for addintmon)
      * y_n+1 ----- 0
      */
@@ -72,6 +71,15 @@ public class MulModulus extends BlockGate<MulModulus> {
         setBlock(block);
     }
     
+    /**
+     * <p>createBlock.</p>
+     *
+     * @param y0 a int
+     * @param y1 a int
+     * @param mul a int
+     * @param mod a int
+     * @return a {@link org.redfx.strange.Block} object
+     */
     public Block createBlock(int y0, int y1, int mul, int mod) {
         int hash = 1000000 * y0 + 10000*y1+ 100*mul + mod;
         int x0 = y0;

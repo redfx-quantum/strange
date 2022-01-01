@@ -32,28 +32,20 @@
  */
 package org.redfx.strange.local;
 
-import org.redfx.strange.Block;
-import org.redfx.strange.BlockGate;
-import org.redfx.strange.Complex;
-import static org.redfx.strange.Complex.tensor;
-import org.redfx.strange.ControlledBlockGate;
-import org.redfx.strange.Gate;
-import org.redfx.strange.Step;
-import org.redfx.strange.gate.Identity;
-import org.redfx.strange.gate.Oracle;
-import org.redfx.strange.gate.PermutationGate;
-import org.redfx.strange.gate.ProbabilitiesGate;
-import org.redfx.strange.gate.SingleQubitGate;
-import org.redfx.strange.gate.ThreeQubitGate;
-import org.redfx.strange.gate.TwoQubitGate;
+import org.redfx.strange.*;
+import org.redfx.strange.gate.*;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.redfx.strange.QuantumExecutionEnvironment;
+
+import static org.redfx.strange.Complex.tensor;
 
 /**
+ * <p>Computations class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class Computations {
 
@@ -63,6 +55,14 @@ public class Computations {
         SimpleQuantumExecutionEnvironment.dbg(s);
     }
 
+    /**
+     * <p>calculateStepMatrix.</p>
+     *
+     * @param gates a {@link java.util.List} object
+     * @param nQubits a int
+     * @param qee a {@link org.redfx.strange.QuantumExecutionEnvironment} object
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public static Complex[][] calculateStepMatrix(List<Gate> gates, int nQubits, QuantumExecutionEnvironment qee) {
         long l0 = System.currentTimeMillis();
         Complex[][] a = new Complex[1][1];
@@ -115,9 +115,9 @@ public class Computations {
     /**
      * decompose a Step into steps that can be processed without permutations
      *
-     * @param s
-     * @param nqubit
-     * @return
+     * @param s a {@link org.redfx.strange.Step} object
+     * @param nqubit a int
+     * @return a {@link java.util.List} object
      */
     public static List<Step> decomposeStep(Step s, int nqubit) {
         ArrayList<Step> answer = new ArrayList<>();
@@ -257,6 +257,11 @@ public class Computations {
         return answer;
     }
 
+    /**
+     * <p>printMatrix.</p>
+     *
+     * @param a an array of {@link org.redfx.strange.Complex} objects
+     */
     public static void printMatrix(Complex[][] a) {
         for (int i = 0; i < a.length; i++) {
             StringBuilder sb = new StringBuilder();
@@ -267,6 +272,13 @@ public class Computations {
         }
     }
 
+    /**
+     * <p>getInverseModulus.</p>
+     *
+     * @param a a int
+     * @param b a int
+     * @return a int
+     */
     public static int getInverseModulus(int a, int b) {
         int r0 = a;
         int r1 = b;
@@ -286,6 +298,13 @@ public class Computations {
         return s1 > 0 ? s1 : s1 + b;
     }
 
+    /**
+     * <p>gcd.</p>
+     *
+     * @param a a int
+     * @param b a int
+     * @return a int
+     */
     public static int gcd(int a, int b) {
         int x = a > b ? a : b;
         int y = x == a ? b : a;
@@ -298,6 +317,13 @@ public class Computations {
         return x;
     }
 
+    /**
+     * <p>fraction.</p>
+     *
+     * @param p a int
+     * @param max a int
+     * @return a int
+     */
     public static int fraction(int p, int max) {
         int length = (int) Math.ceil(Math.log(max) / Math.log(2));
         int offset = length;
@@ -307,6 +333,13 @@ public class Computations {
         return period;
     }
 
+    /**
+     * <p>fraction.</p>
+     *
+     * @param d a double
+     * @param max a int
+     * @return a int
+     */
     public static int fraction(double d, int max) {
         double EPS = 1e-15;
         int answer = -1;
@@ -332,6 +365,12 @@ public class Computations {
         return k_2;
     }
 
+    /**
+     * <p>createIdentity.</p>
+     *
+     * @param dim a int
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public static Complex[][] createIdentity(int dim) {
         Complex[][] matrix = new Complex[dim][dim];
         for (int i = 0; i < dim; i++) {
@@ -342,6 +381,9 @@ public class Computations {
         return matrix;
     }
 
+    /**
+     * <p>printMemory.</p>
+     */
     public static void printMemory() {
         if (!debug) {
             return;
@@ -363,6 +405,14 @@ public class Computations {
          */
     }
 
+    /**
+     * <p>permutateVector.</p>
+     *
+     * @param vector an array of {@link org.redfx.strange.Complex} objects
+     * @param a a int
+     * @param b a int
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public static Complex[] permutateVector(Complex[] vector, int a, int b) {
         int amask = 1 << a;
         int bmask = 1 << b;
@@ -386,6 +436,14 @@ public class Computations {
 
     static int nested = 0; // allows us to e.g. show only 2 nested steps
 
+    /**
+     * <p>calculateNewState.</p>
+     *
+     * @param gates a {@link java.util.List} object
+     * @param vector an array of {@link org.redfx.strange.Complex} objects
+     * @param length a int
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public static Complex[] calculateNewState(List<Gate> gates, Complex[] vector, int length) {
         nested++;
         Complex[] answer = getNextProbability(getAllGates(gates, length), vector);
@@ -588,6 +646,12 @@ public class Computations {
     }
     
     // TODO: make this a utility method
+    /**
+     * <p>calculateQubitStatesFromVector.</p>
+     *
+     * @param vectorresult an array of {@link org.redfx.strange.Complex} objects
+     * @return an array of {@link double} objects
+     */
     public static double[] calculateQubitStatesFromVector(Complex[] vectorresult) {
         int nq = (int) Math.round(Math.log(vectorresult.length) / Math.log(2));
         double[] answer = new double[nq];
