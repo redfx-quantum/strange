@@ -34,15 +34,16 @@ package org.redfx.strange.gate;
 
 import org.redfx.strange.Block;
 import org.redfx.strange.BlockGate;
-import org.redfx.strange.Step;
-import static org.redfx.strange.gate.Add.cache;
-import java.util.HashMap;
 import org.redfx.strange.Complex;
-import org.redfx.strange.Gate;
+import org.redfx.strange.Step;
+
+import java.util.HashMap;
 
 /**
+ * <p>AddInteger class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class AddInteger extends BlockGate<AddInteger> {
 
@@ -52,6 +53,7 @@ public class AddInteger extends BlockGate<AddInteger> {
     
     /**
      * Add the qubit in the x register and the y register, result is in x
+     *
      * @param x0 start idx x register
      * @param x1 end idx x register
      * @param num the integer to be added, (y_m.. y_0)
@@ -73,6 +75,14 @@ public class AddInteger extends BlockGate<AddInteger> {
        
     }
     
+    /**
+     * <p>createBlock.</p>
+     *
+     * @param x0 a int
+     * @param x1 a int
+     * @param num a int
+     * @return a {@link org.redfx.strange.Block} object
+     */
     public Block createBlock(int x0, int x1, int num) {
         boolean old = false;
         int m = x1-x0+1;
@@ -102,6 +112,7 @@ public class AddInteger extends BlockGate<AddInteger> {
         return answer;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getCaption() {
         return "A\nD\nD\nI";

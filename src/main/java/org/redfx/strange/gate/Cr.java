@@ -35,8 +35,10 @@ package org.redfx.strange.gate;
 import org.redfx.strange.Complex;
 
 /**
+ * <p>Cr class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class Cr extends TwoQubitGate {
     
@@ -48,11 +50,15 @@ public class Cr extends TwoQubitGate {
     };
     private int pow = -1;
     
+    /**
+     * <p>Constructor for Cr.</p>
+     */
     public Cr() {    
     }
     
     /**
      * Control-R gate
+     *
      * @param a target qubit
      * @param b control qubit
      * @param exp exp
@@ -75,16 +81,26 @@ public class Cr extends TwoQubitGate {
         {Complex.ZERO,Complex.ZERO,Complex.ZERO,new Complex(ar, ai)}        
         };
     }
+    /**
+     * <p>Constructor for Cr.</p>
+     *
+     * @param a a int
+     * @param b a int
+     * @param base a int
+     * @param pow a int
+     */
     public Cr(int a, int b, int base, int pow) {
         this(a,b, Math.PI*2/Math.pow(base, pow));
         this.pow = pow;
     }
     
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
         return matrix;
     }
     
+    /** {@inheritDoc} */
     @Override 
     public void setInverse(boolean inv) {
         if (inv) {
@@ -93,6 +109,7 @@ public class Cr extends TwoQubitGate {
         }
     }
 
+    /** {@inheritDoc} */
     @Override public String getCaption() {
         return "Cr" + ((pow> -1)? Integer.toString(pow): "th");
     }

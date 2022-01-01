@@ -34,6 +34,7 @@ package org.redfx.strange;
 
 import org.redfx.strange.gate.PermutationGate;
 import org.redfx.strange.local.Computations;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,8 +42,10 @@ import java.util.List;
 /**
  *
  * A Gate describes an operation on one or more qubits.
+ *
  * @author johan
  * @param <T> type of the Block
+ * @version $Id: $Id
  */
 public class ControlledBlockGate<T> extends BlockGate {
 
@@ -53,11 +56,15 @@ public class ControlledBlockGate<T> extends BlockGate {
     int low = 0;
     private Complex[][] matrix = null;
     
+    /**
+     * <p>Constructor for ControlledBlockGate.</p>
+     */
     protected ControlledBlockGate() {
     }
     
     /**
      * Create a controlled blockgate
+     *
      * @param bg the block gate
      * @param idx the start-index of the block gate
      * @param control the index of the control qubit
@@ -67,9 +74,10 @@ public class ControlledBlockGate<T> extends BlockGate {
     }
     
     /**
-     * Create a block 
-     * @param block
-     * @param idx
+     * Create a block
+     *
+     * @param block a {@link org.redfx.strange.Block} object
+     * @param idx a int
      * @param control the control qubit
      */
     public ControlledBlockGate (Block block, int idx, int control) {
@@ -82,6 +90,7 @@ public class ControlledBlockGate<T> extends BlockGate {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Integer> getAffectedQubitIndexes() {
         ArrayList answer = new ArrayList(super.getAffectedQubitIndexes());
@@ -89,31 +98,43 @@ public class ControlledBlockGate<T> extends BlockGate {
         return answer;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getHighestAffectedQubitIndex() {
         if (high < 0) calculateHighLow();
         return this.haq;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getCaption() {
         return "CB";
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getName() {
         return "CBlockGate";
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getGroup() {
         return "CBlockGroup";
     }
     
+    /**
+     * <p>getControlQubit.</p>
+     *
+     * @return a int
+     */
     public int getControlQubit() {
         return this.control;
     }
 
+    /**
+     * <p>calculateHighLow.</p>
+     */
     public void calculateHighLow() {
         this.high = control;
         int gap = control - idx;
@@ -134,19 +155,31 @@ public class ControlledBlockGate<T> extends BlockGate {
          size = high - low + 1;
     }
     
+    /**
+     * <p>Getter for the field <code>low</code>.</p>
+     *
+     * @return a int
+     */
     public int getLow() {
         return this.low;
     }
     
+    /**
+     * <p>correctHigh.</p>
+     *
+     * @param h a int
+     */
     public void correctHigh(int h) {
         this.high = h;
     }
     
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
         return getMatrix(null);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix(QuantumExecutionEnvironment qee) {
         if (matrix == null) {
@@ -191,11 +224,13 @@ public class ControlledBlockGate<T> extends BlockGate {
         return matrix;
     }
     
+    /** {@inheritDoc} */
     @Override
     public boolean hasOptimization() {
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Complex[] applyOptimize(Complex[] v) {
         int size = v.length;
@@ -213,10 +248,16 @@ public class ControlledBlockGate<T> extends BlockGate {
         return answer;
     }
 
+    /**
+     * <p>Getter for the field <code>size</code>.</p>
+     *
+     * @return a int
+     */
     public int getSize() {
         return block.getNQubits()+1;
     }
     
+    /** {@inheritDoc} */
     @Override public String toString() {
         return "ControlledGate for "+super.toString();
     }

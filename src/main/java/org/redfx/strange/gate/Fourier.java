@@ -35,11 +35,18 @@ package org.redfx.strange.gate;
 import org.redfx.strange.Block;
 import org.redfx.strange.BlockGate;
 import org.redfx.strange.Complex;
+import org.redfx.strange.QuantumExecutionEnvironment;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.redfx.strange.QuantumExecutionEnvironment;
 
+/**
+ * <p>Fourier class.</p>
+ *
+ * @author alain
+ * @version $Id: $Id
+ */
 public class Fourier extends BlockGate {
 
     protected Complex[][] matrix = null;
@@ -48,6 +55,7 @@ public class Fourier extends BlockGate {
     
     /**
      * Create a Fourier gate with the given size (dimensions), starting at idx
+     *
      * @param dim number of qubits affected by this gate
      * @param idx the index of the first qubit in the circuit affected by this gate
      */
@@ -55,17 +63,26 @@ public class Fourier extends BlockGate {
         this("Fourier", dim, idx);
     }
     
+    /**
+     * <p>Constructor for Fourier.</p>
+     *
+     * @param name a {@link java.lang.String} object
+     * @param dim a int
+     * @param idx a int
+     */
     public Fourier(String name, int dim, int idx) {
          super(new Block(name, dim), idx);
         this.dim = dim;
         this.size = 1 <<dim;
     }
     
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
         return getMatrix(null);
     }
     
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix(QuantumExecutionEnvironment eqq) {
 
@@ -86,6 +103,7 @@ public class Fourier extends BlockGate {
         return matrix;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setInverse(boolean v) {
         if (v) {
@@ -94,6 +112,7 @@ public class Fourier extends BlockGate {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Fourier inverse() {
         Complex[][] m = getMatrix();
@@ -101,16 +120,19 @@ public class Fourier extends BlockGate {
         return this;
     }
     
+    /** {@inheritDoc} */
     @Override
     public List<Integer> getAffectedQubitIndexes() {
         return IntStream.range(idx, idx+dim).boxed().collect(Collectors.toList());
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getHighestAffectedQubitIndex() {
         return dim+idx-1;
     }
     
+    /** {@inheritDoc} */
     @Override
     public boolean hasOptimization() {
         return false; // for now, we calculate the matrix

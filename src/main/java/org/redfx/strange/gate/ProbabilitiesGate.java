@@ -32,27 +32,42 @@
  */
 package org.redfx.strange.gate;
 
+/**
+ * <p>ProbabilitiesGate class.</p>
+ *
+ * @author alain
+ * @version $Id: $Id
+ */
 public class ProbabilitiesGate extends InformalGate {
 
+    /**
+     * <p>Constructor for ProbabilitiesGate.</p>
+     *
+     * @param idx a int
+     */
     public ProbabilitiesGate(int idx) {
         super(idx);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getCaption() {
         return "P";
     }
  
+    /** {@inheritDoc} */
     @Override
     public int getSize() {
         return -1;
     }
     
+    /** {@inheritDoc} */
     @Override
     public String getName() {
         return "Probabilities";
     }
     
+    /** {@inheritDoc} */
     @Override public void setInverse(boolean v) {
         // NOP
     }

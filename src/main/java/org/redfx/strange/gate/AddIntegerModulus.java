@@ -36,11 +36,12 @@ import org.redfx.strange.Block;
 import org.redfx.strange.BlockGate;
 import org.redfx.strange.ControlledBlockGate;
 import org.redfx.strange.Step;
-import java.util.HashMap;
 
 /**
+ * <p>AddIntegerModulus class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
 
@@ -49,11 +50,10 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
     
     /**
      * Add integer a to the qubit in the x register mod N, result is in x
+     *
      * @param x0 start idx x register
-     * @param x1 end idx x register, this must be |0> 
-     * ANC(0)--- ANC(0)
-     * x1 is an overflow bit
-     * the qubit following x_1 should be 0 (and will be 0 after this gate)
+     * @param a a int
+     * @param N a int
      */
     public AddIntegerModulus(int x0, int x1, int a, int N) {
         super();
@@ -68,6 +68,15 @@ public class AddIntegerModulus extends BlockGate<AddIntegerModulus> {
         setBlock(block);
     }
 
+    /**
+     * <p>createBlock.</p>
+     *
+     * @param x0 a int
+     * @param x1 a int
+     * @param a a int
+     * @param N a int
+     * @return a {@link org.redfx.strange.Block} object
+     */
     public Block createBlock(int x0, int x1, int a, int N) {
         Block answer = new Block("AddIntegerModulus", x1-x0+2);
         int n = x1-x0;

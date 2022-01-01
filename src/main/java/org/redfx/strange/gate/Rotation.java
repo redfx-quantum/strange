@@ -2,12 +2,25 @@ package org.redfx.strange.gate;
 
 import org.redfx.strange.Complex;
 
+/**
+ * <p>Rotation class.</p>
+ *
+ * @author alain
+ * @version $Id: $Id
+ */
 public class Rotation extends SingleQubitGate {
 
     protected Complex[][] matrix;
     protected final double thetav;
     private final Axes axis;
 
+    /**
+     * <p>Constructor for Rotation.</p>
+     *
+     * @param theta a double
+     * @param axis a {@link org.redfx.strange.gate.Rotation.Axes} object
+     * @param idx a int
+     */
     public Rotation(double theta, Axes axis, int idx) {
         super(idx);
         this.thetav = theta;
@@ -28,17 +41,20 @@ public class Rotation extends SingleQubitGate {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
         return matrix;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setInverse(boolean v) {
         super.setInverse(v);
         matrix = Complex.conjugateTranspose(matrix);
     }
 
+    /** {@inheritDoc} */
     @Override public String getCaption() {
         return "Rotation of "+axis.name()+" with angle " + thetav;
     }

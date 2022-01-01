@@ -32,13 +32,14 @@
  */
 package org.redfx.strange;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * <p>Result class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class Result {
 
@@ -51,6 +52,12 @@ public class Result {
     private Map<Integer, Qubit[]> intermediateQubits;
     private int measuredProbability = -1;
  
+    /**
+     * <p>Constructor for Result.</p>
+     *
+     * @param nqubits a int
+     * @param steps a int
+     */
     public Result(int nqubits, int steps) {
         assert(steps >= 0);
         this.nqubits = nqubits;
@@ -59,11 +66,22 @@ public class Result {
         intermediateQubits = new HashMap<>();
     }
 
+    /**
+     * <p>Constructor for Result.</p>
+     *
+     * @param q an array of {@link org.redfx.strange.Qubit} objects
+     * @param p an array of {@link org.redfx.strange.Complex} objects
+     */
     public Result(Qubit[] q, Complex[] p) {
         this.qubits = q;
         this.probability = p;
     }
     
+    /**
+     * <p>Getter for the field <code>qubits</code>.</p>
+     *
+     * @return an array of {@link org.redfx.strange.Qubit} objects
+     */
     public Qubit[] getQubits() {
         if (this.qubits == null) {
             this.qubits = calculateQubits();
@@ -71,6 +89,11 @@ public class Result {
         return this.qubits;
     }
 
+    /**
+     * <p>Getter for the field <code>intermediateQubits</code>.</p>
+     *
+     * @return a {@link java.util.Map} object
+     */
     public Map<Integer, Qubit[]> getIntermediateQubits() {
         return this.intermediateQubits;
     }
@@ -103,10 +126,21 @@ public class Result {
         return answer;
     }
     
+    /**
+     * <p>Getter for the field <code>probability</code>.</p>
+     *
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public Complex[] getProbability() {
         return this.probability;
     }
     
+    /**
+     * <p>setIntermediateProbability.</p>
+     *
+     * @param step a int
+     * @param p an array of {@link org.redfx.strange.Complex} objects
+     */
     public void setIntermediateProbability(int step, Complex[] p) {
         this.intermediateProps[step] = p;
         this.intermediateQubits.put(step, calculateQubitsFromVector(p));
@@ -115,6 +149,12 @@ public class Result {
      //   }
     }
 
+    /**
+     * <p>getIntermediateProbability.</p>
+     *
+     * @param step a int
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public Complex[] getIntermediateProbability(int step) {
         int ret = step;
         while ((ret > 0) && (intermediateProps[ret] == null)) ret--;
@@ -173,6 +213,7 @@ public class Result {
 
     /**
      * Returns a measurement based on the probability vector
+     *
      * @return an integer representation of the measurement
      */
     public int getMeasuredProbability() {

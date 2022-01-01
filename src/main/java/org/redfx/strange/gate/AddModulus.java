@@ -34,18 +34,16 @@ package org.redfx.strange.gate;
 
 import org.redfx.strange.Block;
 import org.redfx.strange.BlockGate;
-import org.redfx.strange.Complex;
 import org.redfx.strange.ControlledBlockGate;
-import org.redfx.strange.Gate;
-import org.redfx.strange.Program;
 import org.redfx.strange.Step;
-import static org.redfx.strange.gate.Add.cache;
+
 import java.util.HashMap;
-import java.util.List;
 
 /**
+ * <p>AddModulus class.</p>
  *
  * @author johan
+ * @version $Id: $Id
  */
 public class AddModulus extends BlockGate<AddModulus> {
 
@@ -55,12 +53,13 @@ public class AddModulus extends BlockGate<AddModulus> {
     
     /**
      * Add the qubit in the x register and the y register mod N, result is in x
+     *
      * @param x0 start idx x register
      * @param x1 end idx x register
      * @param y0 start idx y register
      * @param y1 end idx y register
      * @param N
-     * x_0 ----- y_0 + x_0 
+     * x_0 ----- y_0 + x_0
      * x_1 ----- y+1 + x_1
      * y_0 ----- y_0
      * y_1 ----- y_1
@@ -90,6 +89,16 @@ public class AddModulus extends BlockGate<AddModulus> {
         setBlock(block);
     }
     
+    /**
+     * <p>createBlock.</p>
+     *
+     * @param x0 a int
+     * @param x1 a int
+     * @param y0 a int
+     * @param y1 a int
+     * @param N a int
+     * @return a {@link org.redfx.strange.Block} object
+     */
     public Block createBlock(int x0, int x1, int y0, int y1, int N) {
         Block answer = new Block("AddModulus", y1-x0+2);
         int n = x1-x0;
@@ -121,6 +130,7 @@ public class AddModulus extends BlockGate<AddModulus> {
     }
 
 
+    /** {@inheritDoc} */
     @Override
     public String getCaption() {
         return "A\nD\nD\n";

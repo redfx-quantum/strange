@@ -33,7 +33,7 @@
 package org.redfx.strange;
 
 import org.redfx.strange.gate.PermutationGate;
-import org.redfx.strange.local.Computations;
+
 import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,17 +42,28 @@ import java.util.List;
 //import org.nd4j.linalg.cpu.nativecpu.NDArray;
 //import org.nd4j.linalg.factory.Nd4j;
 
+/**
+ * <p>Complex class.</p>
+ *
+ * @author alain
+ * @version $Id: $Id
+ */
 public final class Complex {
 
+    /** Constant <code>ZERO</code> */
     public static final Complex ZERO = new Complex(0.d, 0.d);
+    /** Constant <code>ONE</code> */
     public static final Complex ONE = new Complex(1.d, 0.d);
+    /** Constant <code>I</code> */
     public static final Complex I = new Complex(0.d, 1.d);
     
     static final boolean DEBUG = false;
 
     private static final double HV = 1. / Math.sqrt(2.);
 
+    /** Constant <code>HC</code> */
     public static final Complex HC = new Complex(HV, 0.d);
+    /** Constant <code>HCN</code> */
     public static final Complex HCN = new Complex(-HV, 0.d);
 
     public float r;
@@ -78,6 +89,12 @@ public final class Complex {
         this.i = (float) i;
     }
 
+    /**
+     * <p>add.</p>
+     *
+     * @param b a {@link org.redfx.strange.Complex} object
+     * @return a {@link org.redfx.strange.Complex} object
+     */
     public Complex add(Complex b) {
         double nr = this.r + b.r;
         double ni = this.i + b.i;
@@ -99,9 +116,9 @@ public final class Complex {
     /**
      * AddMul and replace
      *
-     * @param a
-     * @param b
-     * @return
+     * @param a a {@link org.redfx.strange.Complex} object
+     * @param b a {@link org.redfx.strange.Complex} object
+     * @return a {@link org.redfx.strange.Complex} object
      */
     public Complex addmulr(Complex a, Complex b) {
         double nr = (a.r * b.r) - (a.i * b.i);
@@ -111,29 +128,53 @@ public final class Complex {
         return this;
     }
 
+    /**
+     * <p>min.</p>
+     *
+     * @param b a {@link org.redfx.strange.Complex} object
+     * @return a {@link org.redfx.strange.Complex} object
+     */
     public Complex min(Complex b) {
         double nr = this.r - b.r;
         double ni = this.i - b.i;
         return new Complex(nr, ni);
     }
 
+    /**
+     * <p>mul.</p>
+     *
+     * @param b a {@link org.redfx.strange.Complex} object
+     * @return a {@link org.redfx.strange.Complex} object
+     */
     public Complex mul(Complex b) {
         double nr = (this.r * b.r) - (this.i * b.i);
         double ni = (this.r * b.i) + (this.i * b.r);
         return new Complex(nr, ni);
     }
 
+    /**
+     * <p>mul.</p>
+     *
+     * @param b a double
+     * @return a {@link org.redfx.strange.Complex} object
+     */
     public Complex mul(double b) {
         return new Complex(this.r * b, this.i * b);
     }
 
+    /**
+     * <p>abssqr.</p>
+     *
+     * @return a double
+     */
     public double abssqr() {
         return (this.r * this.r + this.i * this.i);
     }
 
     /**
-     * return an identity matrix 
-     * @param dim 
+     * return an identity matrix
+     *
+     * @param dim a int
      * @return  identity matrix
      */
     public static Complex[][] identityMatrix (int dim) {
@@ -153,9 +194,9 @@ public final class Complex {
     /**
      * Calculate the tensor product of matrix a and matrix b
      *
-     * @param a
-     * @param b
-     * @return
+     * @param a an array of {@link org.redfx.strange.Complex} objects
+     * @param b an array of {@link org.redfx.strange.Complex} objects
+     * @return an array of {@link org.redfx.strange.Complex} objects
      */
     public static Complex[][] tensor(Complex[][] a, Complex[][] b) {
         int d1 = a.length;
@@ -179,10 +220,24 @@ public final class Complex {
     static int zCount = 0;
     static int nzCount = 0;
 
+    /**
+     * <p>mmul.</p>
+     *
+     * @param a an array of {@link org.redfx.strange.Complex} objects
+     * @param b an array of {@link org.redfx.strange.Complex} objects
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public static Complex[][] mmul(Complex[][] a, Complex[][] b) {
         return slowmmul (a, b);
     }
     
+    /**
+     * <p>slowmmul.</p>
+     *
+     * @param a an array of {@link org.redfx.strange.Complex} objects
+     * @param b an array of {@link org.redfx.strange.Complex} objects
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public static Complex[][] slowmmul(Complex[][] a, Complex[][] b) {
         int arow = a.length;
         int acol = a[0].length;
@@ -205,6 +260,12 @@ public final class Complex {
         return answer;
     }
 
+    /**
+     * <p>conjugateTranspose.</p>
+     *
+     * @param src an array of {@link org.redfx.strange.Complex} objects
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public static Complex[][] conjugateTranspose(Complex[][] src) {
         int d0 = src.length;
         int d1 = src[0].length;
@@ -218,6 +279,13 @@ public final class Complex {
         return answer;
     }
 
+    /**
+     * <p>permutate0.</p>
+     *
+     * @param matrix an array of {@link org.redfx.strange.Complex} objects
+     * @param pg a {@link org.redfx.strange.gate.PermutationGate} object
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public static Complex[][] permutate0(Complex[][] matrix, PermutationGate pg) {
         Complex[][] p = pg.getMatrix();
         int dim = p.length;
@@ -234,6 +302,13 @@ public final class Complex {
         return answer;
     }
 
+    /**
+     * <p>permutate.</p>
+     *
+     * @param pg a {@link org.redfx.strange.gate.PermutationGate} object
+     * @param matrix an array of {@link org.redfx.strange.Complex} objects
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public static Complex[][] permutate(PermutationGate pg, Complex[][] matrix) {
         int a = pg.getIndex1();
         int b = pg.getIndex2();
@@ -264,6 +339,13 @@ public final class Complex {
         
     }
 
+    /**
+     * <p>permutate.</p>
+     *
+     * @param matrix an array of {@link org.redfx.strange.Complex} objects
+     * @param pg a {@link org.redfx.strange.gate.PermutationGate} object
+     * @return an array of {@link org.redfx.strange.Complex} objects
+     */
     public static Complex[][] permutate(Complex[][] matrix, PermutationGate pg) {
         int a = pg.getIndex1();
         int b = pg.getIndex2();
@@ -298,12 +380,23 @@ public final class Complex {
         return matrix;
     }
 
+    /**
+     * <p>printArray.</p>
+     *
+     * @param ca an array of {@link org.redfx.strange.Complex} objects
+     */
     public static void printArray(Complex[] ca) {
         if (DEBUG) {
             printArray(ca, System.err);
         }
     }
 
+    /**
+     * <p>printArray.</p>
+     *
+     * @param ca an array of {@link org.redfx.strange.Complex} objects
+     * @param ps a {@link java.io.PrintStream} object
+     */
     public static void printArray(Complex[] ca, PrintStream ps) {
         ps.println("complex[" + ca.length + "]: ");
         for (Complex c : ca) {
@@ -311,10 +404,20 @@ public final class Complex {
         }
     }
 
+    /**
+     * <p>printMatrix.</p>
+     *
+     * @param cm an array of {@link org.redfx.strange.Complex} objects
+     */
     public static void printMatrix(Complex[][] cm) {
         printMatrix(cm, System.err);
     }
     
+    /**
+     * <p>dbg.</p>
+     *
+     * @param s a {@link java.lang.String} object
+     */
     public static void dbg (String s) {
         if (DEBUG) {
         System.err.println("[DBG] " + System.currentTimeMillis()%1000000+": "+s);
@@ -322,6 +425,12 @@ public final class Complex {
     }
 
 
+    /**
+     * <p>printMatrix.</p>
+     *
+     * @param cm an array of {@link org.redfx.strange.Complex} objects
+     * @param ps a {@link java.io.PrintStream} object
+     */
     public static void printMatrix(Complex[][] cm, PrintStream ps) {
         if (!DEBUG) {
             return;
@@ -339,6 +448,7 @@ public final class Complex {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         float mr = this.r;

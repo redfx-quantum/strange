@@ -45,6 +45,12 @@ package org.redfx.strange.cloud;
 //import java.util.ArrayList;
 //import java.util.List;
 
+/**
+ * <p>ResultConverter class.</p>
+ *
+ * @author alain
+ * @version $Id: $Id
+ */
 public class ResultConverter {
 //        extends InputStreamInputConverter<Result> {
 //

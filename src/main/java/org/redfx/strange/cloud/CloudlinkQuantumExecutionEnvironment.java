@@ -46,6 +46,12 @@ package org.redfx.strange.cloud;
 //import java.util.logging.Level;
 //import java.util.logging.Logger;
 
+/**
+ * <p>CloudlinkQuantumExecutionEnvironment class.</p>
+ *
+ * @author alain
+ * @version $Id: $Id
+ */
 public class CloudlinkQuantumExecutionEnvironment {
 //        implements QuantumExecutionEnvironment {
 //
