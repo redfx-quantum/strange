@@ -96,7 +96,7 @@ public class ClassicTests {
     }
   
     @Test
-    void quantumSearch() {
+    public void quantumSearch() {
         Function<Person, Integer> f29Mexico
                 = (Person p) -> ((p.getAge() == 29) && (p.getCountry().equals("Mexico"))) ? 1 : 0;
         for (int i = 0; i < 10; i++) {
