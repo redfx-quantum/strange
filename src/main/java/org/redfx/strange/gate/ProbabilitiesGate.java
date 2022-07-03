@@ -32,6 +32,8 @@
  */
 package org.redfx.strange.gate;
 
+import org.redfx.strange.Complex;
+
 /**
  * <p>ProbabilitiesGate class.</p>
  *
@@ -39,6 +41,8 @@ package org.redfx.strange.gate;
  * @version $Id: $Id
  */
 public class ProbabilitiesGate extends InformalGate {
+
+    private Complex[] probabilities;
 
     /**
      * <p>Constructor for ProbabilitiesGate.</p>
@@ -70,5 +74,21 @@ public class ProbabilitiesGate extends InformalGate {
     /** {@inheritDoc} */
     @Override public void setInverse(boolean v) {
         // NOP
+    }
+
+    /**
+     * Set the probability vector for the system at the point where this gate is located.
+     * @param vector
+     */
+    public void setProbabilites(Complex[] vector) {
+        this.probabilities = vector;
+    }
+
+    /**
+     * Return the probability vector at the location of this gate.
+     * @return an array containing probabilities (as complex numbers).
+     */
+    public Complex[] getProbabilities() {
+        return this.probabilities;
     }
 }

@@ -155,6 +155,8 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         long s0 = System.currentTimeMillis();
         List<Gate> gates = step.getGates();
         if (!gates.isEmpty() && gates.get(0) instanceof ProbabilitiesGate ) {
+            ProbabilitiesGate probGate = (ProbabilitiesGate)gates.get(0);
+            probGate.setProbabilites(vector);
             return vector;
         }
         if (gates.size() == 1 && gates.get(0) instanceof PermutationGate) {
