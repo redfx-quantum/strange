@@ -38,7 +38,8 @@ import java.util.List;
 
 /**
  *
- * A Gate describes an operation on one or more qubits.
+ * A Gate describes an operation on one or more qubits. Gates are combined in
+ * {@link Step}s, and {@link Step}s are added to a quantum {@link Program}
  *
  * @author johan
  * @version $Id: $Id

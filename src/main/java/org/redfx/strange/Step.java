@@ -39,9 +39,9 @@ import java.util.Objects;
 
 /**
  *
- * A single Step in a quantum <code>Program</code>. In a step, a number
- * of Gates can be added, involving a number of qubits. However, in a single
- * step a qubit can be involved in at most one <code>Gate</code>. It is illegal
+ * A single Step in a quantum {@link Program}. In a step, a number
+ * of {@link Gate}s can be added, involving a number of {@link Qubit}s. However, in a single
+ * step a qubit can be involved in at most one Gate. It is illegal
  * to declare 2 gates in a single step that operate on the same qubit.
  *
  * @author johan
@@ -76,19 +76,21 @@ public class Step {
     private boolean informal = false;
 
     /**
-     * <p>Constructor for Step.</p>
+     * Create a Step instance and populate it with zero or more {@link Gate}s. 
+     * Note that it is possible to add gates later by invoking the
+     * {@link addGate} or {@link addGates} method.
      *
-     * @param moreGates a {@link org.redfx.strange.Gate} object
+     * @param moreGates zero or more {@link org.redfx.strange.Gate} objects
      */
     public Step(Gate... moreGates ) {
         this("unknown", moreGates);
     }
 
     /**
-     * <p>Constructor for Step.</p>
+     * Create a Step with a specific name.
      *
-     * @param name a {@link java.lang.String} object
-     * @param moreGates a {@link org.redfx.strange.Gate} object
+     * @param name the name of this step
+     * @param moreGates zero or more {@link org.redfx.strange.Gate} objects
      */
     public Step(String name, Gate... moreGates ) {
         this.name = name;
@@ -97,7 +99,7 @@ public class Step {
     }
     
     /**
-     * <p>Constructor for Step.</p>
+     * Create a step with a specific (pseudo) type
      *
      * @param type a {@link org.redfx.strange.Step.Type} object
      */
@@ -107,7 +109,7 @@ public class Step {
     }
 
     /**
-     * <p>Getter for the field <code>type</code>.</p>
+     * return the type of this step.
      *
      * @return a {@link org.redfx.strange.Step.Type} object
      */
@@ -150,9 +152,10 @@ public class Step {
     }
 
     /**
-     * <p>Getter for the field <code>gates</code>.</p>
+     * Return all gates for this step in an unmodifiable collection
      *
-     * @return a {@link java.util.List} object
+     * @return a List with {@link Gate}s that are added to this step, either
+     * via the constructor or the {@link addGate} or {@link addGates} methods.
      */
     public List<Gate> getGates() {
         return Collections.unmodifiableList(gates);
@@ -168,9 +171,10 @@ public class Step {
     }
     
     /**
-     * <p>Setter for the field <code>complexStep</code>.</p>
+     * Indicate that this step is part of a complex step. 
      *
-     * @param idx a int
+     * @param idx the index of the complex step that this step is part of in
+     * the original Program
      */
     public void setComplexStep(int idx) {
         this.complexStep = idx;

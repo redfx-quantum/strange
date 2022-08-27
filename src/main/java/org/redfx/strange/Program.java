@@ -63,7 +63,9 @@ public class Program {
 
     /**
      * Create a Quantum Program and indicate how many qubits will be involved.
-     * By default, all qubits are initialized to the |0 &gt; state.
+     * By default, all qubits are initialized to the |0 &gt; state. Steps can
+     * be added via this constructor, but they can also be added later by calling
+     * the {@link addStep} or {@link addSteps} methods.
      *
      * @param nQubits the amount of qubits that will be used in this program
      * @param moreSteps steps to add to the program
@@ -94,20 +96,23 @@ public class Program {
     }
 
     /**
-     * <p>getInitialAlphas.</p>
-     *
-     * @return an array of {@link double} objects
+     * This method allows to set the initial values of the probabilities of the qubits in this
+     * program. By default, all qubits are in the |0 &gt; state when a Program is created.
+     * However, for testing or demoes, it sometimes makes sense to show the behavior of an
+     * application that starts with non-zero qubits.
+     * 
+     * @return an array of the initial probabilities that the qubits in this program are supposed to have.
      */
     public double[] getInitialAlphas() {
         return this.initAlpha;
     }
 
     /**
-     * Adds a step with one or more gates to the existing program.
-     * In case the Step contains an operation that would put a measured qubit into a potential superposition
+     * Adds a {@link Step} containing zero or more gates to the current program.
+     * In case the {@link Step} contains an operation that would put a measured qubit into a potential superposition
      * again, an IllegalArgumentException is thrown.
      *
-     * @param step the step to be added to the program
+     * @param step the {@link Step} to be added to the program
      */
     public void addStep(Step step) {
         if (!ensureMeasuresafe( Objects.requireNonNull(step)) ) {
@@ -153,9 +158,10 @@ public class Program {
     }
     
     /**
-     * <p>Getter for the field <code>steps</code>.</p>
+     * Return the list of {@link Step}s in this program. Steps are added either via the
+     * constructor or via the {@link addStep} or {@link addSteps} methods.
      *
-     * @return a {@link java.util.List} object
+     * @return a list of {@link Step}s.
      */
     public List<Step> getSteps() {
         return this.steps;
@@ -166,6 +172,7 @@ public class Program {
      *
      * @return a {@link java.util.List} object
      */
+    @Deprecated
     public List<Step> getDecomposedSteps () {
         return this.decomposedSteps;
     }
@@ -175,21 +182,24 @@ public class Program {
      *
      * @param ds a {@link java.util.List} object
      */
+    @Deprecated
     public void setDecomposedSteps(List<Step> ds) {
         this.decomposedSteps = ds;
     }
     
     /**
-     * <p>Getter for the field <code>numberQubits</code>.</p>
+     * Return the number of @{link Qubit}s in this program.
      *
-     * @return a int
+     * @return an int containing the number of qubits in this program.
      */
     public int getNumberQubits() {
         return this.numberQubits;
     }
 
     /**
-     * <p>Setter for the field <code>result</code>.</p>
+     * Sets the {@link Result} of the execution of the program. This method is
+     * invoked by the {@link QuantumExecutionEnvironment} when it has executed
+     * this program. It should not be called by the developer.
      *
      * @param r a {@link org.redfx.strange.Result} object
      */
@@ -198,7 +208,8 @@ public class Program {
     }
 
     /**
-     * <p>Getter for the field <code>result</code>.</p>
+     * Returns the {@link Result} object of a program, after it has been
+     * executed by a {@link QuantumExecutionEnvironment}.
      *
      * @return a {@link org.redfx.strange.Result} object
      */
@@ -213,9 +224,9 @@ public class Program {
         System.out.println("Info about Quantum Program");
         System.out.println("==========================");
         System.out.println("Number of qubits = "+numberQubits+", number of steps = "+steps.size());
-        for (Step step: steps) {
+        steps.forEach(step -> {
             System.out.println("Step: "+step.getGates());
-        }
+        });
         System.out.println("==========================");
     }
     
