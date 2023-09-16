@@ -11,7 +11,7 @@ A Quantum Program, defined by <code>org.redfx.strange.Program</code> can be exec
 <code>org.redfx.strange.QuantumExecutionEnvironment</code>.
 
 You can read more about Java and QuantumComputing in [Quantum Computing in Action](https://www.manning.com/books/quantum-computing-in-action?a_aid=quantumjava&a_bid=e5166ab9)
-[<img src="https://github.com/redfx-quantum/strange/assets/767876/324f682d-eaaf-4829-b411-4ab2abc104cc">](https://www.manning.com/books/quantum-computing-in-action?a_aid=quantumjava&a_bid=e5166ab9)
+[<img src="https://github.com/redfx-quantum/strange/assets/767876/324f682d-eaaf-4829-b411-4ab2abc104cc">](https://www.manning.com/books/quantum-computing-in-action)
 
 # Getting Started
 
