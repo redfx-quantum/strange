@@ -6,9 +6,9 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build:  
     runs-on: ubuntu-latest
-    steps:
+    steps:  
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -17,21 +17,21 @@ jobs:
         with:
           java-version: 17
           distribution: 'oracle'
-          cache: 'maven'
+          cache: 'maven' 
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_CENTRAL_TOKEN
 
-      - name: Build project
+      - name: Build project 
         run: |
-          mvn -B -ntp verify -f strange
+          mvn -B -ntp verify
 
       - name: Publish Snapshots
         if: github.ref == 'refs/heads/main'
         run: |
           ver=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           if [[ $ver == *"SNAPSHOT"* ]]; then
-              mvn -B -ntp deploy -f strange
+              mvn -B -ntp deploy
           fi
         shell: bash
         env:
