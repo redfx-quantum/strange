@@ -1,3 +1,4 @@
+[![Build](https://github.com/redfx-quantum/strange/actions/workflows/build.yml/badge.svg)](https://github.com/redfx-quantum/strange/actions/workflows/build.yml)
 # strange [![Build Status](https://travis-ci.org/redfx-quantum/strange.svg?branch=master)](https://travis-ci.org/redfx-quantum/strange)
 Quantum Computing API for Java
 
