@@ -1,6 +1,8 @@
+# strange
 [![Build](https://github.com/redfx-quantum/strange/actions/workflows/build.yml/badge.svg)](https://github.com/redfx-quantum/strange/actions/workflows/build.yml)
-# strange [![Build Status](https://travis-ci.org/redfx-quantum/strange.svg?branch=master)](https://travis-ci.org/redfx-quantum/strange)
-Quantum Computing API for Java
+[![Maven Central](https://img.shields.io/maven-central/v/org.redfx/strange)](https://search.maven.org/#search|ga|1|org.redfx.strange)
+
+# Quantum Computing API and simulator for Java
 
 This project defines a Java API that can be used to create Quantum Programs.
 A Quantum Program, defined by <code>org.redfx.strange.Program</code> can be executed on an implementation of the 
