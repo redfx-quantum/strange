@@ -24,14 +24,14 @@ jobs:
 
       - name: Build project 
         run: |
-          mvn -B -ntp verify -f strange 
+          mvn -B -ntp verify
 
       - name: Publish Snapshots
         if: github.ref == 'refs/heads/main'
         run: |
           ver=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           if [[ $ver == *"SNAPSHOT"* ]]; then
-              mvn -B -ntp deploy -f strange 
+              mvn -B -ntp deploy
           fi
         shell: bash
         env:
