@@ -16,9 +16,47 @@ You can read more about Java and QuantumComputing in [Quantum Computing in Actio
 
 # Getting Started
 
-Strange is distributed via the traditional Java distribution channels (e.g. maven central and jcenter) and can thus easily be used leveraging maven or gradle build software.
+Strange is distributed via Maven Central and can thus easily be used leveraging maven or gradle build software.
 
-Using maven
+## Using JBang
+
+JBang makes it easy to run simple Java applications without setup hassle.
+
+You can download JBang from <a href="https://jbang.dev">jbang.dev</a>.
+
+The following code is a very simple Java application that is using Strange (and StrangeFX). Save this code in a
+file named ShortStrangeDemo.java and execute it by typing the following command in a terminal:
+`jbang ShortStrangeDemo.java`
+
+```
+//DEPS org.redfx:strangefx:0.1.4
+import org.redfx.strange.*;
+import org.redfx.strange.gate.*;
+import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
+import org.redfx.strangefx.render.Renderer;
+import java.util.Arrays;
+
+public class ShortStrangeDemo {
+    public static void main(String[] args) {
+Program p = new Program(2, new Step(new X(0)), new Step(new Hadamard(0), new X(1)));
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        Qubit[] qubits = sqee.runProgram(p).getQubits();
+        Renderer.renderProgram(p);
+        Arrays.asList(qubits).forEach(q -> System.out.println("qubit with probability on 1 = "+q.getProbability()+", measured it gives "+ q.measure()));
+    }
+}
+```
+
+The result of this is some output to the terminal, and a Window showing the Quantum Circuit you created:
+```
+qubit with probability on 1 = 0.4999999701976776, measured it gives 1
+qubit with probability on 1 = 0.9999999403953552, measured it gives 1
+
+```
+(note that the first qubit can be measured as `0` or as `1`)
+![demo output](assets/shortdemo.png)
+
+## Using maven
 
 A typical `pom.xml` file looks as follows:
 
@@ -55,7 +93,8 @@ A typical `pom.xml` file looks as follows:
 </project>
 
 ```
-Using gradle
+
+## Using gradle
 
 A typical build.gradle file looks as follows:
 ```gradle
@@ -75,7 +114,12 @@ mainClassName = 'SimpleStrangeDemo'
 
 ```
 
-The sample application contains a single Java file:
+# About the sample application.
+
+The code pasted above in the `ShortStrangeDemo` snippet is a short version of the code
+below. Both applications are similar, but the code below is more verbose which makes it
+easier to explain what is going on.
+
 ```java
 import org.redfx.strange.*;
 import org.redfx.strange.gate.*;
