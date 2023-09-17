@@ -25,7 +25,7 @@ JBang makes it easy to run simple Java applications without setup hassle.
 You can download JBang from <a href="https://jbang.dev">jbang.dev</a>.
 
 The following code is a very simple Java application that is using Strange (and StrangeFX). Save this code in a
-file named ShortStrangeDemo.java and execute it using
+file named ShortStrangeDemo.java and execute it by typing the following command in a terminal:
 `jbang ShortStrangeDemo.java`
 
 ```
@@ -46,6 +46,15 @@ Program p = new Program(2, new Step(new X(0)), new Step(new Hadamard(0), new X(1
     }
 }
 ```
+
+The result of this is some output to the terminal, and a Window showing the Quantum Circuit you created:
+```
+qubit with probability on 1 = 0.4999999701976776, measured it gives 1
+qubit with probability on 1 = 0.9999999403953552, measured it gives 1
+
+```
+(note that the first qubit can be measured as `0` or as `1`)
+![demo output](assets/shortdemo.png)
 
 ## Using maven
 
