@@ -34,6 +34,8 @@ package org.redfx.strange.test;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.redfx.strange.Program;
 import org.redfx.strange.Qubit;
 import org.redfx.strange.Result;
@@ -46,8 +48,6 @@ import org.redfx.strange.gate.Swap;
 import org.redfx.strange.gate.X;
 import org.redfx.strange.gate.Hadamard;
 import org.redfx.strange.gate.Chadamard;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
