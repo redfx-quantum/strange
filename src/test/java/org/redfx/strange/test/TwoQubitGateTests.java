@@ -6,18 +6,18 @@
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * 3. Neither the name of the Johan Vos nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -34,25 +34,21 @@ package org.redfx.strange.test;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.redfx.strange.Program;
 import org.redfx.strange.Qubit;
 import org.redfx.strange.Result;
 import org.redfx.strange.Step;
-import org.redfx.strange.gate.Cnot;
-import org.redfx.strange.gate.Cz;
-import org.redfx.strange.gate.Identity;
-import org.redfx.strange.gate.Measurement;
-import org.redfx.strange.gate.Swap;
-import org.redfx.strange.gate.X;
+import org.redfx.strange.gate.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
  * @author johan
  */
 public class TwoQubitGateTests extends BaseGateTests {
-    
+
     @Test
     public void empty() {
     }
@@ -308,5 +304,35 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertThrows(
             IllegalArgumentException.class,
             () -> p.addStep(new Step(new Cnot(1,0))));
+    }
+
+    @Test
+    public void chadamardGate() {
+        int[] results = new int[2];
+        for (int i = 0; i < 100; i++) {
+            Program p = new Program(2,
+                    new Step(new Hadamard(0)),
+                    new Step(new Chadamard(0,1)));
+            Result res = runProgram(p);
+            Qubit[] qubits = res.getQubits();
+            results[qubits[1].measure()]++;
+        }
+        assertTrue(results[0] > 10);
+        assertTrue(results[1] > 10);
+    }
+
+    @Test
+    public void chadamardXGate() {
+        int[] results = new int[2];
+        for (int i = 0; i < 100; i++) {
+            Program p = new Program(2,
+                    new Step(new X(0)),
+                    new Step(new Chadamard(0,1)));
+            Result res = runProgram(p);
+            Qubit[] qubits = res.getQubits();
+            results[qubits[1].measure()]++;
+        }
+        assertTrue(results[0] > 10);
+        assertTrue(results[1] > 10);
     }
 }
