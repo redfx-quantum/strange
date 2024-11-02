@@ -4,48 +4,26 @@
   <groupId>org.redfx</groupId>
   <artifactId>strange</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.4-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
   <name>Strange</name>
   <description>Strange Quantum Simulator</description>
   <url>https://github.com/redfx-quantum/strange</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <javadoc.plugin.version>3.3.1</javadoc.plugin.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <javadoc.plugin.version>3.10.1</javadoc.plugin.version>
     <gpg.plugin.version>1.6</gpg.plugin.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>5.5.2</version>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.9.1</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
-      <version>5.5.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.5.2</version>
-    </dependency>
-<!--
-    <dependency>
-        <groupId>org.nd4j</groupId>
-        <artifactId>nd4j-native</artifactId>
-        <version>1.0.0-beta7</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-nop</artifactId>
-        <version>1.7.26</version>
-    </dependency>
--->
 
   </dependencies>
   <build>
@@ -53,12 +31,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.13.0</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
+        <version>3.5.0</version>
         <executions>
           <execution>
             <goals>
@@ -91,19 +69,6 @@
           <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
-<!--
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.7</version>
-        <extensions>true</extensions>
-        <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
-        </configuration>
-      </plugin>
--->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
