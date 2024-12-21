@@ -52,7 +52,7 @@ public class Computations {
     private static final boolean debug = false;
 
     static void dbg(String s) {
-        SimpleQuantumExecutionEnvironment.dbg(s);
+        SimpleQuantumExecutionEnvironment.LOG.finer(s);
     }
 
     /**

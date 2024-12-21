@@ -41,6 +41,7 @@ import org.redfx.strange.gate.Swap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 /**
  * <p>SimpleQuantumExecutionEnvironment class.</p>
@@ -50,17 +51,7 @@ import java.util.function.Consumer;
  */
 public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnvironment {
 
-    /**
-     * <p>dbg.</p>
-     *
-     * @param s a {@link java.lang.String} object
-     */
-    public static void dbg (String s) {
-        String dbp = System.getProperty("dbg", "false");
-        if (dbp.equals("true")) {
-            System.err.println("[DBG] "+ s);
-        }
-    }
+    static Logger LOG = Logger.getLogger(SimpleQuantumExecutionEnvironment.class.getName());
 
     /**
      * <p>Constructor for SimpleQuantumExecutionEnvironment.</p>
@@ -71,7 +62,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     /** {@inheritDoc} */
     @Override
     public Result runProgram(Program p) {
-        dbg("runProgram ");
+        LOG.info("runProgram ");
         int nQubits = p.getNumberQubits();
         Qubit[] qubit = new Qubit[nQubits];
         for (int i = 0; i < nQubits; i++) {
@@ -106,15 +97,15 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         Result result = new Result(nQubits, steps.size());
         int cnt = 0;
         result.setIntermediateProbability(0, probs);
-        dbg("START RUN, number of steps = " + simpleSteps.size());
+        LOG.fine("START RUN, number of steps = " + simpleSteps.size());
         for (Step step : simpleSteps) {
             if (!step.getGates().isEmpty()) {
-                dbg("RUN STEP " + step + ", cnt = " + cnt);
+                LOG.finer("RUN STEP " + step + ", cnt = " + cnt);
                 cnt++;
-                dbg("before this step, probs = ");
+                LOG.finest("before this step, probs = ");
           //      printProbs(probs);
                 probs = applyStep(step, probs, qubit);
-                dbg("after this step, probs = "+probs);
+                LOG.finest("after this step, probs = "+probs);
             //    printProbs(probs);
                 int idx = step.getComplexStep();
                 // System.err.println("complex? "+idx);
@@ -123,7 +114,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 }
             }
         }
-        dbg("DONE RUN, probability vector = " + probs);
+        LOG.info("DONE RUN, probability vector = " + probs);
         printProbs(probs);
         double[] qp = calculateQubitStatesFromVector(probs);
         for (int i = 0; i < nQubits; i++) {
@@ -151,7 +142,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
     
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
-        dbg("start applystep, vectorsize = "+vector.length+", ql = "+qubits.length);
+        LOG.finer("start applystep, vectorsize = "+vector.length+", ql = "+qubits.length);
         long s0 = System.currentTimeMillis();
         List<Gate> gates = step.getGates();
         if (!gates.isEmpty() && gates.get(0) instanceof ProbabilitiesGate ) {
@@ -169,16 +160,16 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         if (vdd) {
             result = Computations.calculateNewState(gates, vector, qubits.length);
         } else {
-            dbg("start calcstepmatrix with gates " + gates);
+            LOG.finest("start calcstepmatrix with gates " + gates);
             Complex[][] a = calculateStepMatrix(gates, qubits.length);
-            dbg("done calcstepmatrix");
-            dbg("vector");
+            LOG.finest("done calcstepmatrix");
+            LOG.finest("vector");
             // printProbs(vector);
             if (a.length != result.length) {
                 System.err.println("fatal issue calculating step for gates " + gates);
                 throw new RuntimeException("Wrong length of matrix or probability vector: expected " + result.length + " but got " + a.length);
             }
-            dbg("start matrix-vector multiplication for vector size = " + vector.length);
+            LOG.finest("start matrix-vector multiplication for vector size = " + vector.length);
             for (int i = 0; i < vector.length; i++) {
                 result[i] = Complex.ZERO;
                 for (int j = 0; j < vector.length; j++) {
@@ -187,7 +178,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             }
         }
         long s1 = System.currentTimeMillis();
-        dbg("done applystep took "+ (s1-s0));
+        LOG.finer("done applystep took "+ (s1-s0));
 
         return result;
     }
