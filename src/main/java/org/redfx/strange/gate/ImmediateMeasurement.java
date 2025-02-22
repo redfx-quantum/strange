@@ -32,65 +32,75 @@
  */
 package org.redfx.strange.gate;
 
+import java.util.function.Consumer;
+import java.util.logging.Logger;
 import org.redfx.strange.Complex;
 
 /**
- * <p>ProbabilitiesGate class.</p>
+ * <p>Measurement class.</p>
  *
- * @author alain
+ * @author johan
  * @version $Id: $Id
  */
-public class ProbabilitiesGate extends InformalGate {
-
-    private Complex[] probabilities;
-
+public class ImmediateMeasurement extends SingleQubitGate {
+    
+    static Logger LOG = Logger.getLogger(ImmediateMeasurement.class.getName());
+    Complex[][] matrix =  new Complex[][]{{Complex.ONE,Complex.ZERO}, {Complex.ZERO,Complex.ONE}};
+    private final Consumer<Boolean> consumer;
+    
     /**
-     * <p>Constructor for ProbabilitiesGate.</p>
+     * <p>Constructor for Measurement.</p>
+     */
+    public ImmediateMeasurement(Consumer<Boolean> consumer) {
+        this.consumer = consumer;
+    }
+    
+    /**
+     * <p>Constructor for Measurement.</p>
      *
      * @param idx a int
      */
-    public ProbabilitiesGate(int idx) {
+    public ImmediateMeasurement (int idx, Consumer<Boolean> consumer) {
         super(idx);
+        this.consumer = consumer;
     }
 
     /** {@inheritDoc} */
     @Override
-    public String getCaption() {
-        return "P";
-    }
- 
-    /** {@inheritDoc} */
-    @Override
-    public int getSize() {
-        return -1;
+    public Complex[][] getMatrix() {
+        return matrix;
     }
     
     /** {@inheritDoc} */
+    @Override public String getCaption() {return "M";}
+
     @Override
-    public String getName() {
-        return "Probabilities";
+    public Complex[] applyOptimize(Complex[] v) {
+        LOG.info("ApplyOptimize for s = " + v.length+ "; "+ v[0].abssqr()+", "+v[1].abssqr());
+        Complex[] answer = new Complex[v.length];
+        if ((v[0].abssqr() > .01d)&& (v[1].abssqr() > 0.1d)) {
+            double sq = .5* Math.sqrt(2);
+            if (Math.random() > .5) {
+                LOG.info("FALSE");
+                answer[0] = Complex.ONE.mul(sq);
+                answer[1] = Complex.ZERO;
+                consumer.accept(Boolean.FALSE);
+            } else {
+                LOG.info("TRUE");
+                answer[1] = Complex.ONE.mul(sq);
+                answer[0] = Complex.ZERO;
+                consumer.accept(Boolean.TRUE);
+            }
+            return answer;
+        }
+        LOG.info("ow "+ (v[1].abssqr()> .01d));
+        consumer.accept(v[1].abssqr()> .01d);
+        return v;
+    }
+
+    @Override
+    public boolean hasOptimization() {
+        return true;
     }
     
-    /** {@inheritDoc} */
-    @Override public void setInverse(boolean v) {
-        // NOP
-    }
-
-    /**
-     * Set the probability vector for the system at the point where this gate is located.
-     * @param vector
-     */
-    public void setProbabilites(Complex[] vector) {
-        this.probabilities = vector;
-        System.err.println("Set probs: ");
-        Complex.printArray(vector);
-    }
-
-    /**
-     * Return the probability vector at the location of this gate.
-     * @return an array containing probabilities (as complex numbers).
-     */
-    public Complex[] getProbabilities() {
-        return this.probabilities;
-    }
 }

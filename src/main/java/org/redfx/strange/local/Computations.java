@@ -445,6 +445,9 @@ public class Computations {
      * @return an array of {@link org.redfx.strange.Complex} objects
      */
     public static Complex[] calculateNewState(List<Gate> gates, Complex[] vector, int length) {
+        if (containsImmediateMeasurementOnly(gates)) {
+            return doImmediateMeasurement(gates, vector, length);
+        }
         nested++;
         Complex[] answer = getNextProbability(getAllGates(gates, length), vector);
         nested--;
@@ -456,7 +459,7 @@ public class Computations {
         int nqubits = gate.getSize();
         int gatedim = 1 << nqubits;
         int size = v.length;
-     dbg("GETNEXTPROBABILITY asked for size = " + size + " and gates = " + gates);
+     dbg("GETNEXTPROBABILITY asked for size = " + size + " and gates = " + gates+", gatedim = "+gatedim);
         if (gates.size() > 1) {
 
             int partdim = size / gatedim;
@@ -669,4 +672,38 @@ public class Computations {
         return answer;
     }
 
+    private static Complex[] doImmediateMeasurement(List<Gate> gates, Complex[] vector, int length) {
+        int size = vector.length;
+        Gate gate = gates.stream().filter(g -> g instanceof ImmediateMeasurement).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Need an ImmediateMeasurement gate"));
+        ImmediateMeasurement mGate = (ImmediateMeasurement)gate;
+        int idx = mGate.getMainQubitIndex();
+        double[] p = new double[2];
+        for (int i = 0; i < size; i++) {
+            p[(i/(1 <<idx))%2] += vector[i].abssqr();
+        }
+        System.err.println("IMM, p[0] = "+p[0]+" and p[1] = "+p[1]);
+        double rnd = Math.random();
+        int pick = rnd > p[0] ? 1 : 0;
+        Complex[] answer = new Complex[size];
+        for (int i = 0; i < size; i++) {
+            if (pick == (i/(1 <<idx))%2) {
+                answer[i] = vector[i].mul(1/Math.sqrt(p[pick]));
+            } else {
+                answer[i] = Complex.ZERO;
+            }
+        }
+        return answer;
+    }
+
+    /**
+     * Checks if the list of gates contain one or more ImmediateMeasurement gates
+     * and no other gates apart from the Identity gate
+     * @param gates
+     * @return 
+     */
+    private static boolean containsImmediateMeasurementOnly(List<Gate> gates) {
+        return gates.stream().anyMatch(g -> g instanceof ImmediateMeasurement) &&  
+               gates.stream().allMatch(g -> g instanceof ImmediateMeasurement || g instanceof Identity);
+    }
 }

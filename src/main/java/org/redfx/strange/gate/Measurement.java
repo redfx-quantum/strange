@@ -71,19 +71,6 @@ public class Measurement extends SingleQubitGate {
 
     @Override
     public Complex[] applyOptimize(Complex[] v) {
-        LOG.info("ApplyOptimize for s = " + v.length+ "; "+ v[0].abssqr()+", "+v[1].abssqr());
-        Complex[] answer = new Complex[v.length];
-        if ((v[0].abssqr() > .01d)&& (v[1].abssqr() > 0.1d)) {
-            double sq = .5* Math.sqrt(2);
-            if (Math.random() > .5) {
-                answer[0] = Complex.ONE.mul(sq);
-                answer[1] = Complex.ZERO;
-            } else {
-                answer[1] = Complex.ONE.mul(sq);
-                answer[0] = Complex.ZERO;
-            }
-            return answer;
-        }
         return v;
     }
 

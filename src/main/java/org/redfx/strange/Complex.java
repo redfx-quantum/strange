@@ -386,9 +386,9 @@ public final class Complex {
      * @param ca an array of {@link org.redfx.strange.Complex} objects
      */
     public static void printArray(Complex[] ca) {
-        if (DEBUG) {
+//        if (DEBUG) {
             printArray(ca, System.err);
-        }
+//        }
     }
 
     /**
@@ -453,11 +453,11 @@ public final class Complex {
     public String toString() {
         float mr = this.r;
         float mi = this.i;
-        if (Math.abs(mr) < 1e-7) mr = 0;
-        if (Math.abs(mi) < 1e-7) mi = 0;
-        if (Math.abs(mr) > .999999) mr = 1;
-        if (Math.abs(mi) > .999999) mi = 1;
-        return "(" + mr + ", " + mi + ")";
+//        if (Math.abs(mr) < 1e-7) mr = 0;
+//        if (Math.abs(mi) < 1e-7) mi = 0;
+//        if (Math.abs(mr) > .999999) mr = 1;
+//        if (Math.abs(mi) > .999999) mi = 1;
+        return "(" + mr + ", " + mi + ")"+" with abssqr = "+this.abssqr();
     }
 
 }
