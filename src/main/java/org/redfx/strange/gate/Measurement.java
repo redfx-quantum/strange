@@ -32,6 +32,7 @@
  */
 package org.redfx.strange.gate;
 
+import java.util.logging.Logger;
 import org.redfx.strange.Complex;
 
 /**
@@ -42,6 +43,7 @@ import org.redfx.strange.Complex;
  */
 public class Measurement extends SingleQubitGate {
     
+    static Logger LOG = Logger.getLogger(Measurement.class.getName());
     Complex[][] matrix =  new Complex[][]{{Complex.ONE,Complex.ZERO}, {Complex.ZERO,Complex.ONE}};
     
     /**
@@ -66,5 +68,28 @@ public class Measurement extends SingleQubitGate {
     
     /** {@inheritDoc} */
     @Override public String getCaption() {return "M";}
+
+    @Override
+    public Complex[] applyOptimize(Complex[] v) {
+        LOG.info("ApplyOptimize for s = " + v.length+ "; "+ v[0].abssqr()+", "+v[1].abssqr());
+        Complex[] answer = new Complex[v.length];
+        if ((v[0].abssqr() > .01d)&& (v[1].abssqr() > 0.1d)) {
+            double sq = .5* Math.sqrt(2);
+            if (Math.random() > .5) {
+                answer[0] = Complex.ONE.mul(sq);
+                answer[1] = Complex.ZERO;
+            } else {
+                answer[1] = Complex.ONE.mul(sq);
+                answer[0] = Complex.ZERO;
+            }
+            return answer;
+        }
+        return v;
+    }
+
+    @Override
+    public boolean hasOptimization() {
+        return true;
+    }
     
 }

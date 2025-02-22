@@ -57,7 +57,7 @@ public final class Complex {
     /** Constant <code>I</code> */
     public static final Complex I = new Complex(0.d, 1.d);
     
-    static final boolean DEBUG = false;
+    static final boolean DEBUG = true;
 
     private static final double HV = 1. / Math.sqrt(2.);
 
