@@ -702,7 +702,7 @@ public class Computations {
      * @param gates
      * @return 
      */
-    private static boolean containsImmediateMeasurementOnly(List<Gate> gates) {
+    static boolean containsImmediateMeasurementOnly(List<Gate> gates) {
         return gates.stream().anyMatch(g -> g instanceof ImmediateMeasurement) &&  
                gates.stream().allMatch(g -> g instanceof ImmediateMeasurement || g instanceof Identity);
     }
