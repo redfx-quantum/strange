@@ -82,8 +82,6 @@ public class ProbabilitiesGate extends InformalGate {
      */
     public void setProbabilites(Complex[] vector) {
         this.probabilities = vector;
-        System.err.println("Set probs: ");
-        Complex.printArray(vector);
     }
 
     /**

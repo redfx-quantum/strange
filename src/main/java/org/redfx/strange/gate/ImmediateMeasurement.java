@@ -59,6 +59,8 @@ public class ImmediateMeasurement extends SingleQubitGate {
      * <p>Constructor for Measurement.</p>
      *
      * @param idx a int
+     * @param consumer this callback will be invoked when the measurement is done.
+     * The creator of this gate will be notified on whether 0 was measured (false) or 1 (true)
      */
     public ImmediateMeasurement (int idx, Consumer<Boolean> consumer) {
         super(idx);
@@ -77,34 +79,5 @@ public class ImmediateMeasurement extends SingleQubitGate {
     public Consumer<Boolean> getConsumer() {
         return this.consumer;
     }
-//
-//    @Override
-//    public Complex[] applyOptimize(Complex[] v) {
-//        LOG.info("ApplyOptimize for s = " + v.length+ "; "+ v[0].abssqr()+", "+v[1].abssqr());
-//        Complex[] answer = new Complex[v.length];
-//        if ((v[0].abssqr() > .01d)&& (v[1].abssqr() > 0.1d)) {
-//            double sq = .5* Math.sqrt(2);
-//            if (Math.random() > .5) {
-//                LOG.info("FALSE");
-//                answer[0] = Complex.ONE.mul(sq);
-//                answer[1] = Complex.ZERO;
-//                consumer.accept(Boolean.FALSE);
-//            } else {
-//                LOG.info("TRUE");
-//                answer[1] = Complex.ONE.mul(sq);
-//                answer[0] = Complex.ZERO;
-//                consumer.accept(Boolean.TRUE);
-//            }
-//            return answer;
-//        }
-//        LOG.info("ow "+ (v[1].abssqr()> .01d));
-//        consumer.accept(v[1].abssqr()> .01d);
-//        return v;
-//    }
-//
-//    @Override
-//    public boolean hasOptimization() {
-//        return true;
-//    }
     
 }

@@ -673,6 +673,16 @@ public class Computations {
         return answer;
     }
 
+    /**
+     * Evaluates the first ImmediateMeasurement gate in the supplied list.
+     * A measurement is done based on existing probabilities, and the resulting vector is
+     * post-conditioned for this value. In case a callback is provided when creating the
+     * ImmediateMeasurement gate, that will be called with the resulted measurement.
+     * @param gates
+     * @param vector
+     * @param length
+     * @return 
+     */
     static Complex[] doImmediateMeasurement(List<Gate> gates, Complex[] vector, int length) {
         int size = vector.length;
         Gate gate = gates.stream().filter(g -> g instanceof ImmediateMeasurement).findFirst()

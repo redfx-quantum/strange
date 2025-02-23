@@ -43,7 +43,6 @@ import org.redfx.strange.Complex;
  */
 public class Measurement extends SingleQubitGate {
     
-    static Logger LOG = Logger.getLogger(Measurement.class.getName());
     Complex[][] matrix =  new Complex[][]{{Complex.ONE,Complex.ZERO}, {Complex.ZERO,Complex.ONE}};
     
     /**
