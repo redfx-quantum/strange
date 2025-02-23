@@ -33,6 +33,8 @@
 package org.redfx.strange.local;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.redfx.strange.Gate;
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,13 +64,56 @@ public class ComputationTests {
 
     @Test
     public void testImmediateValues() {
-        Complex[] prob = new Complex[4];
-        for (int i = 0; i < 4; i++) {
-            prob[i] = (i == 0 ? Complex.ONE : Complex.ZERO);
+        int choice = 2;
+        int size = 4;
+        Complex[] prob = new Complex[size];
+        for (int i = 0; i < size; i++) {
+            prob[i] = (i == choice ? Complex.ONE : Complex.ZERO);
         }
         List<Gate> gates = new ArrayList<>();
         gates.add(new ImmediateMeasurement(0, null));
         Complex[] results = Computations.doImmediateMeasurement(gates, prob, 2);
-        
+        for (int i = 0; i < size; i++) {
+            Complex c = results[i];
+            if (i == choice) {
+                assertEquals(1,c.abssqr());
+            } else {
+                assertEquals(0, c.abssqr());
+            }
+        }
+    }
+    
+    
+    @Test
+    public void testCallbackScenarios() throws InterruptedException {
+        testImmediateValuesCallback(0, false);
+        testImmediateValuesCallback(1, false);
+        testImmediateValuesCallback(2, true);
+        testImmediateValuesCallback(3, true);
+    }
+
+    public void testImmediateValuesCallback(int choice, boolean exp) throws InterruptedException {
+        int size = 4;
+        CountDownLatch cdl = new CountDownLatch(1);
+        Complex[] prob = new Complex[size];
+        for (int i = 0; i < size; i++) {
+            prob[i] = (i == choice ? Complex.ONE : Complex.ZERO);
+        }
+        List<Gate> gates = new ArrayList<>();
+        gates.add(new ImmediateMeasurement(1, v -> {
+            assertEquals(exp, v);
+            cdl.countDown();
+            
+        }));
+        Complex[] results = Computations.doImmediateMeasurement(gates, prob, 2);
+        for (int i = 0; i < size; i++) {
+            Complex c = results[i];
+            if (i == choice) {
+                assertEquals(1,c.abssqr());
+            } else {
+                assertEquals(0, c.abssqr());
+            }
+        }
+        cdl.await(1, TimeUnit.SECONDS);
     }
 }
