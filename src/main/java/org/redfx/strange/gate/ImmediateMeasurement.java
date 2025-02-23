@@ -49,16 +49,18 @@ public class ImmediateMeasurement extends SingleQubitGate {
     private final Consumer<Boolean> consumer;
     
     /**
-     * <p>Constructor for Measurement.</p>
+     * <p>Constructor for ImmediateMeasurement.</p>
+     * @param consumer this callback will be invoked when the measurement is done.
+     * The creator of this gate will be notified on whether 0 was measured (false) or 1 (true)
      */
     public ImmediateMeasurement(Consumer<Boolean> consumer) {
         this.consumer = consumer;
     }
     
     /**
-     * <p>Constructor for Measurement.</p>
+     * <p>Constructor for ImmediateMeasurement.</p>
      *
-     * @param idx a int
+     * @param idx index of the qubit that this gate is applied to.
      * @param consumer this callback will be invoked when the measurement is done.
      * The creator of this gate will be notified on whether 0 was measured (false) or 1 (true)
      */
@@ -74,7 +76,7 @@ public class ImmediateMeasurement extends SingleQubitGate {
     }
     
     /** {@inheritDoc} */
-    @Override public String getCaption() {return "M";}
+    @Override public String getCaption() {return "IM";}
     
     public Consumer<Boolean> getConsumer() {
         return this.consumer;
