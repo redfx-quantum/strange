@@ -57,7 +57,7 @@ public final class Complex {
     /** Constant <code>I</code> */
     public static final Complex I = new Complex(0.d, 1.d);
     
-    static final boolean DEBUG = true;
+    static final boolean DEBUG = false;
 
     private static final double HV = 1. / Math.sqrt(2.);
 
@@ -386,9 +386,9 @@ public final class Complex {
      * @param ca an array of {@link org.redfx.strange.Complex} objects
      */
     public static void printArray(Complex[] ca) {
-//        if (DEBUG) {
+        if (DEBUG) {
             printArray(ca, System.err);
-//        }
+        }
     }
 
     /**

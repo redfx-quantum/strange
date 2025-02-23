@@ -38,6 +38,7 @@ import org.redfx.strange.gate.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.redfx.strange.Complex.tensor;
 
@@ -672,7 +673,7 @@ public class Computations {
         return answer;
     }
 
-    private static Complex[] doImmediateMeasurement(List<Gate> gates, Complex[] vector, int length) {
+    static Complex[] doImmediateMeasurement(List<Gate> gates, Complex[] vector, int length) {
         int size = vector.length;
         Gate gate = gates.stream().filter(g -> g instanceof ImmediateMeasurement).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Need an ImmediateMeasurement gate"));
@@ -682,7 +683,6 @@ public class Computations {
         for (int i = 0; i < size; i++) {
             p[(i/(1 <<idx))%2] += vector[i].abssqr();
         }
-        System.err.println("IMM, p[0] = "+p[0]+" and p[1] = "+p[1]);
         double rnd = Math.random();
         int pick = rnd > p[0] ? 1 : 0;
         Complex[] answer = new Complex[size];
@@ -693,6 +693,8 @@ public class Computations {
                 answer[i] = Complex.ZERO;
             }
         }
+        Consumer<Boolean> consumer = mGate.getConsumer();
+        if (consumer != null) consumer.accept(pick != 0);
         return answer;
     }
 

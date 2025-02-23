@@ -36,6 +36,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.redfx.strange.Gate;
 import static org.junit.jupiter.api.Assertions.*;
+import org.redfx.strange.Complex;
 import org.redfx.strange.gate.Hadamard;
 import org.redfx.strange.gate.Identity;
 import org.redfx.strange.gate.ImmediateMeasurement;
@@ -59,4 +60,15 @@ public class ComputationTests {
         assertFalse(Computations.containsImmediateMeasurementOnly(gates));
     }
 
+    @Test
+    public void testImmediateValues() {
+        Complex[] prob = new Complex[4];
+        for (int i = 0; i < 4; i++) {
+            prob[i] = (i == 0 ? Complex.ONE : Complex.ZERO);
+        }
+        List<Gate> gates = new ArrayList<>();
+        gates.add(new ImmediateMeasurement(0, null));
+        Complex[] results = Computations.doImmediateMeasurement(gates, prob, 2);
+        
+    }
 }
