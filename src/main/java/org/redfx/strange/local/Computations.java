@@ -38,6 +38,7 @@ import org.redfx.strange.gate.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.redfx.strange.Complex.tensor;
 
@@ -445,6 +446,9 @@ public class Computations {
      * @return an array of {@link org.redfx.strange.Complex} objects
      */
     public static Complex[] calculateNewState(List<Gate> gates, Complex[] vector, int length) {
+        if (containsImmediateMeasurementOnly(gates)) {
+            return doImmediateMeasurement(gates, vector, length);
+        }
         nested++;
         Complex[] answer = getNextProbability(getAllGates(gates, length), vector);
         nested--;
@@ -456,7 +460,7 @@ public class Computations {
         int nqubits = gate.getSize();
         int gatedim = 1 << nqubits;
         int size = v.length;
-     dbg("GETNEXTPROBABILITY asked for size = " + size + " and gates = " + gates);
+     dbg("GETNEXTPROBABILITY asked for size = " + size + " and gates = " + gates+", gatedim = "+gatedim);
         if (gates.size() > 1) {
 
             int partdim = size / gatedim;
@@ -669,4 +673,49 @@ public class Computations {
         return answer;
     }
 
+    /**
+     * Evaluates the first ImmediateMeasurement gate in the supplied list.
+     * A measurement is done based on existing probabilities, and the resulting vector is
+     * post-conditioned for this value. In case a callback is provided when creating the
+     * ImmediateMeasurement gate, that will be called with the resulted measurement.
+     * @param gates
+     * @param vector
+     * @param length
+     * @return 
+     */
+    static Complex[] doImmediateMeasurement(List<Gate> gates, Complex[] vector, int length) {
+        int size = vector.length;
+        Gate gate = gates.stream().filter(g -> g instanceof ImmediateMeasurement).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Need an ImmediateMeasurement gate"));
+        ImmediateMeasurement mGate = (ImmediateMeasurement)gate;
+        int idx = mGate.getMainQubitIndex();
+        double[] p = new double[2];
+        for (int i = 0; i < size; i++) {
+            p[(i/(1 <<idx))%2] += vector[i].abssqr();
+        }
+        double rnd = Math.random();
+        int pick = rnd > p[0] ? 1 : 0;
+        Complex[] answer = new Complex[size];
+        for (int i = 0; i < size; i++) {
+            if (pick == (i/(1 <<idx))%2) {
+                answer[i] = vector[i].mul(1/Math.sqrt(p[pick]));
+            } else {
+                answer[i] = Complex.ZERO;
+            }
+        }
+        Consumer<Boolean> consumer = mGate.getConsumer();
+        if (consumer != null) consumer.accept(pick != 0);
+        return answer;
+    }
+
+    /**
+     * Checks if the list of gates contain one or more ImmediateMeasurement gates
+     * and no other gates apart from the Identity gate
+     * @param gates
+     * @return 
+     */
+    static boolean containsImmediateMeasurementOnly(List<Gate> gates) {
+        return gates.stream().anyMatch(g -> g instanceof ImmediateMeasurement) &&  
+               gates.stream().allMatch(g -> g instanceof ImmediateMeasurement || g instanceof Identity);
+    }
 }

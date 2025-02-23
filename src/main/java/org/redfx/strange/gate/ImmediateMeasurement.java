@@ -32,6 +32,7 @@
  */
 package org.redfx.strange.gate;
 
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import org.redfx.strange.Complex;
 
@@ -41,22 +42,31 @@ import org.redfx.strange.Complex;
  * @author johan
  * @version $Id: $Id
  */
-public class Measurement extends SingleQubitGate {
+public class ImmediateMeasurement extends SingleQubitGate {
     
+    static Logger LOG = Logger.getLogger(ImmediateMeasurement.class.getName());
     Complex[][] matrix =  new Complex[][]{{Complex.ONE,Complex.ZERO}, {Complex.ZERO,Complex.ONE}};
+    private final Consumer<Boolean> consumer;
     
     /**
-     * <p>Constructor for Measurement.</p>
+     * <p>Constructor for ImmediateMeasurement.</p>
+     * @param consumer this callback will be invoked when the measurement is done.
+     * The creator of this gate will be notified on whether 0 was measured (false) or 1 (true)
      */
-    public Measurement() {}
+    public ImmediateMeasurement(Consumer<Boolean> consumer) {
+        this.consumer = consumer;
+    }
     
     /**
-     * <p>Constructor for Measurement.</p>
+     * <p>Constructor for ImmediateMeasurement.</p>
      *
-     * @param idx a int
+     * @param idx index of the qubit that this gate is applied to.
+     * @param consumer this callback will be invoked when the measurement is done.
+     * The creator of this gate will be notified on whether 0 was measured (false) or 1 (true)
      */
-    public Measurement (int idx) {
+    public ImmediateMeasurement (int idx, Consumer<Boolean> consumer) {
         super(idx);
+        this.consumer = consumer;
     }
 
     /** {@inheritDoc} */
@@ -66,16 +76,10 @@ public class Measurement extends SingleQubitGate {
     }
     
     /** {@inheritDoc} */
-    @Override public String getCaption() {return "M";}
-
-    @Override
-    public Complex[] applyOptimize(Complex[] v) {
-        return v;
-    }
-
-    @Override
-    public boolean hasOptimization() {
-        return true;
+    @Override public String getCaption() {return "IM";}
+    
+    public Consumer<Boolean> getConsumer() {
+        return this.consumer;
     }
     
 }
