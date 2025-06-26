@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A class to manage names of qubits and the mapping to the qubuit index.
+ * A class to manage names of qubits and the mapping to the qubit index.
  */
 public class Qubits<T> {
   
