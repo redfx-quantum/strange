@@ -125,6 +125,21 @@ public class ThreeQubitGateTests extends BaseGateTests {
     }
 
     @Test
+    public void ToffoliGate5() {
+        // |010> -> |010>
+        Program p = new Program(3,
+            new Step(new X(1)),
+            new Step(new Toffoli(2,1,0))
+        );
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(3, qubits.length);
+        assertEquals(0, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+        assertEquals(0, qubits[2].measure());
+    }
+
+    @Test
     public void ToffoliGateR0() {
         // |000> -> |000>
         Program p = new Program(3, new Step(new Toffoli(0,1,2)));
