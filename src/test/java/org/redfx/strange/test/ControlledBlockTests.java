@@ -77,11 +77,11 @@ public class ControlledBlockTests extends BaseGateTests {
         block.addStep(new Step(new X(0)));
         BlockGate gate = new BlockGate(block, 0);
         ControlledBlockGate cbg = new ControlledBlockGate(gate, 0, 1);
-        Complex[][] m = cbg.getMatrix();
-
         p.addStep(prep);
         p.addStep(new Step(cbg));
         Result result = runProgram(p);
+        Complex[] probs = result.getProbability();
+        assertEquals(1, probs[3].abssqr(), DELTA);
         Qubit[] q = result.getQubits();
         assertEquals(2, q.length);
         assertEquals(1, q[0].measure());
@@ -130,7 +130,7 @@ public class ControlledBlockTests extends BaseGateTests {
         assertEquals(1, q[1].measure());
         assertEquals(1, q[2].measure());
     }
-          
+
     @Test
     public void cnotblock100b2() { //100 -> 111
         Program p = new Program(3);
@@ -150,7 +150,7 @@ public class ControlledBlockTests extends BaseGateTests {
         assertEquals(1, q[1].measure());
         assertEquals(1, q[2].measure());
     }
-    
+
     @Test
     public void cnotblock100b2inv() { //100 -> 111
         Program p = new Program(3);
@@ -170,8 +170,7 @@ public class ControlledBlockTests extends BaseGateTests {
         assertEquals(1, q[1].measure());
         assertEquals(1, q[2].measure());
     }
-    
-    
+
     @Test
     public void cnotblock101() { //101 -> 001
         Program p = new Program(3);
@@ -193,7 +192,7 @@ public class ControlledBlockTests extends BaseGateTests {
         assertEquals(0, q[1].measure());
         assertEquals(0, q[2].measure());
     }
-    
+
     @Test
     public void cnotblock1010() { //1010 -> 0010
         Program p = new Program(4);
@@ -216,7 +215,7 @@ public class ControlledBlockTests extends BaseGateTests {
         assertEquals(0, q[2].measure());
         assertEquals(0, q[3].measure());
     }
-    
+
     @Test
     public void cnotblock1010inv() { //1010 -> 0010
         Program p = new Program(4);
@@ -240,5 +239,5 @@ public class ControlledBlockTests extends BaseGateTests {
         assertEquals(0, q[2].measure());
         assertEquals(1, q[3].measure());
     }
-    
+
 }

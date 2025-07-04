@@ -161,7 +161,7 @@ public class Result {
         return intermediateProps[ret];
     }
 
-    private double[] calculateQubitStatesFromVector(Complex[] vectorresult) {
+    static double[] calculateQubitStatesFromVector(Complex[] vectorresult) {
         int nq = (int) Math.round(Math.log(vectorresult.length) / Math.log(2));
         double[] answer = new double[nq];
         int ressize = 1 << nq;
