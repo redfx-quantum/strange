@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.redfx.strange"},{"l":"org.redfx.strange.algorithm"},{"l":"org.redfx.strange.cloud"},{"l":"org.redfx.strange.demo"},{"l":"org.redfx.strange.gate"},{"l":"org.redfx.strange.local"}];updateSearchResults();
