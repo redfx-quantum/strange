@@ -1,5 +1,6 @@
 # strange
 [![Build](https://github.com/redfx-quantum/strange/actions/workflows/build.yml/badge.svg)](https://github.com/redfx-quantum/strange/actions/workflows/build.yml)
+[![Test Coverage](https://github.com/redfx-quantum/strange/blob/gh-pages/badges/jacoco.svg?raw=true)](https://redfx-quantum.github.io/strange/)
 [![Maven Central](https://img.shields.io/maven-central/v/org.redfx/strange)](https://search.maven.org/#search|ga|1|org.redfx.strange)
 [![License](https://img.shields.io/github/license/redfx-quantum/strange)](https://opensource.org/licenses/GPL-3.0)
 [![javadoc](https://javadoc.io/badge2/org.redfx/strange/javadoc.svg)](https://javadoc.io/doc/org.redfx/strange)
