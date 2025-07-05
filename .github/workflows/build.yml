@@ -42,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jacoco
-          path: target/site
+          path: target/site/jacoco
 
   coverage:
     if: github.ref == 'refs/heads/main'
