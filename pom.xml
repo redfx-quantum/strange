@@ -131,6 +131,7 @@
                         <exclude>org/redfx/strange/demo/*.class</exclude>
                     </excludes>
                     <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
+                    <csv>true</csv>
                 </configuration>
                 <executions>
                     <execution>
