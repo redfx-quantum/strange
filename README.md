@@ -76,7 +76,7 @@ A typical `pom.xml` file looks as follows:
     <dependency>
       <groupId>org.redfx</groupId>
       <artifactId>strange</artifactId>
-      <version>0.1.1</version>
+      <version>0.1.3</version>
     </dependency>
   </dependencies>
   <build> 
@@ -84,7 +84,7 @@ A typical `pom.xml` file looks as follows:
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
-        <version>0.0.6</version>
+        <version>0.0.8</version>
         <configuration>
           <mainClass>SimpleStrangeDemo</mainClass>
         </configuration>
