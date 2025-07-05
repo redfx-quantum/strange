@@ -130,7 +130,7 @@
                     <excludes>
                         <exclude>org/redfx/strange/demo/*.class</exclude>
                     </excludes>
-                    <outputDirectory>${project.build.directory}/custom-jacoco</outputDirectory>
+                    <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
