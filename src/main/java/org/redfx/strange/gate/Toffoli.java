@@ -55,13 +55,7 @@ public class Toffoli extends ThreeQubitGate {
         {ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ONE},
         {ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ONE,ZERO}
     };
-    
-    /**
-     * <p>Constructor for Toffoli.</p>
-     */
-    public Toffoli() {    
-    }
-    
+
     /**
      * <p>Constructor for Toffoli.</p>
      *

@@ -36,10 +36,12 @@ package org.redfx.strange.test;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.redfx.strange.Complex;
 import org.redfx.strange.Program;
 import org.redfx.strange.Qubit;
 import org.redfx.strange.Result;
 import org.redfx.strange.Step;
+import org.redfx.strange.gate.Hadamard;
 import org.redfx.strange.gate.Toffoli;
 import org.redfx.strange.gate.X;
 
@@ -223,5 +225,47 @@ public class ThreeQubitGateTests extends BaseGateTests {
         assertEquals(0, qubits[1].measure());
         assertEquals(1, qubits[2].measure());
         assertEquals(1, qubits[3].measure());
+    }
+
+    @Test
+    public void ToffoliGateH1() {
+        // |0H1> -> |HH1>
+        Program p = new Program(3,
+           new Step(new X(0),new Hadamard(1)),
+           new Step(new Toffoli(0, 1, 2)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        assertEquals(.5, probability[1].abssqr(), DELTA);
+        assertEquals(.5, probability[7].abssqr(), DELTA);
+    }
+
+    @Test
+    public void ToffoliGateH2() {
+        // |01H> -> |H1H>
+        Program p = new Program(3,
+           new Step(new X(1),new Hadamard(0)),
+           new Step(new Toffoli(0, 1, 2)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        assertEquals(.5, probability[2].abssqr(), DELTA);
+        assertEquals(.5, probability[7].abssqr(), DELTA);
+    }
+
+    @Test
+    public void ToffoliGateInverse() {
+        // |111> -> |110>
+        Toffoli invToffoli = new Toffoli(2,1,0);
+        invToffoli.setInverse(true);
+        Program p = new Program(3,
+            new Step(new X(2),new X(1),new X(0)),
+            new Step(new Toffoli(2,1,0)),
+            new Step(invToffoli)
+        );
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(3, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
     }
 }
