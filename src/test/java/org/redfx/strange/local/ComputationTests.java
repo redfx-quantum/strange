@@ -92,6 +92,25 @@ public class ComputationTests {
         testImmediateValuesCallback(3, true);
     }
 
+    @Test
+    public void swapBits() {
+        int a = 27;
+        int v = Computations.swapBits(a, 0, 1);
+        assertEquals(27, v);
+        v = Computations.swapBits(a, 1, 0);
+        assertEquals(27, v);
+        a = 26;
+        v = Computations.swapBits(a, 0, 1);
+        assertEquals(25, v);
+        v = Computations.swapBits(a, 1, 0);
+        assertEquals(25, v);
+        a = 27;
+        v = Computations.swapBits(a, 2, 3);
+        assertEquals(23, v);
+        v = Computations.swapBits(a, 3, 2);
+        assertEquals(23, v);
+    }
+
     public void testImmediateValuesCallback(int choice, boolean exp) throws InterruptedException {
         int size = 4;
         CountDownLatch cdl = new CountDownLatch(1);
@@ -116,4 +135,5 @@ public class ComputationTests {
         }
         cdl.await(1, TimeUnit.SECONDS);
     }
+
 }

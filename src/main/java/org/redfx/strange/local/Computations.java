@@ -36,6 +36,7 @@ import org.redfx.strange.*;
 import org.redfx.strange.gate.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -137,8 +138,9 @@ public class Computations {
         if (simple) {
             return answer;
         }
+        Gate targetGate = gates.get(0);
         // if only 1 gate, which is an oracle, return as well
-        if ((gates.size() == 1) && (gates.get(0) instanceof Oracle)) {
+        if ((gates.size() == 1) && (targetGate instanceof Oracle || targetGate instanceof Swap)) {
             return answer;
         }
         // at least one non-singlequbitgate
@@ -456,6 +458,25 @@ public class Computations {
     }
     
     private static Complex[] getNextProbability(List<Gate> gates, Complex[] v) {
+        Complex[] answer = new Complex[v.length];
+        boolean onlyIdentity = (gates.size() == 1 || gates.subList(1, gates.size()-1).stream().allMatch(g -> g instanceof Identity));
+        if (onlyIdentity && gates.get(0) instanceof Swap swap) {
+            return processSwapGate(swap, v);
+        }
+        return getNextProbability2(gates, v);
+    }
+
+    static Complex[] processSwapGate(Swap swap, Complex[] v) {
+        Complex[] result = new Complex[v.length];
+        int b0 = swap.getMainQubitIndex();
+        int b1 = swap.getSecondQubitIndex();
+        for (int i = 0 ; i < v.length; i++) {
+            result[i] = v[swapBits(i, b0, b1)];
+        }
+        return result;
+    }
+
+    private static Complex[] getNextProbability2(List<Gate> gates, Complex[] v) {
         Gate gate = gates.get(0);
         int nqubits = gate.getSize();
         int gatedim = 1 << nqubits;
@@ -718,4 +739,22 @@ public class Computations {
         return gates.stream().anyMatch(g -> g instanceof ImmediateMeasurement) &&  
                gates.stream().allMatch(g -> g instanceof ImmediateMeasurement || g instanceof Identity);
     }
+
+    /**
+     * Swap the value of bits b0 and b1 in the value val.
+     * @param val an integer value, containing 32 bits
+     * @param b0 position of bit 0
+     * @param b1 position of bit 1
+     * @return a new integer value with bits 0 and 1 swapped
+     */
+    public static int swapBits(int val, int b0, int b1) {
+        int bit0Val = (val >> b0) & 1;
+        int bit1Val = (val >> b1) & 1;
+        if (bit0Val != bit1Val) {
+            int bitMask = (1 << b0) | (1 << b1);
+            val ^= bitMask;
+        }
+        return val;
+    }
+
 }

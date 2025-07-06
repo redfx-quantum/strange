@@ -39,6 +39,7 @@ import org.redfx.strange.gate.ProbabilitiesGate;
 import org.redfx.strange.gate.Swap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
@@ -105,7 +106,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
                 LOG.finest("before this step, probs = ");
           //      printProbs(probs);
                 probs = applyStep(step, probs, qubit);
-                LOG.finest("after this step, probs = "+probs);
+                LOG.info("after this step, probs = "+probs);
             //    printProbs(probs);
                 int idx = step.getComplexStep();
                 // System.err.println("complex? "+idx);
@@ -157,26 +158,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
       
         Complex[] result = new Complex[vector.length];
         boolean vdd = true;
-        if (vdd) {
-            result = Computations.calculateNewState(gates, vector, qubits.length);
-        } else {
-            LOG.finest("start calcstepmatrix with gates " + gates);
-            Complex[][] a = calculateStepMatrix(gates, qubits.length);
-            LOG.finest("done calcstepmatrix");
-            LOG.finest("vector");
-            // printProbs(vector);
-            if (a.length != result.length) {
-                System.err.println("fatal issue calculating step for gates " + gates);
-                throw new RuntimeException("Wrong length of matrix or probability vector: expected " + result.length + " but got " + a.length);
-            }
-            LOG.finest("start matrix-vector multiplication for vector size = " + vector.length);
-            for (int i = 0; i < vector.length; i++) {
-                result[i] = Complex.ZERO;
-                for (int j = 0; j < vector.length; j++) {
-                    result[i] = result[i].add(a[i][j].mul(vector[j]));
-                }
-            }
-        }
+        result = Computations.calculateNewState(gates, vector, qubits.length);
         long s1 = System.currentTimeMillis();
         LOG.finer("done applystep took "+ (s1-s0));
 
