@@ -103,7 +103,7 @@ public class Result {
         if (nqubits == 0) {
             return answer;
         }
-        int lastidx = nsteps-1;
+        int lastidx = nsteps == 0 ? 0 : nsteps-1;
         while (intermediateProps[lastidx] == null) lastidx--;
         double[] d = calculateQubitStatesFromVector(intermediateProps[lastidx]);
         for (int i = 0; i < answer.length; i++) {

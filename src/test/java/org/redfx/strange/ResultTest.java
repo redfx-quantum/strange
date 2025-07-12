@@ -3,6 +3,7 @@ package org.redfx.strange;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
 
 /**
  *
@@ -56,5 +57,13 @@ public class ResultTest {
         res = Result.calculateQubitStatesFromVector(prob);
         assertEquals(.5, res[0], DELTA);
         assertEquals(1, res[1], DELTA);
+    }
+
+    @Test
+    public void noStep() {
+        Program p = new Program(2);
+        QuantumExecutionEnvironment qee = new SimpleQuantumExecutionEnvironment();
+        Result result = qee.runProgram(p);
+        assertNotNull(result);
     }
 }
