@@ -179,7 +179,7 @@
                         <version>${javadoc.plugin.version}</version>
                         <configuration>
                             <detectJavaApiLink>false</detectJavaApiLink>
-                            <source>8</source>
+                            <source>17</source>
                         </configuration>
                         <executions>
                             <execution>
