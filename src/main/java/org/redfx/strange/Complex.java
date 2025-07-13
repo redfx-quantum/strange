@@ -78,6 +78,10 @@ public final class Complex {
         this(r, 0.d);
     }
 
+    public Complex(Complex c) {
+        this(c.r, c.i);
+    }
+
     /**
      * Create a complex number with a real and imaginary component
      *

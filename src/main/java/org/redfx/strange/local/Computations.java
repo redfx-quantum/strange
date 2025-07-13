@@ -459,11 +459,57 @@ public class Computations {
     
     private static Complex[] getNextProbability(List<Gate> gates, Complex[] v) {
         Complex[] answer = new Complex[v.length];
-        boolean onlyIdentity = (gates.size() == 1 || gates.subList(1, gates.size()-1).stream().allMatch(g -> g instanceof Identity));
+        boolean onlyIdentity = (gates.size() == 1 || gates.subList(1, gates.size()).stream().allMatch(g -> g instanceof Identity));
+        boolean simple = gates.stream().allMatch(g -> ((g instanceof Identity) || (g instanceof SingleQubitGate)));
         if (onlyIdentity && gates.get(0) instanceof Swap swap) {
             return processSwapGate(swap, v);
         }
+        if (simple) {
+            return processSimpleGates(gates, v);
+        }
         return getNextProbability2(gates, v);
+    }
+
+    static Complex[] processSimpleGates(List<Gate> gates, Complex[] v) {
+        Complex[] w = v;
+        for (Gate gate: gates) {
+            if (!(gate instanceof Identity)) {
+                w = processNQubitGate(gate, w);
+            }
+        }
+        return w;
+    }
+
+    static Complex[] processNQubitGate(Gate gate, Complex[] v) {
+        int size = v.length;
+        Complex[] answer = new Complex[size];
+        System.arraycopy(v, 0, answer, 0, size);
+
+        int index = gate.getMainQubitIndex();
+        int gateDim = 1 << gate.getSize();
+        int parts = v.length / gateDim;
+        int length = (int) Math.ceil(Math.log(size) / Math.log(2));
+        int ngroups = 1 << (length - index - 1);
+        int qdelta = 1 << index;
+        Complex[][] matrix = gate.getMatrix();
+        for (int group = 0; group < ngroups; group++) {
+            for (int j = 2 * group * qdelta; j < (2 * group + 1) * qdelta; j++) {
+                Complex[] work = new Complex[2];
+                Complex[] tmp = new Complex[2];
+                tmp[0] = new Complex(Complex.ZERO);
+                tmp[1] = new Complex(Complex.ZERO);
+                work[0] = v[j];
+                work[1] = v[j + qdelta];
+                for (int i = 0; i < gateDim; i++) {
+                    for (int k = 0; k < gateDim; k++) {
+                        tmp[i] = tmp[i].addr(matrix[i][k].mul(work[k]));
+                    }
+                }
+                answer[j] = new Complex(tmp[0].r, tmp[0].i);
+                answer[j + qdelta] = new Complex(tmp[1].r, tmp[1].i);
+            }
+        }
+        return answer;
     }
 
     static Complex[] processSwapGate(Swap swap, Complex[] v) {
