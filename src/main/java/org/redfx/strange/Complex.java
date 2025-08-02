@@ -74,6 +74,7 @@ public final class Complex {
     public static int addrCnt = 0;
     public static int addMulrCnt = 0;
     public static int mulDCnt = 0;
+
     /**
      * Create a complex number with a real component only
      *
@@ -96,6 +97,14 @@ public final class Complex {
     public Complex(double r, double i) {
         this.r = (float) r;
         this.i = (float) i;
+    }
+
+    public static void resetCounters() {
+        addCnt = 0;
+        mulCnt = 0;
+        addrCnt = 0;
+        addMulrCnt = 0;
+        mulDCnt = 0;
     }
 
     /**
