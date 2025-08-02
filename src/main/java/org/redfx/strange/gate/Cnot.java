@@ -33,6 +33,8 @@
 package org.redfx.strange.gate;
 
 import org.redfx.strange.Complex;
+import org.redfx.strange.ControlledGate;
+import org.redfx.strange.Gate;
 
 /**
  * <p>Cnot class.</p>
@@ -40,21 +42,25 @@ import org.redfx.strange.Complex;
  * @author johan
  * @version $Id: $Id
  */
-public class Cnot extends TwoQubitGate {
+public class Cnot extends TwoQubitGate implements ControlledGate {
     
+    private final Gate rootGate;
+    private final int rootGateIndex;
+    private final int controlIndex;
+
     Complex[][] matrix =  new Complex[][]{
         {Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO},
         {Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
         {Complex.ZERO,Complex.ZERO,Complex.ZERO,Complex.ONE},
         {Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO}
     };
-    
-    /**
-     * <p>Constructor for Cnot.</p>
-     */
-    public Cnot() {    
-    }
-    
+//    
+//    /**
+//     * <p>Constructor for Cnot.</p>
+//     */
+//    public Cnot() {    
+//    }
+//    
     /**
      * <p>Constructor for Cnot.</p>
      *
@@ -62,9 +68,13 @@ public class Cnot extends TwoQubitGate {
      * @param b a int
      */
     public Cnot (int a, int b) {
-        super(a,b);
+        super(b, a);
+        this.rootGateIndex = b;
+        this.controlIndex = a;
+        this.rootGate = new X(a);
     }
 
+    @Override public int getSize() {return 1;}
     /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
@@ -74,5 +84,20 @@ public class Cnot extends TwoQubitGate {
     /** {@inheritDoc} */
     @Override public String getCaption() {
         return "Cnot";
+    }
+
+    @Override
+    public int getControllQubitIndex() {
+        return controlIndex;
+    }
+
+    @Override
+    public int getRootGateIndex() {
+        return rootGateIndex;
+    }
+
+    @Override
+    public Gate getRootGate() {
+        return rootGate;
     }
 }

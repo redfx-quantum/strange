@@ -98,10 +98,11 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         Result result = new Result(nQubits, steps.size());
         int cnt = 0;
         result.setIntermediateProbability(0, probs);
-        LOG.fine("START RUN, number of steps = " + simpleSteps.size());
+        LOG.info("START RUN, number of steps = " + simpleSteps.size());
+        LOG.info("START RUN, steps = " + simpleSteps);
         for (Step step : simpleSteps) {
             if (!step.getGates().isEmpty()) {
-                LOG.finer("RUN STEP " + step + ", cnt = " + cnt);
+                LOG.info("RUN STEP " + step + ", cnt = " + cnt);
                 cnt++;
                 LOG.finest("before this step, probs = ");
           //      printProbs(probs);
@@ -143,7 +144,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
     
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
-        LOG.finer("start applystep, vectorsize = "+vector.length+", ql = "+qubits.length);
+        LOG.info("start applystep, vectorsize = "+vector.length+", ql = "+qubits.length);
         long s0 = System.currentTimeMillis();
         List<Gate> gates = step.getGates();
         if (!gates.isEmpty() && gates.get(0) instanceof ProbabilitiesGate ) {

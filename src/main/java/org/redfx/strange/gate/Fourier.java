@@ -40,6 +40,7 @@ import org.redfx.strange.QuantumExecutionEnvironment;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.redfx.strange.local.Computations;
 
 /**
  * <p>Fourier class.</p>
@@ -137,4 +138,24 @@ public class Fourier extends BlockGate {
     public boolean hasOptimization() {
         return false; // for now, we calculate the matrix
     }
+    
+     @Override
+    public Complex[] applyOptimize(Complex[] v) {
+    //    System.err.println("[FOURIER] start, probs are now: ");
+        Complex.printArray(v);
+        int length = (int) Math.ceil(Math.log(size) / Math.log(2));
+         System.err.println("ao, v size = "+v.length+" and length = "+length+" and size = " + size);
+        for (int i = dim -1; i >=0; i--) {
+            v = Computations.processNQubitGate(new Hadamard(i), v);
+            for (int j = 2; j <= i+1; j++) {
+                v = Computations.processNQubitGate(new Cr(i+1-j, i, 2,j), v);
+            }
+        }
+        for (int i = 0; i < length/2;i++) {
+            v = Computations.processSwapGate(new Swap(0,length-1-i), v);
+        }
+        System.err.println("[FOURIER] done, probs are now: ");
+        return v;
+    }
+
 }
