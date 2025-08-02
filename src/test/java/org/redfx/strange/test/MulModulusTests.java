@@ -101,6 +101,7 @@ public class MulModulusTests extends BaseGateTests {
     @Tag("performance")
     @Test
     public void mul3x11mod31() { // 3 x 11 mod 31 = 2
+        Complex.resetCounters();
         Program p = new Program(12);
         int mul = 11;
         int N = 31;
@@ -114,11 +115,14 @@ public class MulModulusTests extends BaseGateTests {
         Complex[] probs = result.getProbability();
         assertEquals(1, probs[2].abssqr(), 0.0001);
         assertEquals(12, q.length);
+        System.err.println("Complex operations: add = " + Complex.addCnt+", mul = " + Complex.mulCnt 
+              + ", addr = " + Complex.addrCnt+", mulr = " + Complex.addMulrCnt+", muld = " + Complex.mulDCnt);
     }
 
     @Tag("performance")
     @Test
     public void mul11x13mod97() { // 11 x 13 mod 97 = 46
+        Complex.resetCounters();
         Program p = new Program(16);
         int mul = 13;
         int N = 97;
@@ -132,6 +136,8 @@ public class MulModulusTests extends BaseGateTests {
         Complex[] probs = result.getProbability();
         assertEquals(1, probs[46].abssqr(), 0.0001);
         assertEquals(16, q.length);
+        System.err.println("Complex operations: add = " + Complex.addCnt+", mul = " + Complex.mulCnt 
+              + ", addr = " + Complex.addrCnt+", mulr = " + Complex.addMulrCnt+", muld = " + Complex.mulDCnt);
     }
 
 }
