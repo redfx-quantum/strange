@@ -68,10 +68,10 @@ public class Cnot extends TwoQubitGate implements ControlledGate {
      * @param b a int
      */
     public Cnot (int a, int b) {
-        super(b, a);
+        super(a, b);
         this.rootGateIndex = b;
         this.controlIndex = a;
-        this.rootGate = new X(a);
+        this.rootGate = new X(b);
     }
 
     @Override public int getSize() {return 1;}
@@ -95,7 +95,10 @@ public class Cnot extends TwoQubitGate implements ControlledGate {
     public int getRootGateIndex() {
         return rootGateIndex;
     }
-
+    @Override
+    public int getMainQubitIndex() {
+        return this.rootGateIndex;
+    }
     @Override
     public Gate getRootGate() {
         return rootGate;

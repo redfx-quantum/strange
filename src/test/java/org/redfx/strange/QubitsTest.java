@@ -26,7 +26,7 @@ public class QubitsTest {
 
     Gate cnotGate = steps.get(1).getGates().get(0);
     assertInstanceOf(Cnot.class, cnotGate);
-    assertEquals(0, ((Cnot) cnotGate).getMainQubitIndex());
-    assertEquals(1, ((Cnot) cnotGate).getSecondQubitIndex());
+    assertEquals(1, ((Cnot) cnotGate).getMainQubitIndex());
+    assertEquals(0, ((Cnot) cnotGate).getSecondQubitIndex());
   };
 }

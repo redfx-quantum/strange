@@ -506,9 +506,9 @@ public class Computations {
         Complex[][] matrix = rootGate.getMatrix();
         for (int group = 0; group < ngroups; group++) {
             for (int j = 2 * group * qdelta; j < (2 * group + 1) * qdelta; j++) {
-                System.err.println("consider j = "+j);
+//                System.err.println("consider j = "+j+" and ctrlidx = "+ctrlIdx);
                 if (ctrl && (shouldSkip(j, ctrlIdx))) {
-                    System.err.println("SKIP");
+//                    System.err.println("SKIP");
                     continue;
                 }
                 Complex[] work = new Complex[2];
@@ -519,7 +519,7 @@ public class Computations {
                 work[1] = v[j + qdelta];
                 for (int i = 0; i < gateDim; i++) {
                     for (int k = 0; k < gateDim; k++) {
-                        System.err.println("i = "+i+", j = " + j+", k = "+k);
+//                        System.err.println("i = "+i+", j = " + j+", k = "+k);
                         tmp[i] = tmp[i].addr(matrix[i][k].mul(work[k]));
                     }
                 }
