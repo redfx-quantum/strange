@@ -69,6 +69,12 @@ public final class Complex {
     public float r;
     public float i;
 
+    public static int addCnt = 0;
+    public static int mulCnt = 0;
+    public static int addrCnt = 0;
+    public static int addMulrCnt = 0;
+    public static int mulDCnt = 0;
+
     /**
      * Create a complex number with a real component only
      *
@@ -96,6 +102,7 @@ public final class Complex {
      * @return a {@link org.redfx.strange.Complex} object
      */
     public Complex add(Complex b) {
+        addCnt++;
         double nr = this.r + b.r;
         double ni = this.i + b.i;
         return new Complex(nr, ni);
@@ -108,6 +115,7 @@ public final class Complex {
      * @return the modified complex number
      */
     public Complex addr(Complex b) {
+        addrCnt++;
         this.r = this.r + b.r;
         this.i = this.i + b.i;
         return this;
@@ -121,6 +129,7 @@ public final class Complex {
      * @return a {@link org.redfx.strange.Complex} object
      */
     public Complex addmulr(Complex a, Complex b) {
+        addMulrCnt++;
         double nr = (a.r * b.r) - (a.i * b.i);
         double ni = (a.r * b.i) + (a.i * b.r);
         this.r = (float) (this.r + nr);
@@ -147,6 +156,7 @@ public final class Complex {
      * @return a {@link org.redfx.strange.Complex} object
      */
     public Complex mul(Complex b) {
+        mulCnt++;
         double nr = (this.r * b.r) - (this.i * b.i);
         double ni = (this.r * b.i) + (this.i * b.r);
         return new Complex(nr, ni);
@@ -159,6 +169,7 @@ public final class Complex {
      * @return a {@link org.redfx.strange.Complex} object
      */
     public Complex mul(double b) {
+        mulDCnt++;
         return new Complex(this.r * b, this.i * b);
     }
 
