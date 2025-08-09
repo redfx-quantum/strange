@@ -460,7 +460,6 @@ public class Computations {
     }
 
     private static Complex[] getNextProbability(List<Gate> gates, Complex[] v) {
-        System.err.println("GNP, gates = "+gates);
         Complex[] answer = new Complex[v.length];
         boolean onlyIdentity = (gates.size() == 1 || gates.subList(1, gates.size()).stream().allMatch(g -> g instanceof Identity));
         boolean simple = gates.stream().allMatch(g -> ((g instanceof Identity) || (g instanceof SingleQubitGate) || (g instanceof ControlledGate)));
@@ -484,18 +483,15 @@ public class Computations {
     }
 
     public static Complex[] processNQubitGate(Gate gate, Complex[] v) {
-        System.err.println("SIMPLE, gate = " + gate+" and mqi = "+gate.getMainQubitIndex());
         int size = v.length;
         Complex[] answer = new Complex[size];
         System.arraycopy(v, 0, answer, 0, size);
 
         int index = gate.getMainQubitIndex();
         int gateDim = 1 << gate.getSize();
-        int parts = v.length / gateDim;
         int length = (int) Math.ceil(Math.log(size) / Math.log(2));
         int ngroups = 1 << (length - index - 1);
         int qdelta = 1 << index;
-        System.err.println("qdelta = " + qdelta);
         Gate rootGate = gate;
         List<Integer> ctrlIdx = null;
         if (gate instanceof ControlledGate cgate) {
@@ -506,9 +502,7 @@ public class Computations {
         Complex[][] matrix = rootGate.getMatrix();
         for (int group = 0; group < ngroups; group++) {
             for (int j = 2 * group * qdelta; j < (2 * group + 1) * qdelta; j++) {
-//                System.err.println("consider j = "+j+" and ctrlidx = "+ctrlIdx);
                 if (ctrl && (shouldSkip(j, ctrlIdx))) {
-//                    System.err.println("SKIP");
                     continue;
                 }
                 Complex[] work = new Complex[2];
@@ -519,7 +513,6 @@ public class Computations {
                 work[1] = v[j + qdelta];
                 for (int i = 0; i < gateDim; i++) {
                     for (int k = 0; k < gateDim; k++) {
-//                        System.err.println("i = "+i+", j = " + j+", k = "+k);
                         tmp[i] = tmp[i].addr(matrix[i][k].mul(work[k]));
                     }
                 }
@@ -536,19 +529,18 @@ public class Computations {
         int idx = 0;
         while(idx < size) {
             if (hasZeroBit(target, ctrlIdxs.get(idx))) return true;
-            idx++; 
+            idx++;
         }
         return false;
     }
 
-    /** 
+    /**
      * Check if bit at position b has value 1 in the integer a
      * @param a
      * @param b
      * @return
-     */             
+     */
     public static boolean hasZeroBit(int a, int b) {
-        System.err.println("check a = "+a + " and b = "+b);
        if (b < 0) return false;
         int res = a & (1 << b);
         return (res == 0);
@@ -643,7 +635,6 @@ public class Computations {
             if (gate.hasOptimization()) {
                 return gate.applyOptimize(v);
             } else {
-                System.err.println("MATRIX MULT, size = "+size+", addCnt = "+Complex.addCnt);
                 Complex[][] matrix = gate.getMatrix();
                 Complex[] answer = new Complex[size];
                 for (int i = 0; i < size; i++) {
@@ -652,7 +643,6 @@ public class Computations {
                         answer[i] = answer[i].add(matrix[i][j].mul(v[j]));
                     }
                 }
-                System.err.println("MATRIX MULTDONE, size = "+size+", addCnt = "+Complex.addCnt);
                 return answer;
             }
         }
