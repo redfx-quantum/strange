@@ -1,0 +1,115 @@
+package org.redfx.strange;
+
+import java.util.List;
+
+/**
+ *
+ * @author johan
+ */
+public interface ControlledGate extends Gate {
+
+    public int getControlQubitIndex();
+
+    default public List<Integer> getControlIndexes() {
+        return List.of(getControlQubitIndex());
+    }
+
+    public int getRootGateIndex();
+
+    public Gate getRootGate();
+
+    default public int getSecondControlQubitIndex() {return -1;};
+
+    default void setRootGateIndex(int i) {}
+
+    public static ControlledGate createControlledGate(Gate g, int idx) {
+        return createControlledGate(g, List.of(idx));
+    }
+
+    public static ControlledGate createControlledGate(Gate g, List<Integer> idx) {
+        return new ControlledGate() {
+
+            @Override
+            public int getControlQubitIndex() {
+                return idx.get(0);
+            }
+
+            @Override
+            public List<Integer> getControlIndexes() {
+                return idx;
+            }
+            public void setRootGateIndex(int i) {
+                g.setMainQubitIndex(i);
+            }
+            @Override
+            public int getRootGateIndex() {
+                return g.getMainQubitIndex();
+            }
+
+            @Override
+            public Gate getRootGate() {
+                return g;
+            }
+
+            @Override
+            public void setMainQubitIndex(int idx) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public int getMainQubitIndex() {
+                return g.getMainQubitIndex();
+            }
+
+            @Override
+            public void setAdditionalQubit(int idx, int cnt) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public List<Integer> getAffectedQubitIndexes() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public int getHighestAffectedQubitIndex() {
+                return Integer.max(g.getHighestAffectedQubitIndex(), idx.get(0));
+            }
+
+            @Override
+            public String getCaption() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public String getName() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public String getGroup() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public Complex[][] getMatrix() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public int getSize() {
+                return (g.getSize());
+            }
+
+            @Override
+            public void setInverse(boolean inv) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public String toString() {
+                return "ControlledGate with ctrl at "+idx+" and gate = "+g;
+            }
+        };
+    }
+}

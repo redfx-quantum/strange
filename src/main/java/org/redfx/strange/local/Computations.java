@@ -160,6 +160,8 @@ public class Computations {
                 firstGates.add(gate);
             } else if (gate instanceof SingleQubitGate) {
                 firstGates.add(gate);
+            } else if (gate instanceof ControlledGate cgate) {
+                firstGates.add(gate);
             } else if (gate instanceof TwoQubitGate) {
                 TwoQubitGate tqg = (TwoQubitGate) gate;
                 int first = tqg.getMainQubitIndex();
@@ -456,11 +458,11 @@ public class Computations {
         nested--;
         return answer;
     }
-    
+
     private static Complex[] getNextProbability(List<Gate> gates, Complex[] v) {
         Complex[] answer = new Complex[v.length];
         boolean onlyIdentity = (gates.size() == 1 || gates.subList(1, gates.size()).stream().allMatch(g -> g instanceof Identity));
-        boolean simple = gates.stream().allMatch(g -> ((g instanceof Identity) || (g instanceof SingleQubitGate)));
+        boolean simple = gates.stream().allMatch(g -> ((g instanceof Identity) || (g instanceof SingleQubitGate) || (g instanceof ControlledGate)));
         if (onlyIdentity && gates.get(0) instanceof Swap swap) {
             return processSwapGate(swap, v);
         }
@@ -480,20 +482,29 @@ public class Computations {
         return w;
     }
 
-    static Complex[] processNQubitGate(Gate gate, Complex[] v) {
+    public static Complex[] processNQubitGate(Gate gate, Complex[] v) {
         int size = v.length;
         Complex[] answer = new Complex[size];
         System.arraycopy(v, 0, answer, 0, size);
 
         int index = gate.getMainQubitIndex();
         int gateDim = 1 << gate.getSize();
-        int parts = v.length / gateDim;
         int length = (int) Math.ceil(Math.log(size) / Math.log(2));
         int ngroups = 1 << (length - index - 1);
         int qdelta = 1 << index;
-        Complex[][] matrix = gate.getMatrix();
+        Gate rootGate = gate;
+        List<Integer> ctrlIdx = null;
+        if (gate instanceof ControlledGate cgate) {
+            rootGate = cgate.getRootGate();
+            ctrlIdx = cgate.getControlIndexes();
+        }
+        boolean ctrl = ctrlIdx != null;
+        Complex[][] matrix = rootGate.getMatrix();
         for (int group = 0; group < ngroups; group++) {
             for (int j = 2 * group * qdelta; j < (2 * group + 1) * qdelta; j++) {
+                if (ctrl && (shouldSkip(j, ctrlIdx))) {
+                    continue;
+                }
                 Complex[] work = new Complex[2];
                 Complex[] tmp = new Complex[2];
                 tmp[0] = new Complex(Complex.ZERO);
@@ -512,7 +523,30 @@ public class Computations {
         return answer;
     }
 
-    static Complex[] processSwapGate(Swap swap, Complex[] v) {
+    static boolean shouldSkip(int target, List<Integer> ctrlIdxs) {
+        int size = ctrlIdxs.size();
+        if (size == 0) return false;
+        int idx = 0;
+        while(idx < size) {
+            if (hasZeroBit(target, ctrlIdxs.get(idx))) return true;
+            idx++;
+        }
+        return false;
+    }
+
+    /**
+     * Check if bit at position b has value 1 in the integer a
+     * @param a
+     * @param b
+     * @return
+     */
+    public static boolean hasZeroBit(int a, int b) {
+       if (b < 0) return false;
+        int res = a & (1 << b);
+        return (res == 0);
+    }
+
+    public static Complex[] processSwapGate(Swap swap, Complex[] v) {
         Complex[] result = new Complex[v.length];
         int b0 = swap.getMainQubitIndex();
         int b1 = swap.getSecondQubitIndex();

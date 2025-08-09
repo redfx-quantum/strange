@@ -33,6 +33,8 @@
 package org.redfx.strange.gate;
 
 import org.redfx.strange.Complex;
+import org.redfx.strange.ControlledGate;
+import org.redfx.strange.Gate;
 
 /**
  * <p>Cnot class.</p>
@@ -40,31 +42,33 @@ import org.redfx.strange.Complex;
  * @author johan
  * @version $Id: $Id
  */
-public class Cnot extends TwoQubitGate {
+public class Cnot extends TwoQubitGate implements ControlledGate {
     
+    private final Gate rootGate;
+    private final int rootGateIndex;
+    private final int controlIndex;
+
     Complex[][] matrix =  new Complex[][]{
         {Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO},
         {Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
         {Complex.ZERO,Complex.ZERO,Complex.ZERO,Complex.ONE},
         {Complex.ZERO,Complex.ZERO,Complex.ONE,Complex.ZERO}
     };
-    
-    /**
-     * <p>Constructor for Cnot.</p>
-     */
-    public Cnot() {    
-    }
-    
+
     /**
      * <p>Constructor for Cnot.</p>
      *
-     * @param a a int
-     * @param b a int
+     * @param controlQubitIndex the index of the control qubit
+     * @param mainQubitIndex the index of the qubit we want to hit with a NOT gate
      */
-    public Cnot (int a, int b) {
-        super(a,b);
+    public Cnot (int controlQubitIndex, int mainQubitIndex) {
+        super(controlQubitIndex, mainQubitIndex);
+        this.rootGateIndex = mainQubitIndex;
+        this.controlIndex = controlQubitIndex;
+        this.rootGate = new X(mainQubitIndex);
     }
 
+    @Override public int getSize() {return 1;}
     /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
@@ -74,5 +78,25 @@ public class Cnot extends TwoQubitGate {
     /** {@inheritDoc} */
     @Override public String getCaption() {
         return "Cnot";
+    }
+
+    @Override
+    public int getControlQubitIndex() {
+        return controlIndex;
+    }
+
+    @Override
+    public int getRootGateIndex() {
+        return rootGateIndex;
+    }
+
+    @Override
+    public int getMainQubitIndex() {
+        return this.rootGateIndex;
+    }
+
+    @Override
+    public Gate getRootGate() {
+        return rootGate;
     }
 }
