@@ -58,14 +58,14 @@ public class Cnot extends TwoQubitGate implements ControlledGate {
     /**
      * <p>Constructor for Cnot.</p>
      *
-     * @param mainQubitIndex the index of the qubit we want to hit with a NOT gate
      * @param controlQubitIndex the index of the control qubit
+     * @param mainQubitIndex the index of the qubit we want to hit with a NOT gate
      */
-    public Cnot (int mainQubitIndex, int controlQubitIndex) {
-        super(mainQubitIndex, controlQubitIndex);
-        this.rootGateIndex = controlQubitIndex;
-        this.controlIndex = mainQubitIndex;
-        this.rootGate = new X(controlQubitIndex);
+    public Cnot (int controlQubitIndex, int mainQubitIndex) {
+        super(controlQubitIndex, mainQubitIndex);
+        this.rootGateIndex = mainQubitIndex;
+        this.controlIndex = controlQubitIndex;
+        this.rootGate = new X(mainQubitIndex);
     }
 
     @Override public int getSize() {return 1;}
@@ -81,7 +81,7 @@ public class Cnot extends TwoQubitGate implements ControlledGate {
     }
 
     @Override
-    public int getControllQubitIndex() {
+    public int getControlQubitIndex() {
         return controlIndex;
     }
 
@@ -89,10 +89,12 @@ public class Cnot extends TwoQubitGate implements ControlledGate {
     public int getRootGateIndex() {
         return rootGateIndex;
     }
+
     @Override
     public int getMainQubitIndex() {
         return this.rootGateIndex;
     }
+
     @Override
     public Gate getRootGate() {
         return rootGate;

@@ -8,10 +8,10 @@ import java.util.List;
  */
 public interface ControlledGate extends Gate {
 
-    public int getControllQubitIndex();
+    public int getControlQubitIndex();
 
-    default public List<Integer> getControllIndexes() {
-        return List.of(getControllQubitIndex());
+    default public List<Integer> getControlIndexes() {
+        return List.of(getControlQubitIndex());
     }
 
     public int getRootGateIndex();
@@ -30,12 +30,12 @@ public interface ControlledGate extends Gate {
         return new ControlledGate() {
 
             @Override
-            public int getControllQubitIndex() {
+            public int getControlQubitIndex() {
                 return idx.get(0);
             }
 
             @Override
-            public List<Integer> getControllIndexes() {
+            public List<Integer> getControlIndexes() {
                 return idx;
             }
             public void setRootGateIndex(int i) {

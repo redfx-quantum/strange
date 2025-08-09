@@ -496,7 +496,7 @@ public class Computations {
         List<Integer> ctrlIdx = null;
         if (gate instanceof ControlledGate cgate) {
             rootGate = cgate.getRootGate();
-            ctrlIdx = cgate.getControllIndexes();
+            ctrlIdx = cgate.getControlIndexes();
         }
         boolean ctrl = ctrlIdx != null;
         Complex[][] matrix = rootGate.getMatrix();
