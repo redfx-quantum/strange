@@ -40,7 +40,6 @@ import org.redfx.strange.QuantumExecutionEnvironment;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.redfx.strange.local.Computations;
 
 /**
  * <p>Fourier class.</p>
@@ -138,5 +137,4 @@ public class Fourier extends BlockGate {
     public boolean hasOptimization() {
         return false; // for now, we calculate the matrix
     }
-
 }
