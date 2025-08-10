@@ -35,6 +35,7 @@ package org.redfx.strange.test;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Tag;
 import org.redfx.strange.Complex;
 import org.redfx.strange.Program;
 import org.redfx.strange.Qubit;
@@ -319,5 +320,41 @@ public class FourierTest extends BaseGateTests {
         assertEquals(1, qubits[1].measure());
         assertEquals(1, qubits[2].measure());
         assertEquals(1, qubits[3].measure());
+    }
+
+    @Tag("performance")
+    @Test
+    public void perfFourierProgram() { // 11 x 13 mod 97 = 46
+        Complex.resetCounters();
+        Program p = new Program(1, new Step(new Fourier(1, 0)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        assertEquals(2, probability.length);
+        assertEquals(.5, probability[0].abssqr(), D);
+        assertEquals(.5, probability[1].abssqr(), D);
+        printComplexStats(System.err);
+    }
+
+    @Tag("performance")
+    @Test
+    public void perfFourierAdditionProgram0011() {
+        Complex.resetCounters();
+        Step prep = new Step(new X(2), new X(3));
+        Program p = new Program(4,
+                prep,
+                new Step(new Fourier(2, 0)),
+                new Step (new Cr(1,2, 2, 1)),
+                new Step (new Cr(0,2, 2, 2)),
+                new Step (new Cr(0,3, 2, 1)),
+                new Step(new InvFourier(2,0)));
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        Complex.printArray(probability);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(1, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
+        assertEquals(1, qubits[3].measure());
+        printComplexStats(System.err);
     }
 }
