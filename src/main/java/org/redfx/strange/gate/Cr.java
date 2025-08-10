@@ -64,7 +64,6 @@ public class Cr extends TwoQubitGate implements ControlledGate {
      */
     public Cr (int controlQubitIndex, int mainQubitIndex, double exp) {
         super(controlQubitIndex,mainQubitIndex);
-        System.err.println("CR created, exp = "+exp);
         this.rootGateIndex = mainQubitIndex;
         this.controlIndex = controlQubitIndex;
         this.rootGate = new R(exp, mainQubitIndex);
@@ -106,13 +105,6 @@ public class Cr extends TwoQubitGate implements ControlledGate {
     @Override 
     public void setInverse(boolean inv) {
         this.rootGate.setInverse(inv);
-
-//        super.setInverse(inv);
-//        
-//        if (inv) {
-//            Complex[][] m = getMatrix();
-//            this.matrix = Complex.conjugateTranspose(m);
-//        }
     }
 
     /** {@inheritDoc} */
