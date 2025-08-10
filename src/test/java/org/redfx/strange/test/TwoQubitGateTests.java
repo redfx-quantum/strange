@@ -245,6 +245,28 @@ public class TwoQubitGateTests extends BaseGateTests {
     }
 
     @Test
+    public void cnotxx01() {
+        Program p = new Program(2,
+            new Step(new X(0), new X(1)),
+            new Step(new Cnot(0,1))
+        );
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(2, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        Complex[] prob = res.getProbability();
+        assertEquals(4, prob.length);
+        assertEquals(0, prob[0].r, DELTA);
+        assertEquals(0, prob[0].i, DELTA);
+        assertEquals(1, prob[1].r, DELTA);
+        assertEquals(0, prob[1].i, DELTA);
+        assertEquals(0, prob[2].r, DELTA);
+        assertEquals(0, prob[2].i, DELTA);
+        assertEquals(0, prob[3].r, DELTA);
+        assertEquals(0, prob[3].i, DELTA);
+    }
+    @Test
     public void cnotx02() {
         Program p = new Program(3,
             new Step(new X(0)),
@@ -467,6 +489,65 @@ public class TwoQubitGateTests extends BaseGateTests {
         assertEquals(0, prob[2].i, DELTA);
         assertEquals(Math.sqrt(2)/2, prob[3].r, DELTA);
         assertEquals(Math.sqrt(2)/2, prob[3].i, DELTA);
+    }
+
+    @Test
+    public void crxx000T() {
+        Program p = new Program(3,
+            new Step(new X(0), new X(2)),
+            new Step(new Cr(0,2,2,3))
+        );
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(3, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(0, qubits[1].measure());
+        assertEquals(1, qubits[2].measure());
+        Complex[] prob = res.getProbability();
+        assertEquals(8, prob.length);
+        assertEquals(0, prob[0].r, DELTA);
+        assertEquals(0, prob[0].i, DELTA);
+        assertEquals(0, prob[1].r, DELTA);
+        assertEquals(0, prob[1].i, DELTA);
+        assertEquals(0, prob[2].r, DELTA);
+        assertEquals(0, prob[2].i, DELTA);
+        assertEquals(0, prob[3].r, DELTA);
+        assertEquals(0, prob[3].i, DELTA);
+        assertEquals(0, prob[4].r, DELTA);
+        assertEquals(0, prob[4].i, DELTA);
+        assertEquals(Math.sqrt(2)/2, prob[5].r, DELTA);
+        assertEquals(Math.sqrt(2)/2, prob[5].i, DELTA);
+        assertEquals(0, prob[6].r, DELTA);
+        assertEquals(0, prob[6].i, DELTA);
+        assertEquals(0, prob[7].r, DELTA);
+        assertEquals(0, prob[7].i, DELTA);
+    }
+
+    @Test
+    public void crxxinv01T() {
+        Cr cr1 = new Cr(0,1,2,3);
+        Cr cr2 = new Cr(0,1,2,3);
+        cr2.setInverse(true);
+        Program p = new Program(2,
+            new Step(new X(0), new X(1)),
+            new Step(cr1),
+            new Step(cr2)
+        );
+        Result res = runProgram(p);
+        Qubit[] qubits = res.getQubits();
+        assertEquals(2, qubits.length);
+        assertEquals(1, qubits[0].measure());
+        assertEquals(1, qubits[1].measure());
+        Complex[] prob = res.getProbability();
+        assertEquals(4, prob.length);
+        assertEquals(0, prob[0].r, DELTA);
+        assertEquals(0, prob[0].i, DELTA);
+        assertEquals(0, prob[1].r, DELTA);
+        assertEquals(0, prob[1].i, DELTA);
+        assertEquals(0, prob[2].r, DELTA);
+        assertEquals(0, prob[2].i, DELTA);
+        assertEquals(1, prob[3].r, DELTA);
+        assertEquals(0, prob[3].i, DELTA);
     }
 
     @Test

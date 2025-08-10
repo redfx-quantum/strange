@@ -33,6 +33,8 @@
 package org.redfx.strange.gate;
 
 import org.redfx.strange.Complex;
+import org.redfx.strange.ControlledGate;
+import org.redfx.strange.Gate;
 
 /**
  * <p>Cr class.</p>
@@ -40,8 +42,11 @@ import org.redfx.strange.Complex;
  * @author johan
  * @version $Id: $Id
  */
-public class Cr extends TwoQubitGate {
-    
+public class Cr extends TwoQubitGate implements ControlledGate {
+    private Gate rootGate;
+    private final int rootGateIndex;
+    private final int controlIndex;
+
     private Complex[][] matrix =  new Complex[][]{
         {Complex.ONE,Complex.ZERO,Complex.ZERO,Complex.ZERO},
         {Complex.ZERO,Complex.ONE,Complex.ZERO,Complex.ZERO},
@@ -51,20 +56,18 @@ public class Cr extends TwoQubitGate {
     private int pow = -1;
     
     /**
-     * <p>Constructor for Cr.</p>
-     */
-    public Cr() {    
-    }
-    
-    /**
      * Control-R gate
      *
-     * @param a target qubit
-     * @param b control qubit
+     * @param controlQubitIndex target qubit
+     * @param mainQubitIndex control qubit
      * @param exp exp
      */
-    public Cr (int a, int b, double exp) {
-        super(a,b);
+    public Cr (int controlQubitIndex, int mainQubitIndex, double exp) {
+        super(controlQubitIndex,mainQubitIndex);
+        System.err.println("CR created, exp = "+exp);
+        this.rootGateIndex = mainQubitIndex;
+        this.controlIndex = controlQubitIndex;
+        this.rootGate = new R(exp, mainQubitIndex);
         double ar = Math.cos(exp);
         double ai = Math.sin(exp);
         if (Math.abs(Math.PI -exp)  < 1e-6) {
@@ -93,24 +96,48 @@ public class Cr extends TwoQubitGate {
         this(a,b, Math.PI*2/Math.pow(base, pow));
         this.pow = pow;
     }
-    
     /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix() {
         return matrix;
     }
-    
+
     /** {@inheritDoc} */
     @Override 
     public void setInverse(boolean inv) {
-        if (inv) {
-            Complex[][] m = getMatrix();
-            this.matrix = Complex.conjugateTranspose(m);
-        }
+        this.rootGate.setInverse(inv);
+
+//        super.setInverse(inv);
+//        
+//        if (inv) {
+//            Complex[][] m = getMatrix();
+//            this.matrix = Complex.conjugateTranspose(m);
+//        }
     }
 
     /** {@inheritDoc} */
     @Override public String getCaption() {
         return "Cr" + ((pow> -1)? Integer.toString(pow): "th");
+    }
+
+    @Override public int getSize() {return 1;}
+
+    @Override
+    public int getControlQubitIndex() {
+        return this.controlIndex;
+    }
+
+    @Override
+    public int getRootGateIndex() {
+        return this.getRootGateIndex();
+    }
+
+    @Override
+    public int getMainQubitIndex() {
+        return this.rootGateIndex;
+    }
+    @Override
+    public Gate getRootGate() {
+        return this.rootGate;
     }
 }
