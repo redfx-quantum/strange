@@ -32,8 +32,10 @@
  */
 package org.redfx.strange.test;
 
+import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.redfx.strange.Complex;
 import org.redfx.strange.Program;
 import org.redfx.strange.QuantumExecutionEnvironment;
 import org.redfx.strange.Result;
@@ -61,4 +63,8 @@ public class BaseGateTests {
         return qee.runProgram(program);
     }
 
+    void printComplexStats(PrintStream ps) {
+        ps.println("Complex operations: add = " + Complex.addCnt + ", mul = " + Complex.mulCnt
+                + ", addr = " + Complex.addrCnt + ", mulr = " + Complex.addMulrCnt + ", muld = " + Complex.mulDCnt);
+    }
 }
