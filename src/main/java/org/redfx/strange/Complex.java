@@ -478,8 +478,8 @@ public final class Complex {
         float mi = this.i;
         if (Math.abs(mr) < 1e-7) mr = 0;
         if (Math.abs(mi) < 1e-7) mi = 0;
-        if (Math.abs(mr) > .999999) mr = 1;
-        if (Math.abs(mi) > .999999) mi = 1;
+        if (Math.abs(mr) > .999999) mr = Math.signum(mr);
+        if (Math.abs(mi) > .999999) mi = Math.signum(mi);
         return "(" + mr + ", " + mi + ")";
     }
 
