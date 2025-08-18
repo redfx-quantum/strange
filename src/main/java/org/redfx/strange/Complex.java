@@ -479,7 +479,7 @@ public final class Complex {
         if (Math.abs(mr) < 1e-7) mr = 0;
         if (Math.abs(mi) < 1e-7) mi = 0;
         if (Math.abs(mr) > .999999) mr = Math.signum(mr);
-        if (Math.abs(mi) > .999999) mi =  Math.signum(mi);
+        if (Math.abs(mi) > .999999) mi = Math.signum(mi);
         return "(" + mr + ", " + mi + ")";
     }
 
