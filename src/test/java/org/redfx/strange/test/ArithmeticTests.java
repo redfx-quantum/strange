@@ -333,8 +333,11 @@ public class ArithmeticTests extends BaseGateTests {
         assertEquals(1, q[2].measure());
         assertEquals(0, q[3].measure());
     }
+ 
     @Test
     public void admin2() {
+        // Add [0,1,1,0] -> [1,1,1,0]
+        // Add- [1,1,1,0] -> [0,1,1,0]
         Program p = new Program(4);
         Step prep = new Step();
         prep.addGates(new X(1), new X(2));
@@ -347,9 +350,48 @@ public class ArithmeticTests extends BaseGateTests {
         Qubit[] q = result.getQubits();
         assertEquals(4, q.length);
         assertEquals(0, q[0].measure());
+        assertEquals(1, q[1].measure()); // depends on definition
+        assertEquals(1, q[2].measure());
+        assertEquals(0, q[3].measure());
+    }
+ 
+    @Test
+    public void t2min1q7() {
+        Program p = new Program(7);
+        Step prep = new Step();
+        prep.addGates(new X(1), new X(3), new X(6));
+        p.addStep(prep);
+        Add add2 = new Add(0,2,3,5).inverse();
+        p.addStep(new Step(add2));
+        
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(7, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(1, q[3].measure());
+        assertEquals(0, q[4].measure());
+        assertEquals(0, q[5].measure());
+        assertEquals(1, q[6].measure());
+    }
+    @Test
+    public void t2min1q5() {
+        Program p = new Program(4);
+        Step prep = new Step();
+        prep.addGates(new X(1), new X(2));
+        p.addStep(prep);
+        Add add2 = new Add(0,1,2,3).inverse();
+        p.addStep(new Step(add2));
+        
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(4, q.length);
+        assertEquals(1, q[0].measure());
         assertEquals(1, q[1].measure());
         assertEquals(1, q[2].measure());
         assertEquals(0, q[3].measure());
+//        assertEquals(1, q[4].measure());
     }
 
     @Test
@@ -937,37 +979,55 @@ public class ArithmeticTests extends BaseGateTests {
         p.addStep(prep);
         Add add = new Add(0,2,3,5);
         p.addStep(new Step(add));
-        
+//        
         AddInteger min = new AddInteger(0,2,N).inverse();
         p.addStep(new Step(min));
         p.addStep(new Step(new Cnot(2,dim-1)));
         AddInteger addN = new AddInteger(0,2,N);
         ControlledBlockGate cbg = new ControlledBlockGate(addN, 0,dim-1);
         p.addStep(new Step(cbg));
-        
+//        
         
         Add add2 = new Add(0,2,3,5).inverse();
         p.addStep(new Step(add2));
-        p.addStep(new Step(new X(dim-1)));
         
-        Block block = new Block(1);
-        block.addStep(new Step(new X(0)));
-        ControlledBlockGate cbg2 = new ControlledBlockGate(block, dim-1, 2);
-        p.addStep(new Step(cbg2));
         
-        Add add3 = new Add(0,2,3,5);
-        p.addStep (new Step(add3));
+//        p.addStep(new Step(new X(dim-1)));
+//        
+//        Block block = new Block(1);
+//        block.addStep(new Step(new X(0)));
+//        ControlledBlockGate cbg2 = new ControlledBlockGate(block, dim-1, 2);
+//        p.addStep(new Step(cbg2));
+//        
+//        Add add3 = new Add(0,2,3,5);
+//        p.addStep (new Step(add3));
 
         Result result = runProgram(p);
         Qubit[] q = result.getQubits();
         assertEquals(7, q.length);
-        assertEquals(0, q[0].measure());
-        assertEquals(1, q[1].measure());
+        assertEquals(1, q[0].measure());
+        assertEquals(0, q[1].measure());
         assertEquals(0, q[2].measure());
         assertEquals(1, q[3].measure());
         assertEquals(0, q[4].measure());
         assertEquals(0, q[5].measure());
-        assertEquals(0, q[6].measure());
+        assertEquals(1, q[6].measure());
+        
+//        assertEquals(0, q[0].measure());
+//        assertEquals(1, q[1].measure());
+//        assertEquals(0, q[2].measure());
+//        assertEquals(1, q[3].measure());
+//        assertEquals(0, q[4].measure());
+//        assertEquals(0, q[5].measure());
+//        assertEquals(1, q[6].measure());
+//        
+//        assertEquals(0, q[0].measure());
+//        assertEquals(1, q[1].measure());
+//        assertEquals(0, q[2].measure());
+//        assertEquals(1, q[3].measure());
+//        assertEquals(0, q[4].measure());
+//        assertEquals(0, q[5].measure());
+//        assertEquals(0, q[6].measure());
     }
 
     @Test

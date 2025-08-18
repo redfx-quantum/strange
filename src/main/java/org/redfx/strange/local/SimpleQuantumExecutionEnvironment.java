@@ -98,12 +98,13 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
         Result result = new Result(nQubits, steps.size());
         int cnt = 0;
         result.setIntermediateProbability(0, probs);
-        LOG.fine("START RUN, number of steps = " + simpleSteps.size());
+        LOG.info("START RUN, number of steps = " + simpleSteps.size());
+        LOG.info("STEPS = "+simpleSteps);
         for (Step step : simpleSteps) {
             if (!step.getGates().isEmpty()) {
-                LOG.finer("RUN STEP " + step + ", cnt = " + cnt);
+                LOG.info("RUN STEP " + step + ", cnt = " + cnt);
                 cnt++;
-                LOG.finest("before this step, probs = ");
+                LOG.info("before this step, probs = ");
           //      printProbs(probs);
                 probs = applyStep(step, probs, qubit);
                 LOG.info("after this step, probs = "+probs);
@@ -143,7 +144,7 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
     }
     
     private Complex[]  applyStep (Step step, Complex[] vector, Qubit[] qubits) {
-        LOG.finer("start applystep, vectorsize = "+vector.length+", ql = "+qubits.length);
+        LOG.info("start applystep, vectorsize = "+vector.length+", ql = "+qubits.length);
         long s0 = System.currentTimeMillis();
         List<Gate> gates = step.getGates();
         if (!gates.isEmpty() && gates.get(0) instanceof ProbabilitiesGate ) {
@@ -158,7 +159,9 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
       
         Complex[] result = new Complex[vector.length];
         boolean vdd = true;
+        LOG.info("ready to cns, start with "+Arrays.toString(vector));
         result = Computations.calculateNewState(gates, vector, qubits.length);
+        LOG.info("ready to cns, end with "+Arrays.toString(result));
         long s1 = System.currentTimeMillis();
         LOG.finer("done applystep took "+ (s1-s0));
 

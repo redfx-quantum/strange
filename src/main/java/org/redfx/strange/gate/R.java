@@ -33,6 +33,7 @@
 package org.redfx.strange.gate;
 
 import org.redfx.strange.Complex;
+import org.redfx.strange.local.Computations;
 
 /**
  * <p>R class.</p>
@@ -80,7 +81,11 @@ public class R extends SingleQubitGate {
     @Override
     public void setInverse(boolean v) {
         super.setInverse(v);
+        System.err.println("R needs to inverse, was ");
+        Complex.printMatrix(matrix);
         matrix = Complex.conjugateTranspose(matrix);
+                System.err.println("R needs to inverse, is now ");
+        Complex.printMatrix(matrix);
     }
 
     /** {@inheritDoc} */

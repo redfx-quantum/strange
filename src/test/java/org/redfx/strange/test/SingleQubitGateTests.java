@@ -186,6 +186,13 @@ public class SingleQubitGateTests extends BaseGateTests {
     }
 
     @Test
+    public void RMatrix() {
+        R r = new R(2,1,0);
+        Complex[][] matrix = r.getMatrix();
+         assertEquals(-1,matrix[1][1].r, DELTA);
+    }
+
+    @Test
     public void simpleRGate() {
         Program p = new Program(1, new Step(new R(2, 1, 0)));
         Result res = runProgram(p);

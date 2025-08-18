@@ -37,6 +37,7 @@ import org.redfx.strange.BlockGate;
 import org.redfx.strange.Step;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * <p>Add class.</p>
@@ -66,6 +67,7 @@ public class Add extends BlockGate<Add> {
         this.setIndex(x0);
         int hash = 1000000 * x0 + 10000*x1+ 100*y0 + y1;
         this.block = cache.get(hash);
+        System.err.println("ADD, block = "+block);
         if (this.block == null) {
             this.block = createBlock(x0, x1, y0, y1);
         //    cache.put(hash, block);
@@ -97,10 +99,27 @@ public class Add extends BlockGate<Add> {
                 }
             }
         }
-        answer.addStep(new Step(new InvFourier(m, 0)));
+        answer.addStep(new Step(new Fourier(m, 0).inverse()));
+      //  answer.addStep(new Step(new InvFourier(m, 0)));
         return answer;
     }
-
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasOptimization() {
+        return true;
+    }
+    @Override
+    public void setInverse(boolean inv) {
+        super.setInverse(inv);
+        System.err.println("ADD, setInverse with inv = "+inv+" and block = "+block);
+        if (this.block != null) {
+            List<Step> steps = this.block.getSteps();
+            for (int i = 1; i < steps.size() - 1; i++) {
+                steps.get(i).setInverse(inv);
+            }
+            System.err.println("AFTER si, steps = "+this.block.getSteps());
+        }
+    }
     /** {@inheritDoc} */
     @Override
     public String getCaption() {

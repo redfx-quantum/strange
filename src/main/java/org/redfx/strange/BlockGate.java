@@ -171,7 +171,9 @@ public class BlockGate<T extends Gate> implements Gate {
      * @return a T object
      */
     public T inverse() {
+        System.err.println("Need to inverse");
         setInverse(!this.inverse);
+        System.err.println("setted inverse");
         return (T) this;
     }
     
