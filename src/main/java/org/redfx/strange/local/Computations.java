@@ -702,7 +702,6 @@ public class Computations {
     }
 
     private static void processBlockGate(ControlledBlockGate gate, ArrayList<Step> answer) {
-        LOG.info("PBG");
         Step master = answer.get(answer.size() -1);
         gate.calculateHighLow();
         int low = gate.getLow();
@@ -751,7 +750,6 @@ public class Computations {
             answer.add(lpg);
             answer.add(0, new Step(pg));
         }
-LOG.info("Result of block = "+answer);
     }
     
     // TODO: make this a utility method
