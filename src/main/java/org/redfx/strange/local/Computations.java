@@ -456,16 +456,12 @@ public class Computations {
             return doImmediateMeasurement(gates, vector, length);
         }
         nested++;
-        System.err.println("[CNS0] nested = "+nested);
-   //     System.err.println("[CNS1] start = "+Arrays.toString(vector));
         Complex[] answer = getNextProbability(getAllGates(gates, length), vector);
-     //   System.err.println("[CNS1] answer = "+Arrays.toString(answer));
         nested--;
         return answer;
     }
 
     private static Complex[] getNextProbability(List<Gate> gates, Complex[] v) {
-    //    LOG.info("GNP, gates = "+gates+", v = " + Arrays.toString(v));
         Complex[] answer = new Complex[v.length];
         boolean onlyIdentity = (gates.size() == 1 || gates.subList(1, gates.size()).stream().allMatch(g -> g instanceof Identity));
         boolean simple = gates.stream().allMatch(g -> ((g instanceof Identity) || (g instanceof SingleQubitGate) || (g instanceof ControlledGate)));
@@ -475,9 +471,7 @@ public class Computations {
         if (simple) {
             return processSimpleGates(gates, v);
         }
-        answer = getNextProbability2(gates, v);
-  //      LOG.info("GNP calculated for "+ gates);
-        return answer;
+        return getNextProbability2(gates, v);
     }
 
     static Complex[] processSimpleGates(List<Gate> gates, Complex[] v) {
@@ -494,14 +488,11 @@ public class Computations {
         int size = v.length;
         Complex[] answer = new Complex[size];
         System.arraycopy(v, 0, answer, 0, size);
-   //     System.err.println("before pnqg, v = "+Arrays.toString(v));
         int index = gate.getMainQubitIndex();
         int gateDim = 1 << gate.getSize();
-        System.err.println("GATEDIM = "+gateDim+" and gate = "+gate);
         int length = (int) Math.ceil(Math.log(size) / Math.log(2));
         int ngroups = 1 << (length - index - 1);
         int qdelta = 1 << index;
-        System.err.println("length = "+length+", ng = "+ngroups+", index = "+index+", qd = "+qdelta);
         Gate rootGate = gate;
         List<Integer> ctrlIdx = null;
         if (gate instanceof ControlledGate cgate) {
@@ -509,10 +500,7 @@ public class Computations {
             ctrlIdx = cgate.getControlIndexes();
         }
         boolean ctrl = ctrlIdx != null;
-        System.err.println("ctrl = "+ctrl);
         Complex[][] matrix = rootGate.getMatrix();
-        System.err.println("MATRIX = ");
-   //     Complex.printMatrix(matrix, System.err);
         for (int group = 0; group < ngroups; group++) {
             for (int j = 2 * group * qdelta; j < (2 * group + 1) * qdelta; j++) {
                 if (ctrl && (shouldSkip(j, ctrlIdx))) {
@@ -533,19 +521,15 @@ public class Computations {
                 answer[j + qdelta] = new Complex(tmp[1].r, tmp[1].i);
             }
         }
-        
-      //  System.err.println("after pnqg, v = "+Arrays.toString(answer));
         return answer;
     }
 
     static boolean shouldSkip(int target, List<Integer> ctrlIdxs) {
-    //    System.err.println("shouldskip "+target+" with ctrlidx "+ctrlIdxs);
         int size = ctrlIdxs.size();
         if (size == 0) return false;
         int idx = 0;
         while(idx < size) {
             if (hasZeroBit(target, ctrlIdxs.get(idx))) {
-//                System.err.println("YES");
                 return true;
             }
             idx++;
@@ -576,7 +560,6 @@ public class Computations {
     }
 
     private static Complex[] getNextProbability2(List<Gate> gates, Complex[] v) {
-        LOG.info("start gnp, #gates = "+gates.size());
         Gate gate = gates.get(0);
         int nqubits = gate.getSize();
         int gatedim = 1 << nqubits;
@@ -623,7 +606,6 @@ public class Computations {
                     dbg("done part");
                 }
                 long s2 = System.currentTimeMillis();
-                LOG.info("Early return1");
                 return answer;
             }
             long sm0 = System.currentTimeMillis();
@@ -647,7 +629,6 @@ public class Computations {
                 }
             }
             long s2 = System.currentTimeMillis();
-            LOG.info("Early return2");
             return answer;
         } else {
             if (gatedim != size) {
@@ -655,13 +636,8 @@ public class Computations {
                 throw new IllegalArgumentException("wrong matrix size " + gatedim + " vs vector size " + v.length);
             }
             if (gate.hasOptimization()) {
-                LOG.info("Apply opt for gate "+gate);
-                Complex[] a = gate.applyOptimize(v);
-                LOG.info("Early return3");
-
-                return a;
+                return gate.applyOptimize(v);
             } else {
-                LOG.info("No opt for gate "+gate);
                 Complex[][] matrix = gate.getMatrix();
                 Complex[] answer = new Complex[size];
                 for (int i = 0; i < size; i++) {
@@ -670,7 +646,6 @@ public class Computations {
                         answer[i] = answer[i].add(matrix[i][j].mul(v[j]));
                     }
                 }
-                LOG.info("Early return4");
                 return answer;
             }
         }
