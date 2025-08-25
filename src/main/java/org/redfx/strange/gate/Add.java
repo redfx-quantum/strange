@@ -37,6 +37,10 @@ import org.redfx.strange.BlockGate;
 import org.redfx.strange.Step;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Logger;
+import org.redfx.strange.Complex;
+import org.redfx.strange.local.Computations;
 
 /**
  * <p>Add class.</p>
@@ -48,7 +52,8 @@ public class Add extends BlockGate<Add> {
 
     Block block;
     static HashMap<Integer, Block> cache = new HashMap<>();
-    
+    static Logger LOG = Logger.getLogger(Add.class.getName());
+
     /**
      * Add the qubit in the x register and the y register, result is in x
      *
@@ -97,7 +102,37 @@ public class Add extends BlockGate<Add> {
                 }
             }
         }
-        answer.addStep(new Step(new InvFourier(m, 0)));
+        answer.addStep(new Step(new Fourier(m, 0).inverse()));
+        return answer;
+    }
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasOptimization() {
+        return true;
+    }
+    @Override
+    public void setInverse(boolean inv) {
+        super.setInverse(inv);
+        if (this.block != null) {
+            List<Step> steps = this.block.getSteps();
+            for (int i = 1; i < steps.size() - 1; i++) {
+                steps.get(i).setInverse(inv);
+            }
+        }
+    }
+
+    @Override
+    public Complex[] applyOptimize(Complex[] v) {
+        List<Step> steps = block.getSteps();
+        Step s0 = steps.get(0);
+        Step sn = steps.getLast();
+        Complex[] answer = Computations.calculateNewState(s0.getGates(), v, block.getNQubits());
+        for (int i = 1; i < steps.size() - 1; i++) {
+            answer = Computations.calculateNewState(steps.get(i).getGates(), answer, block.getNQubits());
+        }
+
+        answer = Computations.calculateNewState(sn.getGates(), answer, block.getNQubits());
+
         return answer;
     }
 

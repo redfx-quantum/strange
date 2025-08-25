@@ -103,10 +103,10 @@ public class SimpleQuantumExecutionEnvironment implements QuantumExecutionEnviro
             if (!step.getGates().isEmpty()) {
                 LOG.finer("RUN STEP " + step + ", cnt = " + cnt);
                 cnt++;
-                LOG.finest("before this step, probs = ");
+                LOG.finer("before this step, probs = ");
           //      printProbs(probs);
                 probs = applyStep(step, probs, qubit);
-                LOG.info("after this step, probs = "+probs);
+                LOG.finer("after this step, probs = "+probs);
             //    printProbs(probs);
                 int idx = step.getComplexStep();
                 // System.err.println("complex? "+idx);

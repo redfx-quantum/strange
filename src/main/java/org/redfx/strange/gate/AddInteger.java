@@ -38,6 +38,10 @@ import org.redfx.strange.Complex;
 import org.redfx.strange.Step;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Logger;
+import org.redfx.strange.Gate;
+import org.redfx.strange.local.Computations;
 
 /**
  * <p>AddInteger class.</p>
@@ -50,6 +54,7 @@ public class AddInteger extends BlockGate<AddInteger> {
     Block block;
     static HashMap<Integer, Block> cache = new HashMap<>();
 
+    static Logger LOG = Logger.getLogger(AddInteger.class.getName());
     
     /**
      * Add the qubit in the x register and the y register, result is in x
@@ -94,7 +99,9 @@ public class AddInteger extends BlockGate<AddInteger> {
             for (int j = 0; j < m-i ; j++) {
                 int cr0 = m-j-i-1;
                 if ((num >> cr0 & 1) == 1) {
-                    mat = Complex.mmul(mat, new R(2, 1 + j, i).getMatrix());
+                    Gate gate = new R(2, 1 + j, i);
+                    if (inverse) gate.setInverse(true);
+                    mat = Complex.mmul(mat,gate.getMatrix());
                     if (old) {
                         Step s = new Step(new R(2, 1 + j, i));
                         answer.addStep(s);
@@ -108,7 +115,39 @@ public class AddInteger extends BlockGate<AddInteger> {
         if (!old) {
             answer.addStep(pstep);
         }
-        answer.addStep(new Step(new InvFourier(m, 0)));
+        answer.addStep(new Step(new Fourier(m, 0).inverse()));
+        return answer;
+    }
+
+    @Override
+    public void setInverse(boolean inv) {
+        super.setInverse(inv);
+        if (this.block != null) {
+            List<Step> steps = this.block.getSteps();
+            for (int i = 1; i < steps.size() - 1; i++) {
+                steps.get(i).setInverse(inv);
+            }
+        } else {
+            LOG.finest("Inverse required for " + this + ", but we don't have a block yet. createBlock will take care of this.");
+        }
+    }
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasOptimization() {
+        return true;
+    }
+    @Override
+    public Complex[] applyOptimize(Complex[] v) {
+        List<Step> steps = block.getSteps();
+        Step s0 = steps.get(0);
+        Step sn = steps.getLast();
+        Complex[] answer = Computations.calculateNewState(s0.getGates(), v, block.getNQubits());
+        for (int i = 1; i < steps.size() - 1; i++) {
+            answer = Computations.calculateNewState(steps.get(i).getGates(), answer, block.getNQubits());
+        }
+
+        answer = Computations.calculateNewState(sn.getGates(), answer, block.getNQubits());
+
         return answer;
     }
 

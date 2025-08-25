@@ -229,7 +229,34 @@ public class AddIntegerTests extends BaseGateTests {
         assertEquals(0, q[1].measure());
         assertEquals(0, q[2].measure());
     }
-       
+        
+    @Test
+    public void add0num3() {
+        Program p = new Program(3);
+        AddInteger add = new AddInteger(0,2,3);
+        p.addStep(new Step(add));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(3, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(0, q[2].measure());
+    }
+
+    @Test
+    public void add0num3_4() {
+        Program p = new Program(4);
+        AddInteger add = new AddInteger(0,3,3);
+        p.addStep(new Step(add));
+        Result result = runProgram(p);
+        Qubit[] q = result.getQubits();
+        assertEquals(4, q.length);
+        assertEquals(1, q[0].measure());
+        assertEquals(1, q[1].measure());
+        assertEquals(0, q[2].measure());
+        assertEquals(0, q[3].measure());
+    }
+          
     @Test
     public void addmod11num4() {
         Program p = new Program(4);

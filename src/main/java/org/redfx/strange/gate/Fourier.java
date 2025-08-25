@@ -32,6 +32,7 @@
  */
 package org.redfx.strange.gate;
 
+import java.util.Arrays;
 import org.redfx.strange.Block;
 import org.redfx.strange.BlockGate;
 import org.redfx.strange.Complex;
@@ -40,6 +41,8 @@ import org.redfx.strange.QuantumExecutionEnvironment;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.redfx.strange.Gate;
+import org.redfx.strange.local.Computations;
 
 /**
  * <p>Fourier class.</p>
@@ -85,7 +88,6 @@ public class Fourier extends BlockGate {
     /** {@inheritDoc} */
     @Override
     public Complex[][] getMatrix(QuantumExecutionEnvironment eqq) {
-
         if (matrix == null) {
             double omega = Math.PI*2/size;
             double den = Math.sqrt(size);
@@ -115,6 +117,7 @@ public class Fourier extends BlockGate {
     /** {@inheritDoc} */
     @Override
     public Fourier inverse() {
+        this.inverse = !this.inverse;
         Complex[][] m = getMatrix();
         this.matrix = Complex.conjugateTranspose(m);
         return this;
@@ -135,6 +138,24 @@ public class Fourier extends BlockGate {
     /** {@inheritDoc} */
     @Override
     public boolean hasOptimization() {
-        return false; // for now, we calculate the matrix
+        return true;
     }
+
+    @Override
+    public Complex[] applyOptimize(Complex[] v) {
+        int length = (int) Math.ceil(Math.log(size) / Math.log(2));
+        for (int i = dim -1; i >=0; i--) {
+            v = Computations.processNQubitGate(new Hadamard(i), v);
+            for (int j = 2; j <= i+1; j++) {
+                Gate gate = new Cr(i+1-j, i, 2,j);
+                if (inverse) gate.setInverse(true);
+                v = Computations.processNQubitGate(gate, v);
+            }
+        }
+        for (int i = 0; i < length/2;i++) {
+            v = Computations.processSwapGate(new Swap(i,length-1-i), v);
+        }
+        return v;
+    }
+
 }

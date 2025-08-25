@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 import static org.redfx.strange.Complex.tensor;
 
@@ -53,6 +54,7 @@ public class Computations {
 
     private static final boolean debug = false;
 
+    static final Logger LOG = Logger.getLogger(Computations.class.getName());
     static void dbg(String s) {
         SimpleQuantumExecutionEnvironment.LOG.finer(s);
     }
@@ -486,7 +488,6 @@ public class Computations {
         int size = v.length;
         Complex[] answer = new Complex[size];
         System.arraycopy(v, 0, answer, 0, size);
-
         int index = gate.getMainQubitIndex();
         int gateDim = 1 << gate.getSize();
         int length = (int) Math.ceil(Math.log(size) / Math.log(2));
@@ -528,7 +529,9 @@ public class Computations {
         if (size == 0) return false;
         int idx = 0;
         while(idx < size) {
-            if (hasZeroBit(target, ctrlIdxs.get(idx))) return true;
+            if (hasZeroBit(target, ctrlIdxs.get(idx))) {
+                return true;
+            }
             idx++;
         }
         return false;
@@ -747,7 +750,6 @@ public class Computations {
             answer.add(lpg);
             answer.add(0, new Step(pg));
         }
-
     }
     
     // TODO: make this a utility method

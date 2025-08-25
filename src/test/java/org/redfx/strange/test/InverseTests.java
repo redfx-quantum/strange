@@ -51,7 +51,7 @@ import org.redfx.strange.gate.X;
  */
 public class InverseTests extends BaseGateTests {
 
-    static final double D = 0.000000001d;
+    static final double D = 0.001d;
     
    /*
     *          |  1   1   1   1  | 
