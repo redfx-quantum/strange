@@ -457,15 +457,15 @@ public class Computations {
         }
         nested++;
         System.err.println("[CNS0] nested = "+nested);
-        System.err.println("[CNS1] start = "+Arrays.toString(vector));
+   //     System.err.println("[CNS1] start = "+Arrays.toString(vector));
         Complex[] answer = getNextProbability(getAllGates(gates, length), vector);
-        System.err.println("[CNS1] answer = "+Arrays.toString(answer));
+     //   System.err.println("[CNS1] answer = "+Arrays.toString(answer));
         nested--;
         return answer;
     }
 
     private static Complex[] getNextProbability(List<Gate> gates, Complex[] v) {
-        LOG.info("GNP, gates = "+gates+", v = " + Arrays.toString(v));
+    //    LOG.info("GNP, gates = "+gates+", v = " + Arrays.toString(v));
         Complex[] answer = new Complex[v.length];
         boolean onlyIdentity = (gates.size() == 1 || gates.subList(1, gates.size()).stream().allMatch(g -> g instanceof Identity));
         boolean simple = gates.stream().allMatch(g -> ((g instanceof Identity) || (g instanceof SingleQubitGate) || (g instanceof ControlledGate)));
@@ -476,7 +476,7 @@ public class Computations {
             return processSimpleGates(gates, v);
         }
         answer = getNextProbability2(gates, v);
-        LOG.info("GNP calculated for "+ gates);
+  //      LOG.info("GNP calculated for "+ gates);
         return answer;
     }
 
@@ -494,7 +494,7 @@ public class Computations {
         int size = v.length;
         Complex[] answer = new Complex[size];
         System.arraycopy(v, 0, answer, 0, size);
-        System.err.println("before pnqg, v = "+Arrays.toString(v));
+   //     System.err.println("before pnqg, v = "+Arrays.toString(v));
         int index = gate.getMainQubitIndex();
         int gateDim = 1 << gate.getSize();
         System.err.println("GATEDIM = "+gateDim+" and gate = "+gate);
@@ -512,7 +512,7 @@ public class Computations {
         System.err.println("ctrl = "+ctrl);
         Complex[][] matrix = rootGate.getMatrix();
         System.err.println("MATRIX = ");
-        Complex.printMatrix(matrix, System.err);
+   //     Complex.printMatrix(matrix, System.err);
         for (int group = 0; group < ngroups; group++) {
             for (int j = 2 * group * qdelta; j < (2 * group + 1) * qdelta; j++) {
                 if (ctrl && (shouldSkip(j, ctrlIdx))) {
@@ -534,18 +534,18 @@ public class Computations {
             }
         }
         
-        System.err.println("after pnqg, v = "+Arrays.toString(answer));
+      //  System.err.println("after pnqg, v = "+Arrays.toString(answer));
         return answer;
     }
 
     static boolean shouldSkip(int target, List<Integer> ctrlIdxs) {
-        System.err.println("shouldskip "+target+" with ctrlidx "+ctrlIdxs);
+    //    System.err.println("shouldskip "+target+" with ctrlidx "+ctrlIdxs);
         int size = ctrlIdxs.size();
         if (size == 0) return false;
         int idx = 0;
         while(idx < size) {
             if (hasZeroBit(target, ctrlIdxs.get(idx))) {
-                System.err.println("YES");
+//                System.err.println("YES");
                 return true;
             }
             idx++;

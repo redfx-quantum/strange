@@ -43,6 +43,7 @@ import org.redfx.strange.Result;
 import org.redfx.strange.Step;
 import org.redfx.strange.gate.Cr;
 import org.redfx.strange.gate.Fourier;
+import org.redfx.strange.gate.Hadamard;
 import org.redfx.strange.gate.InvFourier;
 import org.redfx.strange.gate.X;
 
@@ -308,10 +309,11 @@ public class FourierTest extends BaseGateTests {
         Program p = new Program(4,
                 prep,
                 new Step(new Fourier(2, 0)),
-                new Step (new Cr(1,2, 2, 1)),
-                new Step (new Cr(0,2, 2, 2)),
-                new Step (new Cr(0,3, 2, 1)),
+                new Step (new Cr(2,1, 2, 1)),
+                new Step (new Cr(2,0, 2, 2)),
+                new Step (new Cr(3,0, 2, 1)),
                 new Step(new InvFourier(2,0)));
+//                new Step(new Fourier(2,0).inverse()));
         Result res = runProgram(p);
         Complex[] probability = res.getProbability();
         Complex.printArray(probability);
@@ -320,6 +322,31 @@ public class FourierTest extends BaseGateTests {
         assertEquals(1, qubits[1].measure());
         assertEquals(1, qubits[2].measure());
         assertEquals(1, qubits[3].measure());
+    }
+
+    @Test
+    public void fourier3() {
+        Program p = new Program(3);
+        Step prep = new Step(new X(0), new X(1), new X(2));
+        Step fourier = new Step(new Fourier(3,0));
+        p.addStep(prep);
+        p.addStep(new Step(new Hadamard(1)));
+        p.addStep(fourier);
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        Complex.printArray(probability);
+    }
+ 
+    @Test
+    public void fourier4() {
+        Program p = new Program(4);
+        Step prep = new Step(new X(3));
+        Step fourier = new Step(new Fourier(4,0));
+        p.addStep(prep);
+        p.addStep(fourier);
+        Result res = runProgram(p);
+        Complex[] probability = res.getProbability();
+        Complex.printArray(probability);
     }
 
     @Tag("performance")

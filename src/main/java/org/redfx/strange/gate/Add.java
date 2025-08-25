@@ -32,12 +32,16 @@
  */
 package org.redfx.strange.gate;
 
+import java.util.Arrays;
 import org.redfx.strange.Block;
 import org.redfx.strange.BlockGate;
 import org.redfx.strange.Step;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
+import org.redfx.strange.Complex;
+import org.redfx.strange.local.Computations;
 
 /**
  * <p>Add class.</p>
@@ -49,7 +53,8 @@ public class Add extends BlockGate<Add> {
 
     Block block;
     static HashMap<Integer, Block> cache = new HashMap<>();
-    
+    static Logger LOG = Logger.getLogger(Add.class.getName());
+
     /**
      * Add the qubit in the x register and the y register, result is in x
      *
@@ -120,6 +125,29 @@ public class Add extends BlockGate<Add> {
             System.err.println("AFTER si, steps = "+this.block.getSteps());
         }
     }
+    
+    @Override
+    public Complex[] applyOptimize(Complex[] v) {
+        LOG.info("Apply optimize for Add with steps " + block.getSteps());
+        List<Step> steps = block.getSteps();
+        Step s0 = steps.get(0);
+        Step sn = steps.getLast();
+        LOG.info("Step 0 = " + s0 + " and current status = " + Arrays.toString(v));
+        Complex[] answer = Computations.calculateNewState(s0.getGates(), v, block.getNQubits());
+        LOG.info("After Step 0 ,  and current status = " + Arrays.toString(answer));
+        for (int i = 1; i < steps.size() - 1; i++) {
+            LOG.info("Apply step " + i + ": " + steps.get(i).getGates());
+            answer = Computations.calculateNewState(steps.get(i).getGates(), answer, block.getNQubits());
+            LOG.info("After Step " + i + " ,   current status = " + Arrays.toString(answer));
+        }
+        LOG.info("Last Step " + sn.getGates() + " ,   current status = " + Arrays.toString(answer));
+
+        answer = Computations.calculateNewState(sn.getGates(), answer, block.getNQubits());
+        LOG.info("After last Step  status = " + Arrays.toString(answer));
+
+        return answer;
+    }
+
     /** {@inheritDoc} */
     @Override
     public String getCaption() {

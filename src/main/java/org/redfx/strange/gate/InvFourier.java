@@ -51,6 +51,7 @@ public class InvFourier extends Fourier {
      */
     public InvFourier(int size, int idx) {
         super("InvFourier", size, idx);
+        this.inverse();
     }
 //    
 //    /** {@inheritDoc} */

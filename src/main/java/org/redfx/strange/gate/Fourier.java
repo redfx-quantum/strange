@@ -106,9 +106,9 @@ public class Fourier extends BlockGate {
             }
         }
         System.err.println("FOUR, gm, m = "+matrix);
-for (int i = 0; i < size; i++) {
-    System.err.println("** "+Arrays.toString(matrix[i]));
-}
+//for (int i = 0; i < size; i++) {
+//    System.err.println("** "+Arrays.toString(matrix[i]));
+//}
         return matrix;
     }
 
@@ -125,7 +125,7 @@ for (int i = 0; i < size; i++) {
     /** {@inheritDoc} */
     @Override
     public Fourier inverse() {
-        this.inverse = true;
+        this.inverse = !this.inverse;
         Complex[][] m = getMatrix();
         this.matrix = Complex.conjugateTranspose(m);
         System.err.println("CREATED matrix3 "+matrix);
@@ -151,6 +151,7 @@ for (int i = 0; i < size; i++) {
     }
      @Override
     public Complex[] applyOptimize(Complex[] v) {
+        getMatrix();
         System.err.println("[FOURIER] start, inv = " + inverse+", probs are now: "+Arrays.toString(v));
         int length = (int) Math.ceil(Math.log(size) / Math.log(2));
         System.err.println("ao, v size = "+v.length+" and length = "+length+" and dim = " + dim+" and size = " + size);
@@ -158,12 +159,14 @@ for (int i = 0; i < size; i++) {
             v = Computations.processNQubitGate(new Hadamard(i), v);
             for (int j = 2; j <= i+1; j++) {
                 Gate gate = new Cr(i+1-j, i, 2,j);
+                System.err.println("process Cr on qubit "+i+" with ctrl at "+(i+1-j)+" and order = "+j);
                 if (inverse) gate.setInverse(true);
                 v = Computations.processNQubitGate(gate, v);
             }
         }
+         System.err.println("Before swaps, length = "+length+" and v = "+Arrays.toString(v));
         for (int i = 0; i < length/2;i++) {
-            v = Computations.processSwapGate(new Swap(0,length-1-i), v);
+            v = Computations.processSwapGate(new Swap(i,length-1-i), v);
         }
         System.err.println("[FOURIER] done, probs are now: "+Arrays.toString(v));
         return v;

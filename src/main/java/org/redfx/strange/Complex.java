@@ -455,10 +455,9 @@ public final class Complex {
      * @param ps a {@link java.io.PrintStream} object
      */
     public static void printMatrix(Complex[][] cm, PrintStream ps) {
-//        if (!DEBUG) {
-//            return;
-//        }
-       // Thread.dumpStack();
+        if (!DEBUG) {
+            return;
+        }
         ps.println("complex[" + cm.length + "]: ");
         for (int idx = 0; idx < cm.length; idx++) {
             String row = "row " + idx;
