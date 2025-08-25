@@ -113,7 +113,6 @@ public class Block {
     }
 
     Complex[][] getMatrix(QuantumExecutionEnvironment qee) {
-        System.err.println("BLOCK, getMatrix, matrix = "+matrix);
         if (matrix == null) {
             matrix = Complex.identityMatrix(1 << nqubits);
             List<Step> simpleSteps = new ArrayList<>();
@@ -127,10 +126,7 @@ public class Block {
                 if ((matrix != null) && (gates.size() == 1) && (gates.get(0) instanceof PermutationGate)) {
                     matrix = Complex.permutate((PermutationGate) gates.get(0), matrix);
                 } else {
-                    System.err.println("BLOCK, calculate matrix for gates = "+step.getGates());
                     Complex[][] m = Computations.calculateStepMatrix(step.getGates(), nqubits, qee);
-                    System.err.println("BLOCK, got matrix!");
-                    Complex.printMatrix(m);
                     if (matrix == null) {
                         matrix = m;
                     } else {
@@ -154,7 +150,6 @@ public class Block {
      * @return an array of {@link org.redfx.strange.Complex} objects
      */
     public Complex[] applyOptimize(Complex[] probs, boolean inverse) {
-        System.err.println("BLOCK, applyOpt called with inv = "+inverse+" and steps = "+steps);
         List<Step> simpleSteps = new ArrayList<>();
         for (Step step : steps) {
             simpleSteps.addAll(Computations.decomposeStep(step, nqubits));
@@ -165,7 +160,6 @@ public class Block {
                 step.setInverse(true);
             }
         }
-        System.err.println("SimpleSteps = "+ simpleSteps);
         for (Step step : simpleSteps) {
             if (!step.getGates().isEmpty()) {
                 probs = applyStep(step, probs);

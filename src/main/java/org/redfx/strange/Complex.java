@@ -458,6 +458,7 @@ public final class Complex {
         if (!DEBUG) {
             return;
         }
+       // Thread.dumpStack();
         ps.println("complex[" + cm.length + "]: ");
         for (int idx = 0; idx < cm.length; idx++) {
             String row = "row " + idx;

@@ -32,7 +32,6 @@
  */
 package org.redfx.strange.gate;
 
-import java.util.Arrays;
 import org.redfx.strange.Block;
 import org.redfx.strange.BlockGate;
 import org.redfx.strange.Complex;
@@ -100,12 +99,9 @@ public class AddInteger extends BlockGate<AddInteger> {
             for (int j = 0; j < m-i ; j++) {
                 int cr0 = m-j-i-1;
                 if ((num >> cr0 & 1) == 1) {
-                    System.err.println("NEED to apply R with i = "+i+" and j = "+j+" and inv = "+inverse);
                     Gate gate = new R(2, 1 + j, i);
                     if (inverse) gate.setInverse(true);
                     mat = Complex.mmul(mat,gate.getMatrix());
-                    System.err.println("now matrix = ");
-                    Complex.printMatrix(mat, System.err);
                     if (old) {
                         Step s = new Step(new R(2, 1 + j, i));
                         answer.addStep(s);
@@ -113,8 +109,6 @@ public class AddInteger extends BlockGate<AddInteger> {
                 }
             }
             if (!old) {
-                System.err.println("Create sqmg for i = "+i+": ");
-                Complex.printMatrix(mat, System.err);
                 pstep.addGate(new SingleQubitMatrixGate(i, mat));
             }
         }
@@ -122,7 +116,6 @@ public class AddInteger extends BlockGate<AddInteger> {
             answer.addStep(pstep);
         }
         answer.addStep(new Step(new Fourier(m, 0).inverse()));
-        System.err.println("AI, steps = "+answer.getSteps());
         return answer;
     }
 
@@ -145,22 +138,15 @@ public class AddInteger extends BlockGate<AddInteger> {
     }
     @Override
     public Complex[] applyOptimize(Complex[] v) {
-        LOG.info("Apply optimize for AddInteger with steps " + block.getSteps());
         List<Step> steps = block.getSteps();
         Step s0 = steps.get(0);
         Step sn = steps.getLast();
-        LOG.info("Step 0 = " + s0 + " and current status = " + Arrays.toString(v));
         Complex[] answer = Computations.calculateNewState(s0.getGates(), v, block.getNQubits());
-        LOG.info("After Step 0 ,  and current status = " + Arrays.toString(answer));
         for (int i = 1; i < steps.size() - 1; i++) {
-            LOG.info("Apply step " + i + ": " + steps.get(i).getGates());
             answer = Computations.calculateNewState(steps.get(i).getGates(), answer, block.getNQubits());
-            LOG.info("After Step " + i + " ,   current status = " + Arrays.toString(answer));
         }
-        LOG.info("Last Step " + sn.getGates() + " ,   current status = " + Arrays.toString(answer));
 
         answer = Computations.calculateNewState(sn.getGates(), answer, block.getNQubits());
-        LOG.info("After last Step  status = " + Arrays.toString(answer));
 
         return answer;
     }
