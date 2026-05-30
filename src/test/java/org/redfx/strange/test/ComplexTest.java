@@ -32,6 +32,8 @@
  */
 package org.redfx.strange.test;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,4 +59,20 @@ public class ComplexTest {
         assertEquals(negString, "(-0.1, -0.2)");
     }
 
+    @Test
+    public void hashEqualsTest() {
+        Complex c1 = new Complex(.5, -.4);
+        Complex c2 = new Complex(.5, .4);
+        Complex c3 = new Complex(.1, -.4);
+        Complex c4 = new Complex(.1, -.1);
+        Complex c5 = new Complex(.5, -.4);
+        assertEquals(c1, c5);
+        assertNotEquals(c1, c2);
+        assertNotEquals(c1, c3);
+        assertNotEquals(c1, c4);
+        Map<Complex, String> map = new HashMap<>();
+        map.put(c1, "one");
+        map.put(c5, "two");
+        assertEquals(1, map.size());
+    }
 }

@@ -471,6 +471,32 @@ public final class Complex {
         }
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Float.hashCode(this.r);
+        hash = 29 * hash + Float.hashCode(this.i);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Complex other = (Complex) obj;
+        if (Float.compare(this.r, other.r) != 0) {
+            return false;
+        }
+        return Float.compare(this.i, other.i) == 0;
+    }
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
