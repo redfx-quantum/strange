@@ -536,9 +536,13 @@ public class Computations {
         int qdelta = 1 << index;
         Gate rootGate = gate;
         List<Integer> ctrlIdx = null;
+        long ctrlMask = 0;
         if (gate instanceof ControlledGate cgate) {
             rootGate = cgate.getRootGate();
             ctrlIdx = cgate.getControlIndexes();
+            for (int cidx : ctrlIdx) {
+                ctrlMask |= (1L << cidx);
+            }
         }
         boolean ctrl = ctrlIdx != null;
         Complex[][] matrix = rootGate.getMatrix();
@@ -552,7 +556,7 @@ public class Computations {
         float m11_i = matrix[1][1].i;
         for (int group = 0; group < ngroups; group++) {
             for (int j = 2 * group * qdelta; j < (2 * group + 1) * qdelta; j++) {
-                if (ctrl && (shouldSkip(j, ctrlIdx))) {
+                if (ctrl && ((j & ctrlMask) != ctrlMask)) {
                     continue;
                 }
                 Complex[] work = new Complex[2];
