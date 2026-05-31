@@ -489,6 +489,7 @@ public class Computations {
         Complex[] answer = new Complex[size];
         System.arraycopy(v, 0, answer, 0, size);
         int index = gate.getMainQubitIndex();
+        if (gate.getSize() == 1) return process1QubitGate(gate, v);
         int gateDim = 1 << gate.getSize();
         int length = (int) Math.ceil(Math.log(size) / Math.log(2));
         int ngroups = 1 << (length - index - 1);
@@ -519,6 +520,60 @@ public class Computations {
                 }
                 answer[j] = new Complex(tmp[0].r, tmp[0].i);
                 answer[j + qdelta] = new Complex(tmp[1].r, tmp[1].i);
+            }
+        }
+        return answer;
+    }
+
+    // unroll matrix computations for 2 x 2 matrix
+    public static Complex[] process1QubitGate(Gate gate, Complex[] v) {
+        int size = v.length;
+        Complex[] answer = v;
+        int index = gate.getMainQubitIndex();
+        int gateDim = 2;
+        int length = (int) Math.ceil(Math.log(size) / Math.log(2));
+        int ngroups = 1 << (length - index - 1);
+        int qdelta = 1 << index;
+        Gate rootGate = gate;
+        List<Integer> ctrlIdx = null;
+        long ctrlMask = 0;
+        if (gate instanceof ControlledGate cgate) {
+            rootGate = cgate.getRootGate();
+            ctrlIdx = cgate.getControlIndexes();
+            for (int cidx : ctrlIdx) {
+                ctrlMask |= (1L << cidx);
+            }
+        }
+        boolean ctrl = ctrlIdx != null;
+        Complex[][] matrix = rootGate.getMatrix();
+        float m00_r = matrix[0][0].r;
+        float m00_i = matrix[0][0].i;
+        float m01_r = matrix[0][1].r;
+        float m01_i = matrix[0][1].i;
+        float m10_r = matrix[1][0].r;
+        float m10_i = matrix[1][0].i;
+        float m11_r = matrix[1][1].r;
+        float m11_i = matrix[1][1].i;
+        for (int group = 0; group < ngroups; group++) {
+            for (int j = 2 * group * qdelta; j < (2 * group + 1) * qdelta; j++) {
+                if (ctrl && ((j & ctrlMask) != ctrlMask)) {
+                    continue;
+                }
+                Complex[] work = new Complex[2];
+                Complex[] tmp = new Complex[2];
+                tmp[0] = new Complex(Complex.ZERO);
+                tmp[1] = new Complex(Complex.ZERO);
+                float w0_r = v[j].r;
+                float w0_i = v[j].i;
+                float w1_r = v[j + qdelta].r;
+                float w1_i = v[j + qdelta].i;
+                float t0_r = (m00_r * w0_r - m00_i * w0_i) + (m01_r * w1_r - m01_i * w1_i);
+                float t0_i = (m00_r * w0_i + m00_i * w0_r) + (m01_r * w1_i + m01_i * w1_r);
+                float t1_r = (m10_r * w0_r - m10_i * w0_i) + (m11_r * w1_r - m11_i * w1_i);
+                float t1_i = (m10_r * w0_i + m10_i * w0_r) + (m11_r * w1_i + m11_i * w1_r);
+
+                answer[j] = new Complex(t0_r, t0_i);
+                answer[j + qdelta] = new Complex(t1_r, t1_i);
             }
         }
         return answer;
