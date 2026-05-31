@@ -528,8 +528,7 @@ public class Computations {
     // unroll matrix computations for 2 x 2 matrix
     public static Complex[] process1QubitGate(Gate gate, Complex[] v) {
         int size = v.length;
-        Complex[] answer = new Complex[size];
-        System.arraycopy(v, 0, answer, 0, size);
+        Complex[] answer = v;
         int index = gate.getMainQubitIndex();
         int gateDim = 2;
         int length = (int) Math.ceil(Math.log(size) / Math.log(2));
