@@ -349,6 +349,35 @@ public class FourierTest extends BaseGateTests {
         Complex.printArray(probability);
     }
 
+    @Test
+    public void fourier010() {
+        Program p = new Program(3);
+        Step prep = new Step(new X(1));
+        Step fourier = new Step(new Fourier(3,0));
+        p.addStep(prep);
+        p.addStep(fourier);
+        Result res = runProgram(p);
+        Complex[] amp = res.getProbability();
+        double s4 = Math.sqrt(2)/4;
+        assertEquals(s4, amp[0].r, D);
+        assertEquals(0, amp[0].i, D);
+        assertEquals(0, amp[1].r, D);
+        assertEquals(s4, amp[1].i, D);
+        assertEquals(-s4, amp[2].r, D);
+        assertEquals(0, amp[2].i, D);
+        assertEquals(0, amp[3].r, D);
+        assertEquals(-s4, amp[3].i, D);
+        assertEquals(s4, amp[4].r, D);
+        assertEquals(0, amp[4].i, D);
+        assertEquals(0, amp[5].r, D);
+        assertEquals(s4, amp[5].i, D);
+        assertEquals(-s4, amp[6].r, D);
+        assertEquals(0, amp[6].i, D);
+        assertEquals(0, amp[7].r, D);
+        assertEquals(-s4, amp[7].i, D);
+        Complex.printArray(amp, System.err);
+    }
+
     @Tag("performance")
     @Test
     public void perfFourierProgram() { // 11 x 13 mod 97 = 46
