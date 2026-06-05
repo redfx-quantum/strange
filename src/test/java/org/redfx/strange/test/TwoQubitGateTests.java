@@ -48,6 +48,8 @@ import org.redfx.strange.gate.Identity;
 import org.redfx.strange.gate.Measurement;
 import org.redfx.strange.gate.Swap;
 import org.redfx.strange.gate.X;
+import org.redfx.strange.gate.Hadamard;
+import org.redfx.strange.gate.Chadamard;
 
 /**
  *
@@ -569,4 +571,49 @@ public class TwoQubitGateTests extends BaseGateTests {
             IllegalArgumentException.class,
             () -> p.addStep(new Step(new Cnot(1,0))));
     }
+
+    @Test
+    public void chadamardGate() {
+        int[] results = new int[2];
+        for (int i = 0; i < 100; i++) {
+            Program p = new Program(2,
+                    new Step(new Hadamard(0)),
+                    new Step(new Chadamard(0,1)));
+            Result res = runProgram(p);
+            Qubit[] qubits = res.getQubits();
+            results[qubits[1].measure()]++;
+        }
+        assertTrue(results[0] > 10);
+        assertTrue(results[1] > 10);
+    }
+
+    @Test
+    public void chadamardXGate() {
+        int[] results = new int[2];
+        for (int i = 0; i < 100; i++) {
+            Program p = new Program(2,
+                    new Step(new X(0)),
+                    new Step(new Chadamard(0,1)));
+            Result res = runProgram(p);
+            Qubit[] qubits = res.getQubits();
+            results[qubits[1].measure()]++;
+        }
+        assertTrue(results[0] > 10);
+        assertTrue(results[1] > 10);
+    }
+
+    @Test
+    public void chadamardNotApplied() {
+        int[] results = new int[2];
+        for (int i = 0; i < 100; i++) {
+            Program p = new Program(2,
+                    new Step(new Chadamard(0,1)));
+            Result res = runProgram(p);
+            Qubit[] qubits = res.getQubits();
+            results[qubits[1].measure()]++;
+        }
+        assertEquals(100, results[0]);
+        assertEquals(0, results[1]);
+    }
+
 }
