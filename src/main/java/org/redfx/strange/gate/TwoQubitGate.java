@@ -36,6 +36,7 @@ import org.redfx.strange.Gate;
 
 import java.util.Arrays;
 import java.util.List;
+import org.redfx.strange.Qubit;
 
 /**
  *
@@ -51,6 +52,9 @@ public abstract class TwoQubitGate implements Gate {
     private int second;
     private int highest = -1;
     private boolean inverse;
+
+    private Qubit mainQubit;
+    private Qubit secondQubit;
     
     /**
      * <p>Constructor for TwoQubitGate.</p>
@@ -69,10 +73,29 @@ public abstract class TwoQubitGate implements Gate {
         this.highest = Math.max(first, second);
     }
 
+    @Override
+    public Qubit getQubit() {
+        return mainQubit;
+    }
+
+    @Override
+    public Qubit getSecondQubit() {
+        return secondQubit;
+    }
+
+    public TwoQubitGate (Qubit mainQubit, Qubit secondQubit) {
+        this.mainQubit = mainQubit;
+        this.secondQubit = secondQubit;
+    }
+
+    
     /** {@inheritDoc} */
     @Override
     public void setMainQubitIndex(int idx) {
         this.first = idx;
+        if (idx > highest) {
+            this.highest = idx;
+        }
     }
     
     /** {@inheritDoc} */
@@ -85,6 +108,9 @@ public abstract class TwoQubitGate implements Gate {
     @Override
     public void setAdditionalQubit(int idx, int cnt) {
         this.second = idx;
+        if (idx > highest) {
+            this.highest = idx;
+        }
     }
 
 

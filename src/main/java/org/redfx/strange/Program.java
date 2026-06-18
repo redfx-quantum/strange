@@ -56,6 +56,7 @@ public class Program {
     private Result result;
     private double[] initAlpha;
 
+    private Qubit[] qubits;
     private final ArrayList<Step> steps = new ArrayList<>();
 
     // cache decomposedSteps
@@ -72,9 +73,24 @@ public class Program {
      */
     public Program(int nQubits, Step... moreSteps) {
         this.numberQubits = nQubits;
+        this.qubits = new Qubit[nQubits];
+        for (int i = 0; i < nQubits; i++) {
+            this.qubits[i] = new Qubit();
+        }
         this.initAlpha = new double[numberQubits];
         Arrays.fill(initAlpha, 1d);
         addSteps(moreSteps);
+    }
+
+    public Program(Qubit... qubits) {
+        this.qubits = qubits;
+        this.numberQubits = qubits.length;
+        this.initAlpha = new double[numberQubits];
+        Arrays.fill(initAlpha, 1d);
+    }
+
+    public Qubit[] getQubits() {
+        return this.qubits;
     }
 
     /**
@@ -118,10 +134,45 @@ public class Program {
         if (!ensureMeasuresafe( Objects.requireNonNull(step)) ) {
             throw new IllegalArgumentException ("Adding a superposition step to a measured qubit");
         }
+        List<Gate> gates = step.getGates();
+        for (Gate gate : gates) {
+            System.err.println("gate = "+gate);
+            Qubit candidate = gate.getQubit();
+            if (candidate != null) {
+                int ibq = getIndexByQubit(candidate);
+                gate.setMainQubitIndex(ibq);
+            } else {
+                continue;
+            }
+            candidate = gate.getSecondQubit();
+            if (candidate != null) {
+                getIndexByQubit(candidate);
+                gate.setAdditionalQubit(getIndexByQubit(candidate), 1);
+            } else {
+                continue;
+            }
+            candidate = gate.getThirdQubit();
+            if (candidate != null) {
+                getIndexByQubit(candidate);
+                gate.setAdditionalQubit(getIndexByQubit(candidate), 2);
+            } else {
+                continue;
+            }
+        }
         step.setIndex(steps.size());
         step.setProgram(this);
         steps.add(step);
         this.decomposedSteps = null;
+    }
+
+    private int getIndexByQubit(Qubit q) {
+        if (this.qubits == null) return -1;
+        for (int i = 0; i < this.qubits.length; i++) {
+            if (q.equals(this.qubits[i])) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
