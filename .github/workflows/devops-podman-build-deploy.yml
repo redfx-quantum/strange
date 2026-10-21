@@ -1,0 +1,70 @@
+# .github/workflows/podman-build.yml
+
+# Basic workflow that builds and tests a container image using Podman
+name: Podman Build and Test
+
+on:
+  push:
+    branches: [release]
+  pull_request:
+    branches: [release]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: ACS-Cybersecurity-critoma-ism.ase.ro   # <-- attaches the environment to this job
+
+    steps:
+      # Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Setup JDK 25 LTS
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          
+      # Verify Podman is available on the runner
+      - name: Check Podman and Linux version version and gcc g++ 
+        run:  |
+          whoami && lscpu && pwd && ls -latr && lsb_release -a && podman --version && podman images && podman ps && javac -version \
+          && ant -version && gcc --version && g++ --version && make --version
+
+      # Build with Apache ANT and OpenJDK 25 LTS from Eclipse IBM Temurin inside the container
+      - name: Build javaqc with ANT and Java 25
+        run: ant clean && ant compile && ant jar && ant run
+
+      # Build the container image using Podman
+      - name: Build Podman image
+        run: pwd && ls -latr && podman build -t javaqc:${{ github.sha }} -f ./Containerfile .
+        #  run: podman build -t myapp:${{ github.sha }} .
+
+      # Run demo inside the Podman built container with ant
+      - name: Run tests inside the Podman built container
+        run: |
+          podman run --name javaqc_strange javaqc:${{ github.sha }} /entrypoint.sh
+          # sh -c 'whoami && cd /jar && pwd && ls -latr . && java -jar javaqc.jar' 
+          # /entrypoint.sh
+
+      # Docker.io login
+      - name: Login to Docker Hub 
+        run: |
+          echo "${{ secrets.REGISTRY_PASS }}" | podman login docker.io \
+          -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+
+      # Tag and publish in Docker.io
+      - name: Tag and Push to Docker Hub
+        run: |
+          # IMAGE="docker.io/${{ secrets.REGISTRY_USER }}/javaqc:${{ github.sha }}" 
+          podman ps -a
+          IMAGE="localhost/javaqc:${{ github.sha }}" 
+          IMAGE2PUB="docker.io/${{ secrets.REGISTRY_USER }}/javaqc:1.0"
+          podman tag "$IMAGE" "$IMAGE2PUB"
+          podman push "$IMAGE2PUB"
+          
+      # Delete the used podman container, image and logout
+      - name: Delete podman container
+        run: |
+          podman ps -a && podman rm javaqc_strange && podman rmi javaqc:${{ github.sha }} && podman logout

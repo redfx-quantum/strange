@@ -1,3 +1,16 @@
+# javaqc aka Java API for Quantum Computing
+
+This project is a fork from Java Champion and founder of GluonHQ, Johan Vos projects - Strange and StrangeFX companion project with following additional goals:
+1. Offers printing in various formats instead of Java FX (StrangeFX) such as text terminal, web server, etc. for containerized solutions: Podman / Docker
+2. Create releases with GitHub Actions workflows and embeddeding in all code and OpenJDK into thin Linux OS container for different containers engines such as Podman / Docker
+3. Connecting to different Quantum Computing Cloud platforms for their simulators or real quantum computers by extending existing Java classes and interfaces:
+   - European platforms: hardware and cloud access include Pasqal (neutral atoms) and QMware (hybrid cloud), ...
+   - UK, Canada, Australia platforms: D-Wave Systems (Ocean), Xanadu, Diraq, ...
+   - US platforms: IBM Qiskit, Google Cirq, MS Azure Q#, ...
+4. Creating classes for Quantum Deep Learning (QDL) and Quantum Neural Networking (QNN) with or without Agents for Artificial Intelligence (AI) processing
+5. Transpile and optimize to run QC simulators on CPU and GPU with OpenCL - Java Babylon (https://openjdk.org/projects/babylon/articles/hat-matmul/hat-matmul | https://jjfumero.github.io/posts/2025/02/07/babylon-and-tornadovm)
+6. Creating didactical and comprehensive documentation and diagrams (e.g. Mermaid, PlantUML) for world wide and https://www.ism.ase.ro students
+
 # strange
 [![Build](https://github.com/redfx-quantum/strange/actions/workflows/build.yml/badge.svg)](https://github.com/redfx-quantum/strange/actions/workflows/build.yml)
 [![Test Coverage](https://github.com/redfx-quantum/strange/blob/gh-pages/badges/jacoco.svg?raw=true)](https://redfx-quantum.github.io/strange/)
@@ -50,6 +63,14 @@ classDiagram
     <<interface>>
     +getAffectedQubitIndexes() List~Integer~
   }
+  class X {}
+  class Y {}
+  class Z {}
+  class H {}
+  Gate <|.. X : implements
+  Gate <|.. Y : implements
+  Gate <|.. Z : implements
+  Gate <|.. H : implements
 
   Program "1" -- "1..*" Qubit : operates on
   Gate "1" -- "1..*" Qubit : operates on
@@ -157,6 +178,32 @@ dependencies {
 mainClassName = 'SimpleStrangeDemo'
 
 ```
+## Using ant
+
+A typical build.xml file looks as follows:
+```ant
+<project>
+    <target name="clean">
+        <delete dir="ant-build"/>
+    </target>
+    <target name="compile">
+        <mkdir dir="ant-build/classes"/>
+        <javac srcdir="src/main/java" destdir="ant-build/classes"/>
+    </target>
+    <target name="jar">
+        <mkdir dir="ant-build/jar"/>
+        <jar destfile="ant-build/jar/javaqc.jar" basedir="ant-build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="org.redfx.strange.demo.Demo"/>
+            </manifest>
+        </jar>
+    </target>
+    <target name="run">
+        <java jar="ant-build/jar/javaqc.jar" fork="true"/>
+    </target>
+</project>
+
+```
 
 # About the sample application.
 
@@ -208,7 +255,7 @@ Running this application a number of times will consistently give the same proba
 # Visualization
 
 The Strange API's allow creating and simulate quantum programs. A companion project, [StrangeFX](https://github.com/redfx-quantum/strangefx) , allows visualising programs, and create them with a simple drag and drop interface. The sample program above rendered via StrangeFX looks as follows:
-![StrangeFX rendering](https://github.com/redfx-quantum/strangefx/blob/master/docs/images/simpleview.png)
+[StrangeFX rendering](https://github.com/redfx-quantum/strangefx/blob/master/docs/images/simpleview.png)
 
 # More samples
 You can find more samples at https://github.com/johanvos/quantumjava

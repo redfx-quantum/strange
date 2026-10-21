@@ -1,0 +1,25 @@
+<project>
+
+    <target name="clean">
+        <delete dir="ant-build"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="ant-build/classes"/>
+        <javac srcdir="src/main/java" destdir="ant-build/classes"/>
+    </target>
+
+    <target name="jar">
+        <mkdir dir="ant-build/jar"/>
+        <jar destfile="ant-build/jar/javaqc.jar" basedir="ant-build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="org.redfx.strange.demo.Demo"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run">
+        <java jar="ant-build/jar/javaqc.jar" fork="true"/>
+    </target>
+
+</project>
